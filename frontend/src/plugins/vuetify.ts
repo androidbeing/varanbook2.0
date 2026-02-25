@@ -7,15 +7,16 @@ import * as directives from 'vuetify/directives'
 const varanTheme = {
   dark: false,
   colors: {
-    primary: '#B71C1C',       // deep red – auspicious
-    secondary: '#F57F17',     // gold/amber
-    accent: '#880E4F',        // deep pink
+    primary: '#2196F3',       // Material Blue
+    'on-primary': '#FFFFFF',  // white text on blue buttons
+    secondary: '#1565C0',     // deeper blue complement
+    accent: '#64B5F6',        // lighter blue accent
     error: '#D32F2F',
     warning: '#F57C00',
-    info: '#1565C0',
-    success: '#2E7D32',
-    surface: '#FFFDE7',       // warm cream
-    background: '#FFF8E1',
+    info: '#0D47A1',
+    success: '#43A047',
+    surface: '#F3F8FF',       // very light blue tint
+    background: '#EBF5FF',    // soft blue background
   },
 }
 

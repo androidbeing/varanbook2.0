@@ -21,9 +21,10 @@
           </v-btn>
         </template>
         <v-list density="compact" min-width="180">
-          <v-list-item :subtitle="auth.user?.email ?? ''" :title="auth.user?.name ?? 'User'" />
+          <v-list-item :subtitle="auth.user?.email ?? ''" :title="auth.user?.full_name ?? 'User'" />
           <v-divider />
           <v-list-item
+            v-if="!auth.isSuperAdmin"
             prepend-icon="mdi-account"
             title="My Profile"
             @click="router.push('/my-profile')"
@@ -80,7 +81,7 @@ function toggleTheme() {
 }
 
 const userInitials = computed(() => {
-  const name = auth.user?.name ?? ''
+  const name = auth.user?.full_name ?? ''
   return name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
 })
 
@@ -89,9 +90,24 @@ async function handleLogout() {
   router.push('/login')
 }
 
-const navItems = [
-  { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
-  { title: 'Browse Profiles', icon: 'mdi-account-group', to: '/profiles' },
-  { title: 'My Profile', icon: 'mdi-account-circle', to: '/my-profile' },
-]
+const navItems = computed(() => {
+  if (auth.isSuperAdmin) {
+    return [
+      { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
+      { title: 'Tenants', icon: 'mdi-office-building-cog', to: '/admin/tenants' },
+    ]
+  }
+  if (auth.isAdmin) {
+    return [
+      { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
+      { title: 'Browse Profiles', icon: 'mdi-account-group', to: '/profiles' },
+    ]
+  }
+  // Member
+  return [
+    { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
+    { title: 'Browse Profiles', icon: 'mdi-account-group', to: '/profiles' },
+    { title: 'My Profile', icon: 'mdi-account-circle', to: '/my-profile' },
+  ]
+})
 </script>

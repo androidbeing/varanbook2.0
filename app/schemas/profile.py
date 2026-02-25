@@ -37,8 +37,26 @@ class ProfileCreate(BaseModel):
     disabilities: str | None = Field(None, max_length=500)
 
     # Contact
-    mobile: str | None = Field(None, pattern=r"^\+[1-9]\d{6,14}$", examples=["+919876543210"])
-    whatsapp: str | None = Field(None, pattern=r"^\+[1-9]\d{6,14}$", examples=["+919876543210"])
+    mobile: str | None = Field(None, examples=["+919876543210", "9876543210"])
+    whatsapp: str | None = Field(None, examples=["+919876543210", "9876543210"])
+
+    @field_validator("mobile", "whatsapp", mode="before")
+    @classmethod
+    def normalise_phone(cls, v: object) -> str | None:
+        """Accept 10-digit Indian numbers or full E.164; normalise to E.164."""
+        import re
+        if v is None or v == "":
+            return None
+        v = re.sub(r"[\s\-\(\)]", "", str(v))
+        # Bare 10-digit Indian mobile (starts with 6-9)
+        if re.match(r"^[6-9]\d{9}$", v):
+            v = "+91" + v
+        if not re.match(r"^\+[1-9]\d{6,14}$", v):
+            raise ValueError(
+                "Enter a valid number with country code (e.g. +919876543210) "
+                "or a 10-digit Indian mobile number."
+            )
+        return v
 
     # Location
     native_place: str | None = Field(None, max_length=100)
@@ -93,9 +111,14 @@ class ProfileCreate(BaseModel):
     @classmethod
     def age_must_be_18plus(cls, v: date) -> date:
         from datetime import date as _date
-        age = (_date.today() - v).days // 365
+        today = _date.today()
+        # Accurate age: subtract 1 if birthday hasn't occurred yet this year
+        age = today.year - v.year - ((today.month, today.day) < (v.month, v.day))
         if age < 18:
-            raise ValueError("Candidate must be at least 18 years old.")
+            raise ValueError(
+                f"Candidate must be at least 18 years old. "
+                f"Provided date of birth ({v}) gives an age of {age}."
+            )
         if age > 80:
             raise ValueError("Date of birth appears invalid (age > 80).")
         return v
@@ -113,6 +136,7 @@ class ProfileRead(BaseModel):
     id: uuid.UUID
     user_id: uuid.UUID
     tenant_id: uuid.UUID
+    full_name: str | None = None  # populated from user.full_name in router
     gender: Gender
     date_of_birth: date
     height_cm: int | None
@@ -142,12 +166,10 @@ class ProfileRead(BaseModel):
     profession: str | None
     working_at: str | None
     income_range: IncomeRange | None
-    annual_income_inr: int | None
     father_name: str | None
     father_occupation: str | None
     mother_name: str | None
     mother_occupation: str | None
-    siblings: int | None
     siblings_details: str | None
     # Privacy flags
     personal_visible: bool

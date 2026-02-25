@@ -11,9 +11,9 @@
         <v-row dense>
           <v-col cols="12" sm="4" md="3">
             <v-select
-              v-model="filters.gender"
-              label="Gender"
-              :items="genderOptions"
+              v-model="filters.dhosam"
+              label="Dhosam"
+              :items="dhosamOptions"
               variant="outlined"
               density="compact"
               clearable
@@ -105,12 +105,16 @@ const router = useRouter()
 const page = ref(1)
 const pageSize = 12
 const searchText = ref('')
-const filters = ref({ gender: '', city: '' })
-const activeFilters = ref({ gender: '', city: '', search: '' })
+const filters = ref({ dhosam: '', city: '' })
+const activeFilters = ref({ dhosam: '', city: '', search: '' })
 
-const genderOptions = [
-  { title: 'Male', value: 'male' },
-  { title: 'Female', value: 'female' },
+const dhosamOptions = [
+  { title: 'None',     value: 'none' },
+  { title: 'Chevvai',  value: 'chevvai' },
+  { title: 'Rahu',     value: 'rahu' },
+  { title: 'Kethu',    value: 'kethu' },
+  { title: 'Shani',    value: 'shani' },
+  { title: 'Multiple', value: 'multiple' },
 ]
 
 const { data, isPending, isError } = useQuery({
@@ -119,7 +123,7 @@ const { data, isPending, isError } = useQuery({
     profilesApi.list({
       page: page.value,
       size: pageSize,
-      gender: activeFilters.value.gender || undefined,
+      dhosam: activeFilters.value.dhosam || undefined,
       city: activeFilters.value.city || undefined,
       search: activeFilters.value.search || undefined,
     }),
@@ -131,7 +135,7 @@ const totalPages = computed(() => data.value?.pages ?? 1)
 function applyFilters() {
   page.value = 1
   activeFilters.value = {
-    gender: filters.value.gender,
+    dhosam: filters.value.dhosam,
     city: filters.value.city,
     search: searchText.value,
   }

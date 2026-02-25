@@ -1,6 +1,12 @@
 import axios from 'axios'
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api'
+// If VITE_API_BASE_URL is set explicitly in .env, use it.
+// Otherwise derive the API origin from the current page's hostname so that
+// LAN access (e.g. http://192.168.x.x:5173) automatically points to the
+// backend on port 8000 of the same host.
+const BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ??
+  `${window.location.protocol}//${window.location.hostname}:8000`
 
 const client = axios.create({
   baseURL: BASE_URL,

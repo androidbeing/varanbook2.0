@@ -10,6 +10,7 @@ Endpoints:
   POST /auth/change-password  – change password (authenticated)
   POST /users/                – member self-registration
   POST /users/admin           – admin onboarding
+  GET  /users/members         – list members of the current tenant (admin+)
   GET  /users/me              – current user profile
   PATCH /users/me             – partial update
 """
@@ -21,9 +22,9 @@ from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 import bcrypt as _bcrypt
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from jose import JWTError
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -49,6 +50,7 @@ from app.schemas.user import (
     RefreshRequest,
     TokenResponse,
     UserCreate,
+    UserList,
     UserRead,
     UserUpdate,
 )
@@ -342,6 +344,53 @@ async def onboard_admin(
 
     await db.refresh(user)
     return UserRead.model_validate(user)
+
+
+# ────────────────────────────────────────────────────────────────────────────────
+# LIST MEMBERS (admin view)
+# ────────────────────────────────────────────────────────────────────────────────
+
+@users_router.get(
+    "/members",
+    response_model=UserList,
+    summary="List members of the current tenant (admin only)",
+)
+async def list_members(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_admin)],
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    is_active: bool | None = Query(None),
+) -> UserList:
+    """
+    Return paginated list of MEMBER-role users belonging to the caller's tenant.
+
+    - ADMIN sees only their own tenant's members.
+    - SUPER_ADMIN must use the /admin/tenants routes; this endpoint always
+      scopes to the caller's tenant_id.
+    """
+    if current_user.tenant_id is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Super admins have no tenant scope. Use /admin/tenants instead.",
+        )
+
+    query = select(User).where(
+        User.tenant_id == current_user.tenant_id,
+        User.role == UserRole.MEMBER,
+    )
+    if is_active is not None:
+        query = query.where(User.is_active == is_active)
+
+    total_result = await db.execute(select(func.count()).select_from(query.subquery()))
+    total = total_result.scalar_one()
+
+    items_result = await db.execute(
+        query.order_by(User.full_name).offset((page - 1) * page_size).limit(page_size)
+    )
+    items = [UserRead.model_validate(u) for u in items_result.scalars().all()]
+
+    return UserList(items=items, total=total, page=page, page_size=page_size)
 
 
 # ────────────────────────────────────────────────────────────────────────────────

@@ -83,6 +83,7 @@ def create_app() -> FastAPI:
         ),
         docs_url="/docs",
         redoc_url="/redoc",
+        redirect_slashes=False,
         lifespan=lifespan,
     )
     # ── Rate limiter ────────────────────────────────────────────────
@@ -90,9 +91,18 @@ def create_app() -> FastAPI:
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     app.add_middleware(SlowAPIMiddleware)
     # ── CORS ──────────────────────────────────────────────────────────────────
+    # Regex covers: localhost, 127.0.0.1, and any private-network IP (LAN access)
+    _LOCAL_ORIGIN_REGEX = (
+        r"^https?://(localhost|127\.0\.0\.1"
+        r"|192\.168\.\d{1,3}\.\d{1,3}"
+        r"|10\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+        r"|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}"
+        r")(:\d+)?$"
+    )
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.ALLOWED_ORIGINS,
+        allow_origin_regex=_LOCAL_ORIGIN_REGEX,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -124,10 +134,25 @@ def create_app() -> FastAPI:
     # ── Global exception handler ───────────────────────────────────────────────
     @app.exception_handler(Exception)
     async def unhandled_exception_handler(request: Request, exc: Exception):
-        log.exception("unhandled_error", error=str(exc))
+        import re as _re
+        import traceback as _tb
+        log.exception("unhandled_error", error=str(exc), traceback=_tb.format_exc())
+        origin = request.headers.get("origin", "")
+        cors_headers = {}
+        if origin in settings.ALLOWED_ORIGINS or (
+            origin and _re.match(_LOCAL_ORIGIN_REGEX, origin)
+        ):
+            cors_headers["Access-Control-Allow-Origin"] = origin
+            cors_headers["Access-Control-Allow-Credentials"] = "true"
+        # In DEBUG mode expose the real error so it's easier to diagnose
+        detail = (
+            f"{type(exc).__name__}: {exc}" if settings.DEBUG
+            else "An unexpected error occurred. Please try again later."
+        )
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content={"detail": "An unexpected error occurred. Please try again later."},
+            content={"detail": detail},
+            headers=cors_headers,
         )
 
     # ── Routers ───────────────────────────────────────────────────────────────

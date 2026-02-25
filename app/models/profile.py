@@ -179,24 +179,20 @@ class Profile(Base):
 
     # ── Horoscope (Birth Details) ─────────────────────────────────────────────
     birth_place: Mapped[str | None] = mapped_column(String(200), nullable=True)
-    rashi: Mapped[Rashi | None] = mapped_column(Enum(Rashi, values_callable=lambda x: [e.value for e in x], create_type=False), nullable=True)
-    star: Mapped[Star | None] = mapped_column(Enum(Star, values_callable=lambda x: [e.value for e in x], create_type=False), nullable=True)
-    dhosam: Mapped[Dhosam | None] = mapped_column(
-        Enum(Dhosam, values_callable=lambda x: [e.value for e in x], create_type=False), nullable=True, comment="Astrological dosha/dhosam"
-    )
+    # Stored as VARCHAR; Pydantic enum validates allowed values at API layer.
+    rashi: Mapped[Rashi | None] = mapped_column(String(50), nullable=True)
+    star: Mapped[Star | None] = mapped_column(String(50), nullable=True)
+    dhosam: Mapped[Dhosam | None] = mapped_column(String(50), nullable=True, comment="Astrological dosha/dhosam")
     manglik: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
 
     # ── Professional ─────────────────────────────────────────────────────────
-    qualification: Mapped[Qualification | None] = mapped_column(
-        Enum(Qualification, values_callable=lambda x: [e.value for e in x], create_type=False), nullable=True
-    )
+    # Stored as VARCHAR; Pydantic enum validates allowed values at API layer.
+    qualification: Mapped[Qualification | None] = mapped_column(String(50), nullable=True)
     profession: Mapped[str | None] = mapped_column(String(200), nullable=True)
     working_at: Mapped[str | None] = mapped_column(
         String(200), nullable=True, comment="Employer / organisation name"
     )
-    income_range: Mapped[IncomeRange | None] = mapped_column(
-        Enum(IncomeRange, values_callable=lambda x: [e.value for e in x], create_type=False), nullable=True
-    )
+    income_range: Mapped[IncomeRange | None] = mapped_column(String(50), nullable=True)
     city: Mapped[str | None] = mapped_column(String(100), nullable=True)
     state: Mapped[str | None] = mapped_column(String(100), nullable=True)
     country: Mapped[str] = mapped_column(String(100), default="India")

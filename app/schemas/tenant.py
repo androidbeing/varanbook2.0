@@ -48,11 +48,6 @@ class TenantCreate(BaseModel):
     slug: str = Field(..., description="URL-safe unique identifier")
     domain: str | None = Field(None, max_length=255, examples=["sharma.matrimony.in"])
     contact_email: EmailStr
-    contact_phone: str | None = Field(
-        None,
-        pattern=r"^\+?[1-9]\d{6,14}$",
-        examples=["+919876543210"],
-    )
     address: str | None = Field(None, max_length=500)
     plan: Literal["starter", "growth", "enterprise"] = "starter"
     max_users: int = Field(500, ge=10, le=100_000)
@@ -83,7 +78,6 @@ class TenantUpdate(BaseModel):
     name: str | None = Field(None, min_length=2, max_length=200)
     domain: str | None = Field(None, max_length=255)
     contact_email: EmailStr | None = None
-    contact_phone: str | None = Field(None, pattern=r"^\+?[1-9]\d{6,14}$")
     address: str | None = None
     plan: Literal["starter", "growth", "enterprise"] | None = None
     max_users: int | None = Field(None, ge=10, le=100_000)
@@ -113,7 +107,6 @@ class TenantRead(BaseModel):
     slug: str
     domain: str | None
     contact_email: str
-    contact_phone: str | None
     plan: str
     max_users: int
     max_admins: int

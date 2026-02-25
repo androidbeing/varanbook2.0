@@ -53,7 +53,7 @@ async def upsert_preferences(
     db: Annotated[AsyncSession, Depends(get_db)],
     current_user: Annotated[User, Depends(require_member)],
 ) -> PartnerPreferenceRead:
-    await _get_profile_authorised(profile_id, current_user, db, write=True)
+    profile = await _get_profile_authorised(profile_id, current_user, db, write=True)
 
     result = await db.execute(
         select(PartnerPreference).where(PartnerPreference.profile_id == profile_id)
@@ -62,7 +62,7 @@ async def upsert_preferences(
 
     data = body.model_dump()
     if pref is None:
-        pref = PartnerPreference(profile_id=profile_id, **data)
+        pref = PartnerPreference(profile_id=profile_id, tenant_id=profile.tenant_id, **data)
         db.add(pref)
     else:
         for k, v in data.items():

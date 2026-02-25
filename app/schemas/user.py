@@ -146,3 +146,12 @@ class TokenResponse(BaseModel):
     refresh_token: str
     token_type: str = "bearer"
     expires_in: int  # seconds
+
+
+class UserList(BaseModel):
+    """Paginated list of users returned to tenant admins."""
+
+    items: list[UserRead]
+    total: int
+    page: int
+    page_size: int
