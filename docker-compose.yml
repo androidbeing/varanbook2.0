@@ -1,0 +1,110 @@
+################################################################################
+# docker-compose.yml – Local development stack
+#
+# Services:
+#   api      – FastAPI app (auto-reload)
+#   db       – PostgreSQL 15
+#   redis    – For optional Celery worker
+#   worker   – Celery background task worker
+#   localstack – AWS services emulation (S3, SQS) for local dev
+################################################################################
+
+version: "3.9"
+
+services:
+  # ── PostgreSQL ──────────────────────────────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: varanbook
+      POSTGRES_USER: varanbook_admin
+      POSTGRES_PASSWORD: devpassword123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U varanbook_admin -d varanbook"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis (for optional Celery) ─────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # ── LocalStack – emulates AWS S3 + SQS locally ────────────────────────────
+  localstack:
+    image: localstack/localstack:3.4
+    restart: unless-stopped
+    ports:
+      - "4566:4566"
+    environment:
+      SERVICES: s3,sqs,secretsmanager
+      DEBUG: 0
+      DATA_DIR: /tmp/localstack/data
+    volumes:
+      - localstack_data:/tmp/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+
+  # ── FastAPI application ─────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+    environment:
+      # App
+      APP_ENV: development
+      DEBUG: "true"
+      SECRET_KEY: dev-secret-key-change-in-production
+
+      # Database
+      DATABASE_URL: postgresql+asyncpg://varanbook_admin:devpassword123@db:5432/varanbook
+
+      # JWT
+      ACCESS_TOKEN_EXPIRE_MINUTES: "60"
+      REFRESH_TOKEN_EXPIRE_DAYS: "7"
+
+      # AWS (LocalStack)
+      AWS_REGION: ap-south-1
+      AWS_ACCESS_KEY_ID: localstack
+      AWS_SECRET_ACCESS_KEY: localstack
+      AWS_ENDPOINT_URL: http://localstack:4566    # override for localstack
+      S3_BUCKET_NAME: varanbook-media-dev
+      SQS_NOTIFICATION_QUEUE_URL: http://localstack:4566/000000000000/varanbook-notifications-dev
+
+      # CORS
+      ALLOWED_ORIGINS: '["http://localhost:3000"]'
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    command: >
+      sh -c "
+        alembic upgrade head &&
+        uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      "
+
+volumes:
+  postgres_data:
+  localstack_data:

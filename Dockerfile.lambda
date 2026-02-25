@@ -1,0 +1,51 @@
+# Dockerfile.lambda – Lambda container image (Python 3.12 + Mangum ASGI adapter)
+#
+# Build:
+#   docker build -f Dockerfile.lambda -t matrimonial-api:lambda .
+#
+# Local test with Lambda RIE:
+#   docker run -p 9000:8080 \
+#     -e DATABASE_URL=postgresql+asyncpg://... \
+#     -e SECRET_KEY=... \
+#     matrimonial-api:lambda
+#
+#   curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" \
+#     -d '{"httpMethod":"GET","path":"/health","headers":{},"body":null}'
+
+FROM public.ecr.aws/lambda/python:3.12 AS builder
+
+# Install build deps (needed for psycopg2-binary, bcrypt, etc.)
+RUN dnf install -y gcc python3-devel libffi-devel && dnf clean all
+
+WORKDIR /build
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir --target /build/packages -r requirements.txt
+
+# ── Final stage ───────────────────────────────────────────────────────────────
+FROM public.ecr.aws/lambda/python:3.12
+
+# Copy installed packages
+COPY --from=builder /build/packages ${LAMBDA_TASK_ROOT}
+
+# Copy application source
+COPY app/ ${LAMBDA_TASK_ROOT}/app/
+COPY alembic/ ${LAMBDA_TASK_ROOT}/alembic/
+COPY alembic.ini ${LAMBDA_TASK_ROOT}/
+
+# Lambda handler: Mangum wraps FastAPI → Lambda event format
+# The Lambda function handler setting must be: handler.handler
+RUN cat > ${LAMBDA_TASK_ROOT}/handler.py << 'EOF'
+"""Lambda entry point – bridges API Gateway events to the FastAPI ASGI app."""
+import os
+
+from mangum import Mangum
+from app.main import create_app
+
+_app = create_app()
+
+# Mangum wraps the ASGI app; lifespan="off" because Lambda is ephemeral
+handler = Mangum(_app, lifespan="off", api_gateway_base_path=os.getenv("API_GW_BASE_PATH", "/"))
+EOF
+
+CMD ["handler.handler"]

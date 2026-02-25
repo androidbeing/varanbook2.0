@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.whl
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment files (NEVER commit real secrets)
+.env
+*.env.local
+*.env.production
+
+# Testing & coverage
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+*.cover
+
+# Alembic
+# (keep versions/ tracked; ignore __pycache__ inside)
+alembic/__pycache__/
+alembic/versions/__pycache__/
+
+# Terraform state (use remote backend in production)
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/*.tfplan
+terraform/.terraform.lock.hcl
+terraform/envs/*.tfvars  # contains secrets
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.log
+
+# Lambda build output
+lambda/*.zip
