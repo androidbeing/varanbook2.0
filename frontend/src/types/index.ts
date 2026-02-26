@@ -155,6 +155,70 @@ export interface PaginatedResponse<T> {
   pages: number
 }
 
+// ── Tenant ───────────────────────────────────────────────────────────────────
+export type TenantPlan = 'starter' | 'growth' | 'enterprise'
+
+export interface Tenant {
+  id: string
+  name: string
+  slug: string
+  domain: string | null
+  contact_email: string
+  plan: TenantPlan
+  max_users: number
+  max_admins: number
+  is_active: boolean
+  contact_person: string | null
+  contact_number: string | null
+  whatsapp_number: string | null
+  pin: string | null
+  upi_id: string | null
+  castes: string[] | null
+  created_at: string
+  updated_at: string
+}
+
+export interface TenantCreate {
+  name: string
+  slug: string
+  domain?: string | null
+  contact_email: string
+  address?: string | null
+  plan: TenantPlan
+  max_users: number
+  max_admins: number
+  contact_person: string
+  contact_number: string
+  whatsapp_number?: string | null
+  pin: string
+  upi_id?: string | null
+  castes?: string[]
+}
+
+export interface TenantUpdate {
+  name?: string
+  domain?: string | null
+  contact_email?: string
+  address?: string | null
+  plan?: TenantPlan
+  max_users?: number
+  max_admins?: number
+  is_active?: boolean
+  contact_person?: string
+  contact_number?: string
+  whatsapp_number?: string | null
+  pin?: string
+  upi_id?: string | null
+  castes?: string[]
+}
+
+export interface TenantList {
+  items: Tenant[]
+  total: number
+  page: number
+  page_size: number
+}
+
 // ── API Error ────────────────────────────────────────────────────────────────
 export interface ApiError {
   detail: string | { msg: string; type: string }[]

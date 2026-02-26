@@ -36,6 +36,16 @@ const router = createRouter({
           name: 'my-profile',
           component: () => import('@/views/MyProfileView.vue'),
         },
+        {
+          path: 'admin/tenants',
+          name: 'tenants',
+          component: () => import('@/views/TenantsView.vue'),
+        },
+        {
+          path: 'admin/tenants/new',
+          name: 'create-tenant',
+          component: () => import('@/views/CreateTenantView.vue'),
+        },
       ],
     },
     {
