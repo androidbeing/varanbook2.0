@@ -37,6 +37,11 @@ const router = createRouter({
           component: () => import('@/views/MyProfileView.vue'),
         },
         {
+          path: 'admin/profile',
+          name: 'admin-profile',
+          component: () => import('@/views/AdminProfileView.vue'),
+        },
+        {
           path: 'admin/tenants',
           name: 'tenants',
           component: () => import('@/views/TenantsView.vue'),
@@ -45,6 +50,12 @@ const router = createRouter({
           path: 'admin/tenants/new',
           name: 'create-tenant',
           component: () => import('@/views/CreateTenantView.vue'),
+        },
+        {
+          path: 'admin/onboard-members',
+          name: 'onboard-members',
+          component: () => import('@/views/OnboardMembersView.vue'),
+          meta: { adminOnly: true },
         },
       ],
     },

@@ -24,10 +24,16 @@
           <v-list-item :subtitle="auth.user?.email ?? ''" :title="auth.user?.full_name ?? 'User'" />
           <v-divider />
           <v-list-item
-            v-if="!auth.isSuperAdmin"
+            v-if="auth.user?.role === 'member'"
             prepend-icon="mdi-account"
             title="My Profile"
             @click="router.push('/my-profile')"
+          />
+          <v-list-item
+            v-if="auth.user?.role === 'admin'"
+            prepend-icon="mdi-account-cog"
+            title="My Account"
+            @click="router.push('/admin/profile')"
           />
           <v-list-item
             prepend-icon="mdi-logout"
@@ -66,10 +72,12 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDisplay, useTheme } from 'vuetify'
+import { useQueryClient } from '@tanstack/vue-query'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const auth = useAuthStore()
+const qc = useQueryClient()
 const { mobile: isMobile } = useDisplay()
 const theme = useTheme()
 
@@ -87,6 +95,10 @@ const userInitials = computed(() => {
 
 async function handleLogout() {
   await auth.logout()
+  // Clear the entire query cache so the next user starts with a clean slate.
+  // Without this, the previous user's profile data would pre-fill the form
+  // for the next user who logs in on the same browser session.
+  qc.clear()
   router.push('/login')
 }
 
@@ -101,6 +113,8 @@ const navItems = computed(() => {
     return [
       { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
       { title: 'Browse Profiles', icon: 'mdi-account-group', to: '/profiles' },
+      { title: 'Onboard Members', icon: 'mdi-account-plus', to: '/admin/onboard-members' },
+      { title: 'My Account', icon: 'mdi-account-cog', to: '/admin/profile' },
     ]
   }
   // Member

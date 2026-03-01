@@ -34,18 +34,8 @@ COPY alembic/ ${LAMBDA_TASK_ROOT}/alembic/
 COPY alembic.ini ${LAMBDA_TASK_ROOT}/
 
 # Lambda handler: Mangum wraps FastAPI → Lambda event format
-# The Lambda function handler setting must be: handler.handler
-RUN cat > ${LAMBDA_TASK_ROOT}/handler.py << 'EOF'
-"""Lambda entry point – bridges API Gateway events to the FastAPI ASGI app."""
-import os
+# The Lambda function handler setting must be: lambda_handler.handler
+COPY lambda_handler.py ${LAMBDA_TASK_ROOT}/lambda_handler.py
 
-from mangum import Mangum
-from app.main import create_app
-
-_app = create_app()
-
-# Mangum wraps the ASGI app; lifespan="off" because Lambda is ephemeral
-handler = Mangum(_app, lifespan="off", api_gateway_base_path=os.getenv("API_GW_BASE_PATH", "/"))
-EOF
-
-CMD ["handler.handler"]
+# Tell the Lambda runtime which function to call (module.function)
+CMD ["lambda_handler.handler"]

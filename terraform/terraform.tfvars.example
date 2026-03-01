@@ -1,0 +1,57 @@
+###############################################################################
+# terraform/terraform.tfvars.example
+#
+# Copy this file to terraform.tfvars and fill in your actual values.
+# Never commit terraform.tfvars to version control (it contains secrets).
+###############################################################################
+
+aws_region   = "ap-south-1"
+environment  = "production"
+project_name = "varanbook"
+
+# ---- Existing RDS PostgreSQL -------------------------------------------------
+# Find your endpoint in: AWS Console -> RDS -> Databases -> <your instance>
+db_host     = "YOUR-DB.xxxxxxxxxxxx.ap-south-1.rds.amazonaws.com"
+db_port     = 5432
+db_name     = "varanbook"
+db_username = "varanbook_admin"
+db_password = "CHANGE_ME_STRONG_PASSWORD"
+
+# ---- App Secret (generate: python -c "import secrets; print(secrets.token_hex(32))")
+app_secret_key = "CHANGE_ME_AT_LEAST_32_CHARS_RANDOM"
+
+# ---- Lambda config -----------------------------------------------------------
+lambda_memory_mb  = 512
+lambda_image_tag  = "latest"   # the deploy script will update this automatically
+
+# ---- Frontend ----------------------------------------------------------------
+# Leave blank to use the free *.cloudfront.net domain.
+# For a custom domain you also need an ACM certificate in us-east-1.
+frontend_custom_domain = ""
+frontend_acm_cert_arn  = ""
+cloudfront_price_class = "PriceClass_All"
+
+# ---- CORS origins (add your CloudFront URL after first deploy) ---------------
+cors_origins = [
+  "http://localhost:5173",
+  # "https://dXXXXXXXXXXXX.cloudfront.net",   # add after first terraform apply
+  # "https://app.varanbook.in",                # if using a custom domain
+]
+
+# ---- SMTP / SES (optional – leave blank to skip email) ----------------------
+smtp_host     = "email-smtp.ap-south-1.amazonaws.com"
+smtp_port     = 587
+smtp_username = ""
+smtp_password = ""
+smtp_from     = "noreply@varanbook.in"
+
+# ---- VPC (only set if your RDS is NOT publicly accessible) ------------------
+vpc_id                    = ""
+private_subnet_ids        = []
+lambda_security_group_ids = []
+
+# ---- Push notification Lambda (FCM) – optional -------------------------------
+# Set to true once you have built the FCM Lambda ZIP and uploaded it.
+enable_push_notifications = false
+lambda_zip_path           = "lambda/notification_handler.zip"
+firebase_creds_secret_arn = ""

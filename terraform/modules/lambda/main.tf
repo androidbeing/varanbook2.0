@@ -94,7 +94,7 @@ resource "aws_lambda_function" "notifier" {
   function_name    = "${var.project_name}-push-notifier-${var.environment}"
   role             = aws_iam_role.lambda.arn
   filename         = var.lambda_zip_path
-  source_code_hash = filebase64sha256(var.lambda_zip_path)
+  source_code_hash = fileexists(var.lambda_zip_path) ? filebase64sha256(var.lambda_zip_path) : null
   handler          = "index.handler"   # entry point in the ZIP
   runtime          = "nodejs20.x"
   timeout          = 60                # seconds
@@ -140,13 +140,16 @@ resource "aws_cloudwatch_log_group" "lambda" {
 ################################################################################
 # Variables
 ################################################################################
-variable "environment"        { type = string }
-variable "project_name"       { type = string }
-variable "sqs_queue_name"     { type = string }
-variable "lambda_zip_path"    { type = string }
-variable "firebase_creds_arn" { type = string; default = "" }
-variable "account_id"         { type = string }
-variable "region"             { type = string }
+variable "environment"    { type = string }
+variable "project_name"   { type = string }
+variable "sqs_queue_name" { type = string }
+variable "lambda_zip_path" { type = string }
+variable "firebase_creds_arn" {
+  type    = string
+  default = ""
+}
+variable "account_id" { type = string }
+variable "region"      { type = string }
 
 ################################################################################
 # Outputs

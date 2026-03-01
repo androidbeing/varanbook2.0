@@ -155,8 +155,8 @@ class Profile(Base):
     )
 
     # ── Personal ──────────────────────────────────────────────────────────────
-    gender: Mapped[Gender] = mapped_column(Enum(Gender, values_callable=lambda x: [e.value for e in x], create_type=False), nullable=False)
-    date_of_birth: Mapped[date] = mapped_column(Date, nullable=False)
+    gender: Mapped[Gender | None] = mapped_column(Enum(Gender, values_callable=lambda x: [e.value for e in x], create_type=False), nullable=True)
+    date_of_birth: Mapped[date | None] = mapped_column(Date, nullable=True)
     # time_of_birth in 24h format HH:MM
     time_of_birth: Mapped[time | None] = mapped_column(Time, nullable=True)
     # height in cm; spec: 60–200
@@ -233,7 +233,7 @@ class Profile(Base):
 
     # ── Status ────────────────────────────────────────────────────────────────
     status: Mapped[ProfileStatus] = mapped_column(
-        Enum(ProfileStatus, values_callable=lambda x: [e.value for e in x], create_type=False), default=ProfileStatus.DRAFT
+        Enum(ProfileStatus, values_callable=lambda x: [e.value for e in x], create_type=False), default=ProfileStatus.ACTIVE
     )
 
     # ── Audit ─────────────────────────────────────────────────────────────────

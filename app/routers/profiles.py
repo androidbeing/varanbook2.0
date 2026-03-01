@@ -87,6 +87,7 @@ async def create_profile(
     profile = Profile(
         user_id=current_user.id,
         tenant_id=current_user.tenant_id,
+        status=ProfileStatus.ACTIVE,   # member self-service profiles are active immediately
         **{k: v for k, v in payload.model_dump().items() if k not in _PROFILE_ORM_EXCLUDE},
     )
     db.add(profile)
@@ -207,6 +208,10 @@ async def update_my_profile(
     for field, value in payload.model_dump(exclude_unset=True).items():
         if field not in _ORPHAN_FIELDS and hasattr(profile, field):
             setattr(profile, field, value)
+
+    # Promote draft profiles to active whenever the member saves any section
+    if profile.status == ProfileStatus.DRAFT:
+        profile.status = ProfileStatus.ACTIVE
 
     await db.flush()
     result2 = await db.execute(

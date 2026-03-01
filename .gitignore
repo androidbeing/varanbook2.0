@@ -55,3 +55,19 @@ Thumbs.db
 
 # Lambda build output
 lambda/*.zip
+
+# Terraform secrets – never commit these
+terraform/terraform.tfvars
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+
+# Frontend env files with real API URLs
+frontend/.env.production
+frontend/.env.local
+
+# Lambda build artifacts
+lambda/*.zip

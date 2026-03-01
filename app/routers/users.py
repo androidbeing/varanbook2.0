@@ -9,20 +9,22 @@ Endpoints:
   POST /auth/reset-password   – validate token, set new password
   POST /auth/change-password  – change password (authenticated)
   POST /users/                – member self-registration
-  POST /users/admin           – admin onboarding
-  GET  /users/members         – list members of the current tenant (admin+)
+  POST /users/admin           – admin onboarding  POST /users/onboard         – admin: single member onboard (minimal info)
+  POST /users/onboard/bulk    – admin: bulk member onboard via CSV upload  GET  /users/members         – list members of the current tenant (admin+)
   GET  /users/me              – current user profile
   PATCH /users/me             – partial update
 """
 
+import csv
 import hashlib
+import io
 import secrets
 import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 import bcrypt as _bcrypt
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile, status
 from jose import JWTError
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
@@ -42,8 +44,12 @@ from app.models.refresh_token import RefreshToken
 from app.models.password_reset import PasswordResetToken
 from app.schemas.user import (
     AdminCreate,
+    BulkOnboardResponse,
+    BulkOnboardRow,
     LoginRequest,
     LogoutRequest,
+    MemberOnboardRequest,
+    MemberOnboardResponse,
     PasswordChange,
     PasswordResetConfirm,
     PasswordResetRequest,
@@ -344,6 +350,165 @@ async def onboard_admin(
 
     await db.refresh(user)
     return UserRead.model_validate(user)
+
+
+# ────────────────────────────────────────────────────────────────────────────────
+# MEMBER ONBOARDING (admin-initiated)
+# ────────────────────────────────────────────────────────────────────────────────
+
+@users_router.post(
+    "/onboard",
+    response_model=MemberOnboardResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Admin: onboard a single member with basic info",
+)
+async def onboard_member(
+    payload: MemberOnboardRequest,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_admin)],
+) -> MemberOnboardResponse:
+    """
+    Tenant admin creates a member account with minimal info (name + email + optional phone).
+    A secure temporary password is auto-generated and returned in the response (visible once).
+    An invite email is sent to the member with login instructions.
+    The member is expected to log in and complete their profile details afterwards.
+    """
+    if current_user.tenant_id is None:
+        raise HTTPException(status_code=400, detail="Super admins must specify a tenant.")
+
+    temp_password = secrets.token_urlsafe(12)  # 16-char URL-safe string
+    user = User(
+        tenant_id=current_user.tenant_id,
+        email=payload.email,
+        hashed_password=hash_password(temp_password),
+        full_name=payload.full_name,
+        phone=payload.phone,
+        role=UserRole.MEMBER,
+        is_active=True,
+    )
+    db.add(user)
+    try:
+        await db.flush()
+    except IntegrityError:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail="Email already registered.")
+
+    await db.refresh(user)
+
+    # Send invite email — never fail the request if email delivery fails
+    try:
+        from app.services.email import EmailService
+        await EmailService.send_member_invite(user.email, temp_password, user.full_name)
+    except Exception:
+        pass
+
+    return MemberOnboardResponse(
+        user=UserRead.model_validate(user),
+        temp_password=temp_password,
+    )
+
+
+@users_router.post(
+    "/onboard/bulk",
+    response_model=BulkOnboardResponse,
+    summary="Admin: bulk onboard members via CSV upload",
+)
+async def onboard_members_bulk(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_admin)],
+    file: UploadFile = File(..., description="CSV file with columns: full_name, email, phone (optional)"),
+) -> BulkOnboardResponse:
+    """
+    Upload a CSV file to onboard multiple members at once.
+
+    Required CSV columns:
+        full_name, email
+    Optional columns:
+        phone
+
+    Each row is processed individually using savepoints so that one duplicate
+    email does not abort the entire batch. A per-row status report is returned:
+        created  – user account created successfully (invite email queued)
+        skipped  – email already exists in the system
+        error    – row was malformed (missing required fields)
+    """
+    if current_user.tenant_id is None:
+        raise HTTPException(status_code=400, detail="Super admins must specify a tenant.")
+
+    raw = await file.read()
+    try:
+        decoded = raw.decode("utf-8-sig")  # handles BOM from Excel exports
+    except UnicodeDecodeError:
+        decoded = raw.decode("latin-1")
+
+    reader = csv.DictReader(io.StringIO(decoded))
+
+    rows: list[BulkOnboardRow] = []
+    created = skipped = errors = 0
+
+    for row_num, record in enumerate(reader, start=1):
+        email = (record.get("email") or "").strip().lower()
+        full_name = (record.get("full_name") or "").strip()
+        phone = (record.get("phone") or "").strip() or None
+
+        if not email or not full_name:
+            errors += 1
+            rows.append(
+                BulkOnboardRow(
+                    row=row_num,
+                    email=email or "—",
+                    status="error",
+                    detail="Missing required field: full_name and/or email",
+                )
+            )
+            continue
+
+        temp_password = secrets.token_urlsafe(12)
+        user = User(
+            tenant_id=current_user.tenant_id,
+            email=email,
+            hashed_password=hash_password(temp_password),
+            full_name=full_name,
+            phone=phone,
+            role=UserRole.MEMBER,
+            is_active=True,
+        )
+
+        # Use a savepoint so one IntegrityError doesn't abort the whole batch
+        try:
+            async with db.begin_nested():
+                db.add(user)
+                await db.flush()
+                await db.refresh(user)
+
+            created += 1
+            rows.append(BulkOnboardRow(row=row_num, email=email, status="created"))
+
+            # Send invite email — fire-and-forget
+            try:
+                from app.services.email import EmailService
+                await EmailService.send_member_invite(email, temp_password, full_name)
+            except Exception:
+                pass
+
+        except IntegrityError:
+            skipped += 1
+            rows.append(
+                BulkOnboardRow(
+                    row=row_num,
+                    email=email,
+                    status="skipped",
+                    detail="Email already registered",
+                )
+            )
+
+    return BulkOnboardResponse(
+        total=len(rows),
+        created=created,
+        skipped=skipped,
+        errors=errors,
+        rows=rows,
+    )
 
 
 # ────────────────────────────────────────────────────────────────────────────────

@@ -7,9 +7,11 @@ Validation rules:
   - phone: E.164 format
   - role: constrained to allowed values and role-elevation rules enforced in service layer
 """
+from __future__ import annotations
 
 import uuid
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
@@ -155,3 +157,44 @@ class UserList(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+# ── Member onboarding schemas ──────────────────────────────────────────────────
+
+class MemberOnboardRequest(BaseModel):
+    """Minimal info required for admin-initiated member onboarding."""
+
+    full_name: str = Field(..., min_length=2, max_length=200)
+    email: EmailStr
+    phone: str | None = Field(None, pattern=r"^\+?[1-9]\d{6,14}$")
+
+    @field_validator("email")
+    @classmethod
+    def normalise_email(cls, v: str) -> str:
+        return v.strip().lower()
+
+
+class MemberOnboardResponse(BaseModel):
+    """Returned after single-member onboard; includes one-time temp_password."""
+
+    user: UserRead
+    temp_password: str  # shown once — member must change on first login
+
+
+class BulkOnboardRow(BaseModel):
+    """Per-row result from a bulk CSV onboard operation."""
+
+    row: int
+    email: str
+    status: Literal["created", "skipped", "error"]
+    detail: str | None = None
+
+
+class BulkOnboardResponse(BaseModel):
+    """Summary result returned after bulk CSV upload."""
+
+    total: int
+    created: int
+    skipped: int
+    errors: int
+    rows: list[BulkOnboardRow]

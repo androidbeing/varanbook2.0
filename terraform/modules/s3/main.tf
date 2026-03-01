@@ -54,6 +54,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "media" {
     id     = "archive-old-versions"
     status = "Enabled"
 
+    filter {}
+
     noncurrent_version_transition {
       noncurrent_days = 90
       storage_class   = "GLACIER"
@@ -68,6 +70,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "media" {
   rule {
     id     = "abort-incomplete-multipart"
     status = "Enabled"
+
+    filter {}
 
     abort_incomplete_multipart_upload {
       days_after_initiation = 7
@@ -90,9 +94,12 @@ resource "aws_s3_bucket_cors_configuration" "media" {
 ################################################################################
 # Variables
 ################################################################################
-variable "environment"  { type = string }
-variable "bucket_name"  { type = string }
-variable "cors_origins" { type = list(string); default = ["*"] }
+variable "environment" { type = string }
+variable "bucket_name" { type = string }
+variable "cors_origins" {
+  type    = list(string)
+  default = ["*"]
+}
 
 ################################################################################
 # Outputs

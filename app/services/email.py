@@ -116,3 +116,27 @@ class EmailService:
         <p>Log in to complete your profile and find your match.</p>
         """
         await _send(to_email, "Welcome to Matrimonial Manager", html)
+
+    # ── Member invite (admin-initiated onboarding) ─────────────────────────────
+    @staticmethod
+    async def send_member_invite(
+        to_email: str,
+        temp_password: str,
+        full_name: str = "",
+    ) -> None:
+        cfg = _get_smtp_config()
+        login_url = f"{cfg['frontend_url']}/login"
+        greeting = f"Hello <strong>{full_name}</strong>," if full_name else "Hello,"
+        html = f"""
+        <p>{greeting}</p>
+        <p>You have been invited to join Varanbook – a matrimonial platform.</p>
+        <p>Use the credentials below to log in and complete your profile:</p>
+        <ul>
+            <li><strong>Email:</strong> {to_email}</li>
+            <li><strong>Temporary Password:</strong> <code>{temp_password}</code></li>
+        </ul>
+        <p><a href="{login_url}">Click here to log in</a></p>
+        <p>Please change your password after your first login.</p>
+        <p>If you were not expecting this invitation, ignore this email.</p>
+        """
+        await _send(to_email, "You are invited to Varanbook", html)

@@ -1,5 +1,5 @@
 ################################################################################
-# terraform/variables.tf – Input variable declarations
+# terraform/variables.tf
 ################################################################################
 
 variable "aws_region" {
@@ -18,95 +18,135 @@ variable "environment" {
 }
 
 variable "project_name" {
-  description = "Short project name used as a resource prefix"
-  type        = string
-  default     = "varanbook"
+  type    = string
+  default = "varanbook"
 }
 
-# ── Network ───────────────────────────────────────────────────────────────────
-variable "vpc_id" {
-  description = "VPC ID where resources will be created"
-  type        = string
-}
-
-variable "private_subnet_ids" {
-  description = "Private subnet IDs for RDS (at least 2 AZs for multi-AZ)"
-  type        = list(string)
-}
-
-variable "app_tier_cidr_blocks" {
-  description = "CIDR blocks of the app tier (ECS tasks / EC2 ASG)"
-  type        = list(string)
-  default     = ["10.0.0.0/8"]
-}
-
-variable "fastapi_backend_url" {
-  description = "URL of the FastAPI app's load balancer (for API Gateway integration)"
+################################################################################
+# Existing RDS PostgreSQL
+################################################################################
+variable "db_host" {
+  description = "RDS endpoint (e.g. mydb.xxxx.ap-south-1.rds.amazonaws.com)"
   type        = string
 }
 
-# ── RDS ───────────────────────────────────────────────────────────────────────
+variable "db_port" {
+  type    = number
+  default = 5432
+}
+
 variable "db_name" {
-  description = "PostgreSQL database name"
-  type        = string
-  default     = "varanbook"
+  type    = string
+  default = "varanbook"
 }
 
 variable "db_username" {
-  description = "Master DB username"
-  type        = string
-  default     = "varanbook_admin"
+  type = string
 }
 
 variable "db_password" {
-  description = "Master DB password (use AWS Secrets Manager in production)"
+  type      = string
+  sensitive = true
+}
+
+################################################################################
+# Lightsail Container Service
+################################################################################
+variable "lightsail_power" {
+  description = "Lightsail power level: nano=$7/mo, micro=$10, small=$25, medium=$50"
+  type        = string
+  default     = "micro"
+}
+
+variable "lightsail_scale" {
+  description = "Number of compute nodes (1 = single, 2+ = HA)"
+  type        = number
+  default     = 1
+}
+
+################################################################################
+# App secrets
+################################################################################
+variable "app_secret_key" {
+  description = "JWT secret key (min 32 chars). Generate: python -c \"import secrets; print(secrets.token_hex(32))\""
   type        = string
   sensitive   = true
 }
 
-variable "db_instance_class" {
-  description = "RDS instance class"
-  type        = string
-  default     = "db.t3.medium"
-}
-
-variable "multi_az" {
-  description = "Enable Multi-AZ deployment for RDS"
-  type        = bool
-  default     = false  # set true in production
-}
-
-# ── S3 ────────────────────────────────────────────────────────────────────────
+################################################################################
+# S3 / CORS
+################################################################################
 variable "cors_origins" {
-  description = "Allowed CORS origins for S3 bucket (for direct uploads)"
+  description = "Allowed CORS origins for the media bucket and API"
   type        = list(string)
-  default     = ["https://*.varanbook.in"]
+  default     = ["http://localhost:5173"]
 }
 
-# ── Lambda ────────────────────────────────────────────────────────────────────
-variable "lambda_zip_path" {
-  description = "Local path to the Lambda deployment ZIP (FCM notifier)"
-  type        = string
-  default     = "lambda/notification_handler.zip"
-}
-
-variable "firebase_creds_secret_arn" {
-  description = "ARN of the AWS Secrets Manager secret containing Firebase service account JSON"
+################################################################################
+# Frontend (S3 + CloudFront)
+################################################################################
+variable "frontend_custom_domain" {
+  description = "Optional custom domain (e.g. app.varanbook.in). Leave empty for *.cloudfront.net."
   type        = string
   default     = ""
 }
 
-# ── Secrets Manager (Phase 2) ─────────────────────────────────────────────────
-variable "app_secret_key" {
-  description = "JWT / app secret key stored in Secrets Manager"
+variable "frontend_acm_cert_arn" {
+  description = "ACM cert ARN in us-east-1 for the custom frontend domain."
   type        = string
-  sensitive   = true
-  default     = ""  # override via tfvars or environment variable TF_VAR_app_secret_key
+  default     = ""
+}
+
+variable "cloudfront_price_class" {
+  type    = string
+  default = "PriceClass_All"
+}
+
+################################################################################
+# SMTP / SES
+################################################################################
+variable "smtp_host" {
+  type    = string
+  default = ""
+}
+
+variable "smtp_port" {
+  type    = number
+  default = 587
+}
+
+variable "smtp_username" {
+  type      = string
+  default   = ""
+  sensitive = true
 }
 
 variable "smtp_password" {
-  description = "SMTP password (SES SMTP secret) stored in Secrets Manager"
-  type        = string
-  sensitive   = true
-  default     = ""
+  type      = string
+  default   = ""
+  sensitive = true
+}
+
+variable "smtp_from" {
+  type    = string
+  default = "noreply@varanbook.in"
+}
+
+################################################################################
+# Push notification Lambda (FCM) – optional
+################################################################################
+variable "enable_push_notifications" {
+  description = "Deploy the FCM push-notification Lambda. Requires lambda_zip_path to exist."
+  type        = bool
+  default     = false
+}
+
+variable "lambda_zip_path" {
+  type    = string
+  default = "lambda/notification_handler.zip"
+}
+
+variable "firebase_creds_secret_arn" {
+  type    = string
+  default = ""
 }

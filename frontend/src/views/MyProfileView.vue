@@ -768,8 +768,10 @@ const authUser = computed(() => authStore.user)
 const qc = useQueryClient()
 
 // ── Profile query ────────────────────────────────────────────────────────────
+// Scope the query key by user ID so two different users logged in
+// sequentially never share each other's cached profile data.
 const { data: profileData, isPending } = useQuery({
-  queryKey: ['my-profile'],
+  queryKey: ['my-profile', authStore.user?.id],
   queryFn: () => profilesApi.mine(),
   retry: false,
   staleTime: 60_000,   // keep cache fresh for 60 s to survive navigation
@@ -894,6 +896,21 @@ function notify(message: string, color = 'success') {
   snack.value = { show: true, color, message }
 }
 
+/**
+ * Create-or-update helper: if the user has no profile yet, POST to create it
+ * first (with a minimal payload), then PATCH with the section data.
+ * This avoids 404 errors when sections other than "Personal" are saved first.
+ */
+async function upsertMe(data: Partial<Profile>): Promise<void> {
+  if (profileData.value) {
+    await profilesApi.updateMe(data)
+  } else {
+    // Create a minimal profile first, then apply the section fields
+    await profilesApi.create({ marital_status: 'never_married' as const, ...data })
+    await qc.invalidateQueries({ queryKey: ['my-profile'] })
+  }
+}
+
 // ── Save handlers ─────────────────────────────────────────────────────────────
 async function savePersonal() {
   sec.value.personal = true
@@ -927,7 +944,7 @@ async function savePersonal() {
 async function saveBirth() {
   sec.value.birth = true
   try {
-    await profilesApi.updateMe({
+    await upsertMe({
       date_of_birth: form.value.date_of_birth,
       time_of_birth: form.value.time_of_birth,
       rashi: form.value.rashi,
@@ -946,7 +963,7 @@ async function saveBirth() {
 async function saveProfessional() {
   sec.value.professional = true
   try {
-    await profilesApi.updateMe({
+    await upsertMe({
       qualification: form.value.qualification,
       profession: form.value.profession,
       working_at: form.value.working_at,
@@ -964,7 +981,7 @@ async function saveProfessional() {
 async function saveFamily() {
   sec.value.family = true
   try {
-    await profilesApi.updateMe({
+    await upsertMe({
       father_name: form.value.father_name,
       father_occupation: form.value.father_occupation,
       mother_name: form.value.mother_name,
@@ -991,7 +1008,7 @@ function toE164(num: string | null | undefined): string | null {
 async function saveContact() {
   sec.value.contact = true
   try {
-    await profilesApi.updateMe({
+    await upsertMe({
       mobile: toE164(form.value.mobile),
       whatsapp: toE164(form.value.whatsapp),
       native_place: form.value.native_place,
@@ -1009,7 +1026,7 @@ async function saveContact() {
 async function savePrivacy() {
   sec.value.privacy = true
   try {
-    await profilesApi.updateMe({
+    await upsertMe({
       photo_visible: form.value.photo_visible,
       birth_visible: form.value.birth_visible,
       professional_visible: form.value.professional_visible,

@@ -25,8 +25,8 @@ class ProfileCreate(BaseModel):
     """Initial profile creation payload submitted by a member."""
 
     # ── Personal
-    gender: Gender
-    date_of_birth: date
+    gender: Gender | None = None
+    date_of_birth: date | None = None
 
     # Physical (spec: height 60-200 cm, weight 35-120 kg)
     height_cm: int | None = Field(None, ge=60, le=200)
@@ -39,6 +39,22 @@ class ProfileCreate(BaseModel):
     # Contact
     mobile: str | None = Field(None, examples=["+919876543210", "9876543210"])
     whatsapp: str | None = Field(None, examples=["+919876543210", "9876543210"])
+
+    @field_validator("time_of_birth", mode="before")
+    @classmethod
+    def coerce_empty_time(cls, v: object) -> object:
+        """HTML <input type='time'> sends '' when cleared — treat as None."""
+        if v == "" or v is None:
+            return None
+        return v
+
+    @field_validator("date_of_birth", mode="before")
+    @classmethod
+    def coerce_empty_date(cls, v: object) -> object:
+        """HTML <input type='date'> sends '' when cleared — treat as None."""
+        if v == "" or v is None:
+            return None
+        return v
 
     @field_validator("mobile", "whatsapp", mode="before")
     @classmethod
@@ -109,10 +125,11 @@ class ProfileCreate(BaseModel):
 
     @field_validator("date_of_birth")
     @classmethod
-    def age_must_be_18plus(cls, v: date) -> date:
+    def age_must_be_18plus(cls, v: date | None) -> date | None:
+        if v is None:
+            return None
         from datetime import date as _date
         today = _date.today()
-        # Accurate age: subtract 1 if birthday hasn't occurred yet this year
         age = today.year - v.year - ((today.month, today.day) < (v.month, v.day))
         if age < 18:
             raise ValueError(
@@ -127,9 +144,25 @@ class ProfileCreate(BaseModel):
 class ProfileUpdate(ProfileCreate):
     """All fields optional for PATCH operations."""
 
+    # Override every non-optional field from ProfileCreate so null is accepted
     gender: Gender | None = None
     date_of_birth: date | None = None
+    marital_status: MaritalStatus | None = None
     country: str | None = Field(None, max_length=100)
+    # Visibility flags — all nullable for partial updates
+    personal_visible: bool | None = None
+    photo_visible: bool | None = None
+    birth_visible: bool | None = None
+    professional_visible: bool | None = None
+    family_visible: bool | None = None
+    contact_visible: bool | None = None
+    horoscope_visible: bool | None = None
+
+    @field_validator("date_of_birth", mode="after")
+    @classmethod
+    def age_must_be_18plus(cls, v: date | None) -> date | None:  # type: ignore[override]
+        """Skip the parent's strict age check — allow any valid date on PATCH."""
+        return v
 
 
 class ProfileRead(BaseModel):
@@ -137,8 +170,8 @@ class ProfileRead(BaseModel):
     user_id: uuid.UUID
     tenant_id: uuid.UUID
     full_name: str | None = None  # populated from user.full_name in router
-    gender: Gender
-    date_of_birth: date
+    gender: Gender | None
+    date_of_birth: date | None
     height_cm: int | None
     weight_kg: int | None
     complexion: str | None
