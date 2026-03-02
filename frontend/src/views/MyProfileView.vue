@@ -10,9 +10,33 @@
       <!-- ── Sidebar ────────────────────────────────────────────────────── -->
       <v-col cols="12" md="3">
         <v-card rounded="xl" class="text-center pa-4 mb-4" elevation="2">
-          <v-avatar size="96" class="mb-3" color="primary">
-            <v-icon size="56" color="white">mdi-account</v-icon>
-          </v-avatar>
+          <!-- Clickable avatar – uploads profile picture -->
+          <v-tooltip text="Change profile picture" location="bottom">
+            <template #activator="{ props: tp }">
+              <v-avatar
+                v-bind="tp"
+                size="96"
+                class="mb-3 cursor-pointer"
+                color="primary"
+                style="overflow:hidden"
+                @click="avatarInput?.click()"
+              >
+                <v-img v-if="memberAvatarUrl" :src="memberAvatarUrl" cover />
+                <v-icon v-else size="56" color="white">mdi-account</v-icon>
+              </v-avatar>
+            </template>
+          </v-tooltip>
+          <input
+            ref="avatarInput"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            style="display:none"
+            @change="uploadMemberAvatar"
+          />
+          <div v-if="uploadingMemberAvatar" class="text-caption text-medium-emphasis mb-2">
+            <v-progress-circular indeterminate size="12" width="2" color="primary" class="mr-1" />
+            Uploading…
+          </div>
           <p class="text-subtitle-1 font-weight-bold mb-1">{{ fullName || '—' }}</p>
           <v-chip
             :color="profileData?.status === 'active' ? 'success' : 'warning'"
@@ -459,20 +483,58 @@
                 <v-card
                   v-for="(key, i) in (form.photo_keys || [])"
                   :key="key"
-                  width="90"
-                  height="90"
+                  width="96"
+                  height="96"
                   rounded="lg"
-                  class="d-flex flex-column align-center justify-center"
+                  class="d-flex flex-column align-center justify-center position-relative"
                   color="grey-lighten-3"
-                  elevation="0"
+                  elevation="1"
+                  style="overflow:hidden"
                 >
-                  <v-icon color="grey-darken-1" size="28">mdi-image</v-icon>
-                  <span class="text-caption text-medium-emphasis mt-1">Photo {{ i + 1 }}</span>
+                  <!-- Actual photo thumbnail -->
+                  <v-img
+                    v-if="photoUrls[key]"
+                    :src="photoUrls[key]"
+                    width="96"
+                    height="96"
+                    cover
+                  >
+                    <template #error>
+                      <div class="d-flex flex-column align-center justify-center fill-height">
+                        <v-icon color="grey-darken-1" size="28">mdi-image-broken</v-icon>
+                      </div>
+                    </template>
+                  </v-img>
+                  <div v-else class="d-flex flex-column align-center justify-center fill-height">
+                    <v-progress-circular indeterminate size="20" color="primary" />
+                  </div>
+                  <!-- Photo number badge -->
+                  <v-chip
+                    size="x-small"
+                    class="position-absolute"
+                    style="bottom:2px; left:2px; opacity:0.85"
+                    color="black"
+                    variant="flat"
+                  >
+                    {{ i + 1 }}
+                  </v-chip>
+                  <!-- Delete button -->
+                  <v-btn
+                    icon
+                    size="x-small"
+                    color="error"
+                    class="position-absolute"
+                    style="top:2px; right:2px; opacity:0.85"
+                    :loading="deletingPhoto === key"
+                    @click.stop="removePhoto(key)"
+                  >
+                    <v-icon size="14">mdi-close</v-icon>
+                  </v-btn>
                 </v-card>
                 <v-card
                   v-if="(form.photo_keys || []).length < 10"
-                  width="90"
-                  height="90"
+                  width="96"
+                  height="96"
                   rounded="lg"
                   class="d-flex align-center justify-center cursor-pointer hover-border"
                   color="grey-lighten-5"
@@ -757,9 +819,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, reactive } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
-import { profilesApi, preferencesApi, usersApi } from '@/api/profiles'
+import { profilesApi, preferencesApi, usersApi, filesApi } from '@/api/profiles'
 import { useAuthStore } from '@/stores/auth'
 import type { Profile, PartnerPreference } from '@/types'
 
@@ -780,10 +842,22 @@ const { data: profileData, isPending } = useQuery({
 // ── State ────────────────────────────────────────────────────────────────────
 const fullName = ref('')
 const openPanels = ref([0])
+const avatarInput = ref<HTMLInputElement | null>(null)
 const photoInput = ref<HTMLInputElement | null>(null)
 const horoscopeFile = ref<File[]>([])
 const sec = ref({ personal: false, birth: false, professional: false, family: false, contact: false, privacy: false, prefs: false })
 const snack = ref({ show: false, color: 'success', message: '' })
+
+// ── Avatar state ─────────────────────────────────────────────────────────────
+const memberAvatarUrl = ref<string | null>(null)
+const uploadingMemberAvatar = ref(false)
+
+// ── Photo thumbnail URLs ──────────────────────────────────────────────────────
+// Map from S3 object_key → presigned GET URL for display
+const photoUrls = reactive<Record<string, string>>({})
+
+// ── Photo deletion state ──────────────────────────────────────────────────────
+const deletingPhoto = ref<string | null>(null)
 
 // ── Profile form ─────────────────────────────────────────────────────────────
 const form = ref<Partial<Profile>>({
@@ -876,10 +950,83 @@ async function populatePrefForm(p: Profile | null | undefined) {
   }
 }
 
-// ── Watchers ─────────────────────────────────────────────────────────────────
-watch(profileData, populateFormFromProfile, { immediate: true })
+/** Resolve presigned GET URLs for all currently known photo keys. */
+async function loadPhotoUrls(keys: string[]) {
+  for (const key of keys) {
+    if (photoUrls[key]) continue   // already loaded
+    try {
+      const { url } = await filesApi.presignGet(key)
+      photoUrls[key] = url
+    } catch {
+      // S3 not configured / key invalid – leave empty so spinner shows
+    }
+  }
+}
 
-watch(authUser, (u) => { if (u?.full_name) fullName.value = u.full_name }, { immediate: true })
+/** Resolve the member avatar URL from their auth profile. */
+async function loadMemberAvatarUrl() {
+  const key = authStore.user?.avatar_key
+  if (!key) { memberAvatarUrl.value = null; return }
+  try {
+    const { url } = await filesApi.presignGet(key)
+    memberAvatarUrl.value = url
+  } catch {
+    memberAvatarUrl.value = null
+  }
+}
+
+/** Upload and register the member's profile picture (avatar). */
+async function uploadMemberAvatar(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  uploadingMemberAvatar.value = true
+  try {
+    const { upload_url, object_key } = await filesApi.presignAvatar({
+      file_name: file.name,
+      content_type: file.type,
+      purpose: 'avatar',
+    })
+    await filesApi.putToS3(upload_url, file)
+    await filesApi.registerAvatar(object_key)
+    await authStore.fetchMe()
+    const { url } = await filesApi.presignGet(object_key)
+    memberAvatarUrl.value = url
+    notify('Profile picture updated!')
+  } catch {
+    notify('Avatar upload failed. Cloud storage may not be configured.', 'warning')
+  } finally {
+    uploadingMemberAvatar.value = false
+    if (avatarInput.value) avatarInput.value.value = ''
+  }
+}
+
+/** Delete a photo from this profile. */
+async function removePhoto(key: string) {
+  if (!profileData.value) return
+  deletingPhoto.value = key
+  try {
+    await filesApi.deletePhoto(profileData.value.id, key)
+    form.value.photo_keys = (form.value.photo_keys ?? []).filter((k) => k !== key)
+    delete photoUrls[key]
+    await qc.invalidateQueries({ queryKey: ['my-profile'] })
+    notify('Photo removed.')
+  } catch {
+    notify('Failed to remove photo.', 'error')
+  } finally {
+    deletingPhoto.value = null
+  }
+}
+
+// ── Watchers ─────────────────────────────────────────────────────────────────
+watch(profileData, (p) => {
+  populateFormFromProfile(p)
+  if (p?.photo_keys?.length) loadPhotoUrls(p.photo_keys)
+}, { immediate: true })
+
+watch(authUser, (u) => {
+  if (u?.full_name) fullName.value = u.full_name
+  loadMemberAvatarUrl()
+}, { immediate: true })
 
 watch(profileData, populatePrefForm, { immediate: true })
 
@@ -889,6 +1036,10 @@ onMounted(() => {
   populateFormFromProfile(profileData.value)
   if (authStore.user?.full_name) fullName.value = authStore.user.full_name
   populatePrefForm(profileData.value)
+  loadMemberAvatarUrl()
+  if (profileData.value?.photo_keys?.length) {
+    loadPhotoUrls(profileData.value.photo_keys)
+  }
 })
 
 // ── Utilities ─────────────────────────────────────────────────────────────────
@@ -1091,6 +1242,11 @@ async function uploadPhotos(e: Event) {
       await fetch(upload_url, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } })
       await profilesApi.registerMedia(profileData.value.id, object_key, 'profile_photo')
       form.value.photo_keys = [...(form.value.photo_keys ?? []), object_key]
+      // Immediately resolve the presigned GET URL so the thumbnail displays
+      try {
+        const { url } = await filesApi.presignGet(object_key)
+        photoUrls[object_key] = url
+      } catch { /* S3 not configured – thumbnail will show spinner */ }
       uploaded++
     } catch {
       notify('Photo upload failed. Cloud storage may not be configured.', 'warning')

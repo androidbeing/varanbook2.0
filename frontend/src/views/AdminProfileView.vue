@@ -5,14 +5,46 @@
       <v-col>
         <v-card color="primary" rounded="xl" class="pa-6">
           <div class="d-flex align-center gap-4">
-            <v-avatar color="white" size="64">
-              <span class="text-h6 font-weight-bold text-primary">{{ initials }}</span>
-            </v-avatar>
+            <!-- Clickable avatar with upload support -->
+            <v-tooltip text="Click to change profile picture" location="bottom">
+              <template #activator="{ props: tp }">
+                <v-avatar
+                  v-bind="tp"
+                  color="white"
+                  size="72"
+                  class="cursor-pointer"
+                  style="border: 3px solid rgba(255,255,255,0.6); overflow:hidden"
+                  @click="avatarInput?.click()"
+                >
+                  <v-img v-if="avatarUrl" :src="avatarUrl" cover />
+                  <span v-else class="text-h6 font-weight-bold text-primary">{{ initials }}</span>
+                  <v-overlay
+                    activator="parent"
+                    class="d-flex align-center justify-center"
+                    scrim="black"
+                    :model-value="false"
+                  >
+                    <v-icon color="white" size="28">mdi-camera</v-icon>
+                  </v-overlay>
+                </v-avatar>
+              </template>
+            </v-tooltip>
+            <input
+              ref="avatarInput"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              style="display:none"
+              @change="uploadAvatar"
+            />
             <div>
               <h1 class="text-h5 font-weight-bold">My Account</h1>
               <p class="text-body-2 opacity-80 mb-0">
                 {{ auth.user?.email }} &mdash;
                 <v-chip size="x-small" color="white" variant="outlined" class="ml-1">Admin</v-chip>
+              </p>
+              <p v-if="uploadingAvatar" class="text-caption opacity-70 mt-1 mb-0">
+                <v-progress-circular indeterminate size="12" width="2" color="white" class="mr-1" />
+                Uploading…
               </p>
             </div>
           </div>
@@ -135,6 +167,45 @@
 
       <!-- ── Read-only Info ───────────────────────────────────────────────── -->
       <v-col cols="12">
+        <v-card rounded="xl" class="mb-4">
+          <v-card-title class="pa-5 pb-2 text-subtitle-1 font-weight-semibold">
+            <v-icon class="mr-2" size="20">mdi-storefront-outline</v-icon>Tenant / Centre Logo
+          </v-card-title>
+          <v-card-text class="pa-5 pt-2">
+            <div class="d-flex align-center gap-4 flex-wrap">
+              <v-avatar size="80" rounded="lg" color="grey-lighten-3" style="border:2px dashed #bbb">
+                <v-img v-if="logoUrl" :src="logoUrl" cover />
+                <v-icon v-else size="36" color="grey-darken-1">mdi-image-outline</v-icon>
+              </v-avatar>
+              <div>
+                <p class="text-body-2 mb-2 text-medium-emphasis">
+                  Upload your matrimonial centre's logo.<br />
+                  Supported: JPG, PNG, WebP · Max recommended: 512 KB
+                </p>
+                <v-btn
+                  color="primary"
+                  variant="tonal"
+                  prepend-icon="mdi-upload"
+                  :loading="uploadingLogo"
+                  @click="logoInput?.click()"
+                >
+                  {{ logoUrl ? 'Replace Logo' : 'Upload Logo' }}
+                </v-btn>
+                <input
+                  ref="logoInput"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  style="display:none"
+                  @change="uploadLogo"
+                />
+              </div>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
+      <!-- ── Read-only Info ───────────────────────────────────────────────── -->
+      <v-col cols="12">
         <v-card rounded="xl">
           <v-card-title class="pa-5 pb-2 text-subtitle-1 font-weight-semibold">
             <v-icon class="mr-2" size="20">mdi-information-outline</v-icon>Account Info
@@ -173,9 +244,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import client from '@/api/client'
+import { filesApi } from '@/api/profiles'
 
 const auth = useAuthStore()
 
@@ -189,6 +261,86 @@ const initials = computed(() =>
     .slice(0, 2),
 )
 
+// ── Avatar / logo state ───────────────────────────────────────────────────────
+const avatarInput = ref<HTMLInputElement | null>(null)
+const logoInput = ref<HTMLInputElement | null>(null)
+const avatarUrl = ref<string | null>(null)
+const logoUrl = ref<string | null>(null)
+const uploadingAvatar = ref(false)
+const uploadingLogo = ref(false)
+
+async function resolvePresignedUrl(key: string | null | undefined): Promise<string | null> {
+  if (!key) return null
+  try {
+    const { url } = await filesApi.presignGet(key)
+    return url
+  } catch {
+    return null
+  }
+}
+
+async function refreshAvatarUrl() {
+  avatarUrl.value = await resolvePresignedUrl(auth.user?.avatar_key)
+}
+
+// Tenant logo key is stored on the tenant, not on the user.
+// We need the tenant info – expose via /admin/tenants/me or store locally.
+// For now we'll store the key client-side after a successful upload.
+const _tenantLogoKey = ref<string | null>(null)
+
+async function uploadAvatar(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  uploadingAvatar.value = true
+  try {
+    // 1. Get presigned PUT URL
+    const { upload_url, object_key } = await filesApi.presignAvatar({
+      file_name: file.name,
+      content_type: file.type,
+      purpose: 'avatar',
+    })
+    // 2. PUT directly to S3
+    await filesApi.putToS3(upload_url, file)
+    // 3. Register on user
+    await filesApi.registerAvatar(object_key)
+    // 4. Refresh local auth user and avatar URL
+    await auth.fetchMe()
+    avatarUrl.value = await resolvePresignedUrl(object_key)
+    showSnack('Profile picture updated!')
+  } catch (err: any) {
+    const detail = err?.response?.data?.detail
+    showSnack(typeof detail === 'string' ? detail : 'Avatar upload failed. Check S3 config.', 'error')
+  } finally {
+    uploadingAvatar.value = false
+    // Reset the input so the same file can be re-selected
+    if (avatarInput.value) avatarInput.value.value = ''
+  }
+}
+
+async function uploadLogo(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  uploadingLogo.value = true
+  try {
+    const { upload_url, object_key } = await filesApi.presignAvatar({
+      file_name: file.name,
+      content_type: file.type,
+      purpose: 'tenant_logo',
+    })
+    await filesApi.putToS3(upload_url, file)
+    await filesApi.registerTenantLogo(object_key)
+    _tenantLogoKey.value = object_key
+    logoUrl.value = await resolvePresignedUrl(object_key)
+    showSnack('Tenant logo updated!')
+  } catch (err: any) {
+    const detail = err?.response?.data?.detail
+    showSnack(typeof detail === 'string' ? detail : 'Logo upload failed. Check S3 config.', 'error')
+  } finally {
+    uploadingLogo.value = false
+    if (logoInput.value) logoInput.value.value = ''
+  }
+}
+
 // ── Profile form ──────────────────────────────────────────────────────────────
 const profileForm = ref()
 const profileValid = ref(false)
@@ -198,6 +350,7 @@ const profileFields = ref({ full_name: '', phone: '' })
 onMounted(() => {
   profileFields.value.full_name = auth.user?.full_name ?? ''
   profileFields.value.phone = (auth.user as any)?.phone ?? ''
+  refreshAvatarUrl()
 })
 
 // ── Password form ─────────────────────────────────────────────────────────────

@@ -74,6 +74,12 @@ class Tenant(Base):
     max_users: Mapped[int] = mapped_column(default=500)
     max_admins: Mapped[int] = mapped_column(default=5)
 
+    # ── Logo / branding ─────────────────────────────────────────────────────
+    # S3 object key for the tenant's logo
+    logo_key: Mapped[str | None] = mapped_column(
+        String(512), nullable=True, comment="S3 object key for tenant logo"
+    )
+
     # ── Status ────────────────────────────────────────────────────────────────
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     trial_ends_at: Mapped[datetime | None] = mapped_column(

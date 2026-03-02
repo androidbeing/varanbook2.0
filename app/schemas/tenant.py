@@ -117,6 +117,7 @@ class TenantRead(BaseModel):
     pin: str | None
     upi_id: str | None
     castes: list[str] | None
+    logo_key: str | None = None
     created_at: datetime
     updated_at: datetime
 

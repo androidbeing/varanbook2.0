@@ -75,6 +75,7 @@ class UserUpdate(BaseModel):
     phone: str | None = Field(None, pattern=r"^\+?[1-9]\d{6,14}$")
     fcm_token: str | None = Field(None, max_length=512)
     is_active: bool | None = None
+    avatar_key: str | None = Field(None, max_length=512, description="S3 object key for profile picture")
 
 
 class PasswordChange(BaseModel):
@@ -137,6 +138,7 @@ class UserRead(BaseModel):
     role: UserRole
     is_active: bool
     is_verified: bool
+    avatar_key: str | None = None
     created_at: datetime
     updated_at: datetime
 

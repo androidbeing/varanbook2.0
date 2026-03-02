@@ -42,7 +42,7 @@ _s3_client = boto3.client(
 class S3Service:
     """Handles S3 pre-signed URL generation and object key management."""
 
-    ALLOWED_PURPOSES = {"profile_photo", "horoscope"}
+    ALLOWED_PURPOSES = {"profile_photo", "horoscope", "avatar", "tenant_logo"}
     ALLOWED_CONTENT_TYPES = {
         "image/jpeg", "image/png", "image/webp", "image/heic",
         "application/pdf",
@@ -95,8 +95,10 @@ class S3Service:
                     "Bucket": settings.S3_BUCKET_NAME,
                     "Key": object_key,
                     "ContentType": content_type,
-                    # Server-side encryption at rest (AES-256)
-                    "ServerSideEncryption": "AES256",
+                    # NOTE: ServerSideEncryption is intentionally omitted here.
+                    # When included in Params it becomes a signed header that the
+                    # browser PUT must also send — causing a 403 if omitted.
+                    # Rely on the bucket's default SSE-S3 encryption policy instead.
                 },
                 ExpiresIn=settings.S3_PRESIGNED_URL_EXPIRY,
                 HttpMethod="PUT",
@@ -105,6 +107,36 @@ class S3Service:
             raise RuntimeError(f"S3 pre-signed URL generation failed: {exc}") from exc
 
         return url, object_key
+
+    def generate_presigned_get(
+        self,
+        object_key: str,
+        expiry: int = 900,
+    ) -> str:
+        """
+        Generate a short-lived pre-signed GET URL so the browser can display
+        a private S3 object without exposing AWS credentials.
+
+        Args:
+            object_key: The S3 object key to generate the URL for.
+            expiry:     URL lifetime in seconds (default 15 minutes).
+
+        Returns:
+            A pre-signed HTTPS URL valid for `expiry` seconds.
+        """
+        try:
+            url = _s3_client.generate_presigned_url(
+                "get_object",
+                Params={
+                    "Bucket": settings.S3_BUCKET_NAME,
+                    "Key": object_key,
+                },
+                ExpiresIn=expiry,
+                HttpMethod="GET",
+            )
+        except (BotoCoreError, ClientError) as exc:
+            raise RuntimeError(f"S3 presigned GET failed: {exc}") from exc
+        return url
 
     def delete_object(self, object_key: str) -> None:
         """Soft-delete: actually removes from S3 (versioning handles recovery)."""

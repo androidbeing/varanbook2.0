@@ -76,3 +76,49 @@ export const usersApi = {
     return client.patch('/users/me', data).then(() => undefined)
   },
 }
+
+export const filesApi = {
+  /** Get a short-lived presigned GET URL to display a private S3 object. */
+  presignGet(key: string): Promise<{ url: string; expires_in: number }> {
+    return client.get('/files/presign-get', { params: { key } }).then((r) => r.data)
+  },
+
+  /** Get a presigned PUT URL for an avatar (user profile picture). */
+  presignAvatar(data: {
+    file_name: string
+    content_type: string
+    purpose?: 'avatar' | 'tenant_logo'
+  }): Promise<{ upload_url: string; object_key: string }> {
+    return client.post('/files/avatar/presign', { purpose: 'avatar', ...data }).then((r) => r.data)
+  },
+
+  /** Register the uploaded avatar key on the authenticated user. */
+  registerAvatar(object_key: string): Promise<void> {
+    return client.patch('/files/users/me/avatar', null, { params: { object_key } }).then(() => undefined)
+  },
+
+  /** Register the uploaded logo key on the current tenant. */
+  registerTenantLogo(object_key: string): Promise<void> {
+    return client.patch('/files/tenant/logo', null, { params: { object_key } }).then(() => undefined)
+  },
+
+  /** Delete a photo from a profile (removes from S3 and deregisters the key). */
+  deletePhoto(profileId: string, object_key: string): Promise<void> {
+    return client
+      .delete(`/files/profiles/${profileId}/photos`, { params: { object_key } })
+      .then(() => undefined)
+  },
+
+  /**
+   * Upload a file directly to S3 using a presigned PUT URL.
+   * Should be called after obtaining the URL from presignAvatar / presign.
+   */
+  async putToS3(uploadUrl: string, file: File): Promise<void> {
+    const res = await fetch(uploadUrl, {
+      method: 'PUT',
+      body: file,
+      headers: { 'Content-Type': file.type },
+    })
+    if (!res.ok) throw new Error(`S3 upload failed: ${res.status}`)
+  },
+}

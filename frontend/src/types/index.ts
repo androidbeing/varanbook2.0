@@ -21,6 +21,8 @@ export interface User {
   role: UserRole
   is_active: boolean
   tenant_id: string | null
+  /** S3 object key for the user's profile picture. Resolve to a URL via /files/presign-get */
+  avatar_key?: string | null
   created_at: string
   updated_at: string
 }

@@ -83,6 +83,12 @@ class User(Base):
     # ── Device / push ─────────────────────────────────────────────────────────
     fcm_token: Mapped[str | None] = mapped_column(String(512), nullable=True)
 
+    # ── Profile picture ───────────────────────────────────────────────────────
+    # S3 object key for the user's avatar/profile picture
+    avatar_key: Mapped[str | None] = mapped_column(
+        String(512), nullable=True, comment="S3 object key for profile picture"
+    )
+
     # ── Audit ─────────────────────────────────────────────────────────────────
     last_login_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
