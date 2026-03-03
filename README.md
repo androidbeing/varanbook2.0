@@ -1,4 +1,4 @@
-# Varanbook – Matrimonial SaaS Platform
+﻿# Varanbook â€“ Matrimonial SaaS Platform
 
 A multi-tenant matrimonial platform built with **FastAPI** (backend) and **Vue 3 + Vuetify** (frontend).
 
@@ -6,14 +6,24 @@ A multi-tenant matrimonial platform built with **FastAPI** (backend) and **Vue 3
 
 ## Table of Contents
 
-1. [Prerequisites](#prerequisites)
-2. [Project Structure](#project-structure)
-3. [Backend Setup (FastAPI)](#backend-setup-fastapi)
-4. [Frontend Setup (Vue 3)](#frontend-setup-vue-3)
-5. [Running with Docker Compose](#running-with-docker-compose)
-6. [Environment Variables](#environment-variables)
-7. [Database Migrations](#database-migrations)
-8. [Running Tests](#running-tests)
+- [Varanbook â€“ Matrimonial SaaS Platform](#varanbook--matrimonial-saas-platform)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+  - [Project Structure](#project-structure)
+  - [Backend Setup (FastAPI)](#backend-setup-fastapi)
+    - [1. Create and activate a virtual environment](#1-create-and-activate-a-virtual-environment)
+    - [2. Install Python dependencies](#2-install-python-dependencies)
+    - [3. Configure environment variables](#3-configure-environment-variables)
+    - [4. Apply database migrations](#4-apply-database-migrations)
+    - [5. Start the backend dev server](#5-start-the-backend-dev-server)
+  - [Frontend Setup (Vue 3)](#frontend-setup-vue-3)
+    - [1. Install Node dependencies](#1-install-node-dependencies)
+    - [2. Start the frontend dev server](#2-start-the-frontend-dev-server)
+    - [Other frontend scripts](#other-frontend-scripts)
+  - [Running with Docker Compose](#running-with-docker-compose)
+  - [Environment Variables](#environment-variables)
+  - [Database Migrations](#database-migrations)
+  - [Running Tests](#running-tests)
 
 ---
 
@@ -33,20 +43,20 @@ A multi-tenant matrimonial platform built with **FastAPI** (backend) and **Vue 3
 
 ```
 varanbook/
-├── app/                  # FastAPI backend
-│   ├── main.py
-│   ├── config.py         # Settings (reads from .env)
-│   ├── models/
-│   ├── routers/
-│   ├── schemas/
-│   └── services/
-├── frontend/             # Vue 3 + Vuetify frontend
-│   ├── src/
-│   └── package.json
-├── alembic/              # Database migrations
-├── tests/                # Pytest test suite
-├── docker-compose.yml    # Full local stack (API, DB, Redis, LocalStack)
-└── requirements.txt
+â”œâ”€â”€ app/                  # FastAPI backend
+â”‚   â”œâ”€â”€ main.py
+â”‚   â”œâ”€â”€ config.py         # Settings (reads from .env)
+â”‚   â”œâ”€â”€ models/
+â”‚   â”œâ”€â”€ routers/
+â”‚   â”œâ”€â”€ schemas/
+â”‚   â””â”€â”€ services/
+â”œâ”€â”€ frontend/             # Vue 3 + Vuetify frontend
+â”‚   â”œâ”€â”€ src/
+â”‚   â””â”€â”€ package.json
+â”œâ”€â”€ alembic/              # Database migrations
+â”œâ”€â”€ tests/                # Pytest test suite
+â”œâ”€â”€ docker-compose.yml    # Full local stack (API, DB, Redis, LocalStack)
+â””â”€â”€ requirements.txt
 ```
 
 ---
@@ -97,7 +107,7 @@ AWS_SECRET_ACCESS_KEY=localstack
 S3_BUCKET_NAME=varanbook-media-dev
 SQS_NOTIFICATION_QUEUE_URL=http://localhost:4566/000000000000/varanbook-notifications-dev
 
-# CORS – must include the frontend URL
+# CORS â€“ must include the frontend URL
 ALLOWED_ORIGINS=["http://localhost:5173"]
 
 # Email (optional for local dev)
@@ -226,3 +236,207 @@ pytest -v
 # Run a specific test file
 pytest tests/test_users.py
 ```
+
+---
+
+## Production Deployment
+
+### Architecture
+
+| Layer | Service |
+|-------|---------|
+| Backend API | AWS Lightsail Container Service (Docker / Gunicorn + FastAPI) |
+| Frontend SPA | AWS S3 + CloudFront CDN |
+| Database | AWS RDS PostgreSQL |
+| Media Storage | AWS S3 (`varanbook-media-production`) |
+| Infrastructure | Terraform (manages all the above) |
+
+---
+
+### One-Time Setup
+
+#### 1. Install required tools
+
+```powershell
+winget install Amazon.AWSCLI Hashicorp.Terraform
+# Docker Desktop must be installed and RUNNING
+```
+
+Configure your AWS CLI credentials:
+
+```powershell
+aws configure
+# Enter: Access Key ID, Secret Access Key, region (ap-south-1), output (json)
+```
+
+#### 2. Configure Terraform variables
+
+```powershell
+Copy-Item terraform\terraform.tfvars.example terraform\terraform.tfvars
+```
+
+Open `terraform\terraform.tfvars` and fill in all values:
+
+```hcl
+aws_region     = "ap-south-1"
+project_name   = "varanbook"
+environment    = "production"
+
+db_host        = "your-rds-endpoint.rds.amazonaws.com"
+db_port        = 5432
+db_name        = "postgres"
+db_username    = "postgres"
+db_password    = "your-db-password"
+
+app_secret_key = "your-strong-secret-key"
+
+smtp_host      = ""
+smtp_port      = 587
+smtp_username  = ""
+smtp_password  = ""
+smtp_from      = "noreply@yourdomain.com"
+```
+
+#### 3. Bootstrap infrastructure (first time only)
+
+```powershell
+.\scripts\deploy.ps1 -Bootstrap
+```
+
+This runs `terraform init` + `terraform apply` to provision the Lightsail container service, S3 buckets, and CloudFront distribution.
+
+---
+
+### Deploying Changes
+
+All deployments are driven by `scripts\deploy.ps1`.
+
+#### Deploy everything (backend + frontend)
+
+```powershell
+.\scripts\deploy.ps1
+```
+
+What it does:
+1. Runs `terraform apply` to sync any infrastructure changes.
+2. Builds a Docker image of the FastAPI app.
+3. Pushes the image to the Lightsail Container Service.
+4. Creates a new Lightsail deployment and polls until it becomes `ACTIVE`.
+5. Builds the Vue.js frontend (`npm run build`) with `VITE_API_BASE_URL` set to the live API URL.
+6. Syncs `frontend/dist/` to the S3 bucket with long-lived cache headers.
+7. Uploads `index.html` separately with `no-cache` headers.
+8. Creates a CloudFront invalidation so users receive the new build immediately.
+
+#### Deploy backend (FastAPI) only
+
+Use after changing Python code, adding a router, updating `requirements.txt`, or running a new migration:
+
+```powershell
+.\scripts\deploy.ps1 -SkipFrontend
+```
+
+#### Deploy frontend (Vue) only
+
+Use after changing files under `frontend/src/` with no backend changes:
+
+```powershell
+.\scripts\deploy.ps1 -SkipBackend
+```
+
+---
+
+### Applying Database Migrations on the Server
+
+Migrations are **not** run automatically on deployment. Run them manually from your local machine against the production RDS instance before (or immediately after) pushing a backend image that includes model changes.
+
+```powershell
+# Set production DB URL for this session
+$env:DATABASE_URL = "postgresql+asyncpg://postgres:<password>@<rds-endpoint>:5432/postgres"
+
+# Apply all pending migrations
+.venv\Scripts\python.exe -m alembic upgrade head
+
+# Confirm current revision
+.venv\Scripts\python.exe -m alembic current
+```
+
+> **Rule of thumb:** always run `alembic upgrade head` **before** or **immediately after** each backend deployment that adds new DB columns. Skipping this causes 500 errors because the ORM references columns that do not yet exist in the database.
+
+---
+
+### Standard Change Workflow
+
+```
+1. Edit code locally
+2. Test with:  uvicorn --reload  +  npm run dev
+3. If SQLAlchemy models changed:
+     a. .venv\Scripts\python.exe -m alembic revision --autogenerate -m "what changed"
+     b. Review the generated file in alembic/versions/
+     c. Apply to production DB (see section above)
+4. Deploy backend:    .\scripts\deploy.ps1 -SkipFrontend
+5. Deploy frontend:   .\scripts\deploy.ps1 -SkipBackend
+   (or both at once:  .\scripts\deploy.ps1)
+```
+
+---
+
+### S3 Bucket — CORS Configuration
+
+The `varanbook-media-production` bucket requires a CORS rule so the browser can PUT files directly via presigned URLs.
+
+**cors.json**
+```json
+[
+  {
+    "AllowedHeaders": ["Content-Type"],
+    "AllowedMethods": ["PUT", "GET"],
+    "AllowedOrigins": [
+      "https://your-cloudfront-domain.cloudfront.net",
+      "http://localhost:5173"
+    ],
+    "ExposeHeaders": ["ETag"],
+    "MaxAgeSeconds": 3600
+  }
+]
+```
+
+Apply with the CLI:
+
+```powershell
+aws s3api put-bucket-cors `
+  --bucket varanbook-media-production `
+  --cors-configuration file://cors.json `
+  --region ap-south-1
+```
+
+> **Presigned PUT 403 note:** The S3 presigned PUT URL signs only `content-type` and `host` headers. Do **not** include `ServerSideEncryption` in the boto3 presign `Params` — doing so adds `x-amz-server-side-encryption` to `SignedHeaders`, and the browser PUT will return 403 Forbidden if that header is absent. Bucket-level SSE-S3 (enabled by default since Jan 2023) handles encryption at rest without any client-side headers.
+
+---
+
+### IAM Permissions Required
+
+The IAM user whose credentials are in `.env` must have:
+
+```json
+{
+  "Effect": "Allow",
+  "Action": [
+    "s3:PutObject",
+    "s3:GetObject",
+    "s3:DeleteObject"
+  ],
+  "Resource": "arn:aws:s3:::varanbook-media-production/*"
+}
+```
+
+---
+
+### Monitoring & Troubleshooting
+
+| Task | Where |
+|------|-------|
+| Live API logs | AWS Console → Lightsail → `varanbook-api-production` → Deployments → Logs |
+| Check deployment state | `aws lightsail get-container-service-deployments --service-name varanbook-api-production --region ap-south-1` |
+| Check CloudFront invalidation | `aws cloudfront list-invalidations --distribution-id <DIST_ID>` |
+| Rollback backend | `git checkout <sha>` then `.\scripts\deploy.ps1 -SkipFrontend` |
+| Rollback DB migration | `.venv\Scripts\python.exe -m alembic downgrade -1` then redeploy |

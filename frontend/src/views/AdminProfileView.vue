@@ -308,7 +308,7 @@ async function uploadAvatar(e: Event) {
     avatarUrl.value = await resolvePresignedUrl(object_key)
     showSnack('Profile picture updated!')
   } catch (err: any) {
-    const detail = err?.response?.data?.detail
+    const detail = err?.response?.data?.detail ?? err?.message ?? 'Avatar upload failed'
     showSnack(typeof detail === 'string' ? detail : 'Avatar upload failed. Check S3 config.', 'error')
   } finally {
     uploadingAvatar.value = false
@@ -333,7 +333,9 @@ async function uploadLogo(e: Event) {
     logoUrl.value = await resolvePresignedUrl(object_key)
     showSnack('Tenant logo updated!')
   } catch (err: any) {
-    const detail = err?.response?.data?.detail
+    // axios error (backend) → err.response.data.detail
+    // fetch/network error (S3 PUT) → err.message
+    const detail = err?.response?.data?.detail ?? err?.message ?? 'Logo upload failed'
     showSnack(typeof detail === 'string' ? detail : 'Logo upload failed. Check S3 config.', 'error')
   } finally {
     uploadingLogo.value = false

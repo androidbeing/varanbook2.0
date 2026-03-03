@@ -13,11 +13,27 @@ const client = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
-// Attach JWT on every request
+// Attach JWT on every request and forward the tenant ID header so the
+// backend middleware can resolve the tenant even on localhost (no subdomain).
 client.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
+
+    // Decode the JWT payload (no signature verification needed client-side)
+    // and forward the tenant id as X-Tenant-ID so TenantMiddleware can resolve
+    // the tenant when running on localhost without a subdomain.
+    try {
+      const payloadB64 = token.split('.')[1]
+      if (payloadB64) {
+        const payload = JSON.parse(atob(payloadB64.replace(/-/g, '+').replace(/_/g, '/')))
+        if (payload.tid) {
+          config.headers['X-Tenant-ID'] = payload.tid
+        }
+      }
+    } catch {
+      // Malformed token – skip header injection; auth will fail normally
+    }
   }
   return config
 })

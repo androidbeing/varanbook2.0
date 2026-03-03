@@ -1,0 +1,14 @@
+{
+  "CORSRules": [
+    {
+      "AllowedHeaders": ["Content-Type", "Content-MD5"],
+      "AllowedMethods": ["PUT", "GET"],
+      "AllowedOrigins": [
+        "http://localhost:5173",
+        "http://localhost:4173"
+      ],
+      "ExposeHeaders": ["ETag"],
+      "MaxAgeSeconds": 3600
+    }
+  ]
+}

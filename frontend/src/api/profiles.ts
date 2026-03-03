@@ -112,13 +112,30 @@ export const filesApi = {
   /**
    * Upload a file directly to S3 using a presigned PUT URL.
    * Should be called after obtaining the URL from presignAvatar / presign.
+   *
+   * Throws an Error whose message describes the failure:
+   *  - "S3 upload failed: 403 Forbidden" for permission / CORS errors
+   *  - "S3 upload failed: Failed to fetch" when the request is blocked by
+   *    the browser (e.g. missing S3 CORS configuration)
    */
   async putToS3(uploadUrl: string, file: File): Promise<void> {
-    const res = await fetch(uploadUrl, {
-      method: 'PUT',
-      body: file,
-      headers: { 'Content-Type': file.type },
-    })
-    if (!res.ok) throw new Error(`S3 upload failed: ${res.status}`)
+    let res: Response
+    try {
+      res = await fetch(uploadUrl, {
+        method: 'PUT',
+        body: file,
+        headers: { 'Content-Type': file.type },
+      })
+    } catch (networkErr: any) {
+      // Browser blocked the request (CORS preflight failed, offline, etc.)
+      const reason = networkErr?.message ?? 'Network error'
+      throw new Error(
+        `S3 upload blocked by browser: ${reason}. ` +
+        'Ensure the S3 bucket CORS policy allows PUT from this origin.',
+      )
+    }
+    if (!res.ok) {
+      throw new Error(`S3 upload failed: ${res.status} ${res.statusText}`)
+    }
   },
 }

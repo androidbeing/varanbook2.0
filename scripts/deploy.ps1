@@ -187,12 +187,23 @@ if (-not $SkipBackend) {
         }
     } | ConvertTo-Json -Depth 5 -Compress
 
+    # Write JSON payloads to temp files to avoid Windows PowerShell quoting issues
+    # when passing multi-level JSON as inline CLI arguments.
+    # Use [System.IO.File]::WriteAllText to avoid the UTF-8 BOM that
+    # Set-Content -Encoding utf8 adds on PowerShell 5.1 (AWS CLI rejects it).
+    $tmpContainers  = [System.IO.Path]::GetTempFileName() + ".json"
+    $tmpEndpoint    = [System.IO.Path]::GetTempFileName() + ".json"
+    [System.IO.File]::WriteAllText($tmpContainers,  $containersJson)
+    [System.IO.File]::WriteAllText($tmpEndpoint,    $publicEndpointJson)
+
     Write-Step "Creating Lightsail deployment"
     aws lightsail create-container-service-deployment `
         --region $AWS_REGION `
         --service-name $SERVICE_NAME `
-        --containers $containersJson `
-        --public-endpoint $publicEndpointJson | Out-Null
+        --containers "file://$tmpContainers" `
+        --public-endpoint "file://$tmpEndpoint" | Out-Null
+
+    Remove-Item $tmpContainers, $tmpEndpoint -ErrorAction SilentlyContinue
 
     if ($LASTEXITCODE -ne 0) { Write-Fail "Lightsail deployment creation failed" }
     Write-OK "Deployment created - waiting for it to become active (1-3 min)..."

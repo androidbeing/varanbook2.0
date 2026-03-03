@@ -84,9 +84,14 @@ resource "aws_s3_bucket_cors_configuration" "media" {
   bucket = aws_s3_bucket.media.id
 
   cors_rule {
-    allowed_headers = ["Content-Type", "Content-MD5", "x-amz-server-side-encryption"]
+    # NOTE: x-amz-server-side-encryption is intentionally excluded.
+    # Including it in allowed_headers would add it to SignedHeaders on the
+    # presigned URL, causing the browser PUT to 403 if the header is absent.
+    # Bucket-level SSE-S3 (AES256) handles encryption without client headers.
+    allowed_headers = ["Content-Type", "Content-MD5"]
     allowed_methods = ["PUT", "GET"]
     allowed_origins = var.cors_origins
+    expose_headers  = ["ETag"]
     max_age_seconds = 3600
   }
 }
