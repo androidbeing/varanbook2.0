@@ -53,6 +53,7 @@
           :prepend-icon="item.icon"
           :title="item.title"
           :to="item.to"
+          :active="route.path === item.to || (item.to !== '/' && route.path.startsWith(item.to + '/'))"
           active-color="primary"
           rounded="lg"
         />
@@ -70,12 +71,13 @@
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useDisplay, useTheme } from 'vuetify'
 import { useQueryClient } from '@tanstack/vue-query'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const route = useRoute()
 const auth = useAuthStore()
 const qc = useQueryClient()
 const { mobile: isMobile } = useDisplay()

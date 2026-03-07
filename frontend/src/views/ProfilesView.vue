@@ -69,7 +69,11 @@
           md="4"
           lg="3"
         >
-          <ProfileCard :profile="profile" @click="goToProfile(profile.id)" />
+          <ProfileCard
+            :profile="profile"
+            :photo-url="photoUrls[profile.id] ?? null"
+            @click="goToProfile(profile.id)"
+          />
         </v-col>
       </v-row>
 
@@ -93,20 +97,25 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuery } from '@tanstack/vue-query'
-import { profilesApi } from '@/api/profiles'
+import { profilesApi, filesApi } from '@/api/profiles'
+import { useAuthStore } from '@/stores/auth'
 import ProfileCard from '@/components/profiles/ProfileCard.vue'
 import type { Profile } from '@/types'
 
 const router = useRouter()
+const auth = useAuthStore()
 
 const page = ref(1)
 const pageSize = 12
 const searchText = ref('')
 const filters = ref({ dhosam: '', city: '' })
 const activeFilters = ref({ dhosam: '', city: '', search: '' })
+
+// Map of profile.id → presigned GET URL for the first photo_key
+const photoUrls = reactive<Record<string, string>>({})
 
 const dhosamOptions = [
   { title: 'None',     value: 'none' },
@@ -131,6 +140,29 @@ const { data, isPending, isError } = useQuery({
 
 const profiles = computed<Profile[]>(() => data.value?.items ?? [])
 const totalPages = computed(() => data.value?.pages ?? 1)
+
+// Whenever the profile list OR the current user changes, re-fetch all presigned
+// photo URLs. Watching auth.user ensures the block re-runs after fetchMe()
+// resolves (fixing the race where isAdmin is false at immediate-watch time).
+watch([profiles, () => auth.user], async ([list]) => {
+  const fetches = (list as Profile[])
+    .filter((p) => {
+      if (!p.photo_keys?.length) return false
+      const isOwn = auth.user?.id === p.user_id
+      return auth.isAdmin || auth.isSuperAdmin || isOwn || p.photo_visible
+    })
+    .map(async (p) => {
+      const key = p.photo_keys![0]
+      if (photoUrls[p.id]) return       // already fetched
+      try {
+        const { url } = await filesApi.presignGet(key)
+        photoUrls[p.id] = url
+      } catch {
+        // leave undefined → card shows placeholder
+      }
+    })
+  await Promise.allSettled(fetches)
+}, { immediate: true, deep: false })
 
 function applyFilters() {
   page.value = 1

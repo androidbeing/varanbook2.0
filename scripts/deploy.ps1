@@ -107,6 +107,8 @@ $TF_API_URL      = (terraform output -raw api_url 2>$null).Trim()
 $TF_LS_SERVICE   = (terraform output -raw lightsail_service_name 2>$null).Trim()
 $TF_CF_DIST      = (terraform output -raw cloudfront_distribution_id 2>$null).Trim()
 $TF_FE_BUCKET    = (terraform output -raw frontend_bucket_name 2>$null).Trim()
+$TF_MEDIA_BUCKET = (terraform output -raw media_bucket_name 2>$null).Trim()
+if (-not $TF_MEDIA_BUCKET) { $TF_MEDIA_BUCKET = "varanbook-media-production" }
 $TF_FRONTEND_URL = (terraform output -raw frontend_url 2>$null).Trim()
 Pop-Location
 
@@ -157,6 +159,7 @@ if (-not $SkipBackend) {
         DATABASE_POOL_SIZE    = "10"
         DATABASE_MAX_OVERFLOW = "20"
         AWS_REGION            = $AWS_REGION
+        S3_BUCKET_NAME        = $TF_MEDIA_BUCKET
         ALLOWED_ORIGINS       = "[`"$TF_FRONTEND_URL`",`"http://localhost:5173`"]"
         APP_FRONTEND_URL      = $TF_FRONTEND_URL
         SMTP_HOST             = $SMTP_HOST

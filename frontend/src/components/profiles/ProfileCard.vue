@@ -6,31 +6,34 @@
     @click="emit('click')"
   >
     <!-- Profile Photo -->
-    <v-img
-      :src="profile.profile_photo_url || ''"
-      height="200"
-      cover
-      class="rounded-t-xl"
-    >
-      <template #error>
-        <div
-          class="d-flex align-center justify-center h-100 bg-grey-lighten-3"
-          style="height: 200px"
-        >
-          <v-icon size="72" color="grey">mdi-account-circle</v-icon>
-        </div>
-      </template>
+    <div class="photo-wrapper rounded-t-xl" style="height:200px;overflow:hidden;position:relative;">
+      <!-- Actual photo -->
+      <v-img
+        v-if="photoUrl"
+        :src="photoUrl"
+        height="200"
+        cover
+        position="top center"
+        class="rounded-t-xl"
+      />
+      <!-- Placeholder when no photo / not visible -->
+      <div
+        v-else
+        class="d-flex align-center justify-center bg-grey-lighten-3 rounded-t-xl"
+        style="height:200px"
+      >
+        <v-icon size="80" color="grey-lighten-1">mdi-account-circle</v-icon>
+      </div>
 
-      <!-- Status badge -->
+      <!-- Status badge (always on top) -->
       <v-chip
         :color="profile.status === 'active' ? 'success' : 'warning'"
         size="x-small"
-        class="position-absolute"
-        style="top: 8px; right: 8px"
+        style="position:absolute;top:8px;right:8px;z-index:1"
       >
         {{ profile.status }}
       </v-chip>
-    </v-img>
+    </div>
 
     <v-card-text class="pa-4">
       <!-- Name -->
@@ -87,7 +90,9 @@
 import { computed } from 'vue'
 import type { Profile } from '@/types'
 
-const props = defineProps<{ profile: Profile }>()
+// photoUrl is resolved by the parent (ProfilesView) and passed in as a prop
+// to avoid firing one HTTP request per card on mount.
+const props = defineProps<{ profile: Profile; photoUrl?: string | null }>()
 const emit = defineEmits<{ click: [] }>()
 
 function fmtLabel(v: string | null | undefined): string {
@@ -95,6 +100,7 @@ function fmtLabel(v: string | null | undefined): string {
   return v.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
 }
 
+// ── Age (calculated from date_of_birth only) ─────────────────────────────────
 const ageLine = computed(() => {
   const parts: string[] = []
   if (props.profile.date_of_birth) {
@@ -102,7 +108,10 @@ const ageLine = computed(() => {
     const t = new Date()
     let age = t.getFullYear() - d.getFullYear()
     if (t.getMonth() < d.getMonth() || (t.getMonth() === d.getMonth() && t.getDate() < d.getDate())) age--
-    parts.push(`${age} yrs`)
+    // Only display if the age is within a plausible matrimonial range
+    if (age >= 18 && age <= 80) {
+      parts.push(`${age} yrs`)
+    }
   }
   if (props.profile.gender) {
     parts.push(props.profile.gender.charAt(0).toUpperCase() + props.profile.gender.slice(1))

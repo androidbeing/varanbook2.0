@@ -17,12 +17,31 @@
       <v-card rounded="xl" class="mb-5">
         <v-row no-gutters>
           <v-col cols="12" sm="4" md="3">
-            <v-img
-              :src="profile.photo_visible && (profile as any).profile_photo_url ? (profile as any).profile_photo_url : '/placeholder-avatar.png'"
-              height="280"
-              cover
-              class="rounded-ts-xl rounded-bs-xl"
-            />
+            <div style="height:280px;overflow:hidden;position:relative;" class="rounded-ts-xl rounded-bs-xl">
+              <!-- Real photo when visible and fetched -->
+              <v-img
+                v-if="heroPhotoUrl"
+                :src="heroPhotoUrl"
+                height="280"
+                cover
+                position="top center"
+                class="rounded-ts-xl rounded-bs-xl"
+              />
+              <!-- Placeholder when photo is hidden by privacy or not uploaded -->
+              <div
+                v-else
+                class="d-flex flex-column align-center justify-center bg-grey-lighten-3 rounded-ts-xl rounded-bs-xl"
+                style="height:280px"
+              >
+                <v-icon size="96" color="grey-lighten-1">mdi-account-circle</v-icon>
+                <span
+                  v-if="!canViewPhotos"
+                  class="text-caption text-medium-emphasis mt-2"
+                >
+                  Photo is private
+                </span>
+              </div>
+            </div>
           </v-col>
           <v-col cols="12" sm="8" md="9" class="d-flex flex-column justify-center pa-6">
             <div class="d-flex align-center ga-2 flex-wrap mb-1">
@@ -55,7 +74,7 @@
         <v-expansion-panel>
           <v-expansion-panel-title>
             <v-icon start>mdi-account</v-icon>Personal Details
-            <v-chip v-if="!profile.personal_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
+            <v-chip v-if="!canBypassPrivacy && !profile.personal_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
             <div class="detail-grid">
@@ -80,14 +99,48 @@
         <v-expansion-panel>
           <v-expansion-panel-title>
             <v-icon start>mdi-star-crescent</v-icon>Birth &amp; Horoscope
-            <v-chip v-if="!profile.birth_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
+            <v-chip v-if="!canBypassPrivacy && !profile.birth_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
-            <v-alert v-if="!profile.birth_visible" type="warning" variant="tonal" density="compact" class="mb-4">
+            <!-- Birth details — gated by birth_visible -->
+            <v-alert v-if="!canBypassPrivacy && !profile.birth_visible" type="warning" variant="tonal" density="compact" class="mb-4">
               Birth details are kept private by this member.
             </v-alert>
             <div v-else class="detail-grid">
               <detail-cell v-for="r in birthRows" :key="r.label" :row="r" />
+            </div>
+
+            <!-- Horoscope — has its own visibility flag (independent of birth_visible) -->
+            <v-divider class="my-4" />
+            <div class="d-flex align-center ga-3">
+              <v-icon color="medium-emphasis">mdi-file-document-outline</v-icon>
+              <div>
+                <p class="text-caption text-medium-emphasis mb-1">Horoscope</p>
+                <template v-if="canBypassPrivacy || profile.horoscope_visible">
+                  <template v-if="profile.horoscope_key">
+                    <!-- URL loaded → show open button -->
+                    <v-btn
+                      v-if="horoscopeUrl"
+                      :href="horoscopeUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      prepend-icon="mdi-open-in-new"
+                      color="primary"
+                      variant="tonal"
+                      size="small"
+                    >
+                      View / Download Horoscope
+                    </v-btn>
+                    <!-- Still fetching presigned URL -->
+                    <div v-else class="d-flex align-center ga-2">
+                      <v-progress-circular size="16" indeterminate color="primary" width="2" />
+                      <span class="text-body-2 text-medium-emphasis">Loading horoscope link…</span>
+                    </div>
+                  </template>
+                  <p v-else class="text-body-2 font-weight-medium mb-0">Not uploaded</p>
+                </template>
+                <p v-else class="text-body-2 font-italic text-medium-emphasis mb-0">Horoscope is kept private by this member.</p>
+              </div>
             </div>
           </v-expansion-panel-text>
         </v-expansion-panel>
@@ -96,10 +149,10 @@
         <v-expansion-panel>
           <v-expansion-panel-title>
             <v-icon start>mdi-briefcase</v-icon>Professional Details
-            <v-chip v-if="!profile.professional_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
+            <v-chip v-if="!canBypassPrivacy && !profile.professional_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
-            <v-alert v-if="!profile.professional_visible" type="warning" variant="tonal" density="compact" class="mb-4">
+            <v-alert v-if="!canBypassPrivacy && !profile.professional_visible" type="warning" variant="tonal" density="compact" class="mb-4">
               Professional details are kept private by this member.
             </v-alert>
             <div v-else class="detail-grid">
@@ -124,10 +177,10 @@
         <v-expansion-panel>
           <v-expansion-panel-title>
             <v-icon start>mdi-account-group</v-icon>Family Details
-            <v-chip v-if="!profile.family_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
+            <v-chip v-if="!canBypassPrivacy && !profile.family_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
-            <v-alert v-if="!profile.family_visible" type="warning" variant="tonal" density="compact" class="mb-4">
+            <v-alert v-if="!canBypassPrivacy && !profile.family_visible" type="warning" variant="tonal" density="compact" class="mb-4">
               Family details are kept private by this member.
             </v-alert>
             <div v-else class="detail-grid">
@@ -140,10 +193,10 @@
         <v-expansion-panel>
           <v-expansion-panel-title>
             <v-icon start>mdi-phone</v-icon>Contact Details
-            <v-chip v-if="!profile.contact_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
+            <v-chip v-if="!canBypassPrivacy && !profile.contact_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
-            <v-alert v-if="!profile.contact_visible" type="warning" variant="tonal" density="compact" class="mb-4">
+            <v-alert v-if="!canBypassPrivacy && !profile.contact_visible" type="warning" variant="tonal" density="compact" class="mb-4">
               Contact details are kept private by this member.
             </v-alert>
             <div v-else class="detail-grid">
@@ -204,16 +257,64 @@
           </v-expansion-panel-text>
         </v-expansion-panel>
 
+        <!-- 9. Photos -->
+        <v-expansion-panel>
+          <v-expansion-panel-title>
+            <v-icon start>mdi-image-multiple</v-icon>Photos
+            <v-chip v-if="!canBypassPrivacy && !profile.photo_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <v-alert
+              v-if="!canViewPhotos"
+              type="warning"
+              variant="tonal"
+              density="compact"
+            >
+              Photos are kept private by this member.
+            </v-alert>
+            <p v-else-if="!profile.photo_keys?.length" class="text-body-2 text-medium-emphasis font-italic">
+              No photos uploaded.
+            </p>
+            <v-row v-else dense>
+              <v-col
+                v-for="key in profile.photo_keys"
+                :key="key"
+                cols="6"
+                sm="4"
+                md="3"
+              >
+                <div style="aspect-ratio:3/4;overflow:hidden;border-radius:8px;background:#e0e0e0">
+                  <v-img
+                    v-if="detailPhotoUrls[key]"
+                    :src="detailPhotoUrls[key]"
+                    height="100%"
+                    cover
+                    position="top center"
+                  />
+                  <div
+                    v-else
+                    class="d-flex align-center justify-center"
+                    style="height:100%"
+                  >
+                    <v-progress-circular indeterminate size="24" color="grey" />
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+
       </v-expansion-panels>
     </template>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, h } from 'vue'
+import { computed, defineComponent, h, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuery } from '@tanstack/vue-query'
-import { profilesApi, preferencesApi } from '@/api/profiles'
+import { profilesApi, preferencesApi, filesApi } from '@/api/profiles'
+import { useAuthStore } from '@/stores/auth'
 
 // ── Inline detail-cell component ────────────────────────────────────────────
 interface DetailRow { label: string; value: string | null | undefined }
@@ -232,6 +333,7 @@ const DetailCell = defineComponent({
 // ── Props / router ───────────────────────────────────────────────────────────
 const props = defineProps<{ id: string }>()
 const router = useRouter()
+const auth = useAuthStore()
 
 // ── Queries ──────────────────────────────────────────────────────────────────
 const { data: profile, isPending, isError } = useQuery({
@@ -245,6 +347,73 @@ const { data: pref, isPending: prefPending } = useQuery({
   queryFn: () => preferencesApi.get(props.id).catch(() => null),
   enabled: computed(() => !!props.id),
 })
+
+// ── Profile photos (presigned GET URLs for every key the viewer may see) ────────
+// Map of S3 key → presigned URL.  Populated for the hero card and the Photos panel.
+const detailPhotoUrls = reactive<Record<string, string>>({})
+
+// True when the current viewer is allowed to see this profile's photos at all.
+const canViewPhotos = ref(false)
+
+// Presigned GET URL for the horoscope document (PDF or image). null = not accessible or not uploaded.
+const horoscopeUrl = ref<string | null>(null)
+
+// Admins, super-admins and the profile owner bypass ALL visibility flags.
+// Regular members must respect each member's own privacy settings.
+const canBypassPrivacy = computed(() => {
+  if (!profile.value) return false
+  return auth.isAdmin || auth.isSuperAdmin || auth.user?.id === profile.value.user_id
+})
+
+// Convenience: the presigned URL for the first photo (used in the hero card).
+const heroPhotoUrl = computed<string | null>(() => {
+  const firstKey = profile.value?.photo_keys?.[0]
+  return firstKey ? (detailPhotoUrls[firstKey] ?? null) : null
+})
+
+// Watch BOTH profile data AND auth.user so the block re-runs after fetchMe()
+// resolves. Without this, the watch fires (immediate) before the auth store
+// has populated user, isAdmin evaluates to false, and presigned URLs are never
+// fetched for admin/owner viewers.
+watch(
+  [() => profile.value, () => auth.user],
+  async ([p]) => {
+    // Reset on every run so stale URLs from a previous profile don't linger.
+    Object.keys(detailPhotoUrls).forEach((k) => delete detailPhotoUrls[k])
+    canViewPhotos.value = false
+    horoscopeUrl.value = null
+    if (!p) return
+    const isOwner = auth.user?.id === p.user_id
+
+    // Photos — respect photo_visible (bypassed for admin / owner).
+    const canViewPhoto = auth.isAdmin || auth.isSuperAdmin || isOwner || p.photo_visible
+    canViewPhotos.value = canViewPhoto
+    if (canViewPhoto && p.photo_keys?.length) {
+      await Promise.allSettled(
+        p.photo_keys.map(async (key) => {
+          try {
+            const { url } = await filesApi.presignGet(key)
+            detailPhotoUrls[key] = url
+          } catch {
+            // leave entry absent → spinner stays visible
+          }
+        }),
+      )
+    }
+
+    // Horoscope — uses its own horoscope_visible flag (independent of birth_visible).
+    const canViewHoroscope = auth.isAdmin || auth.isSuperAdmin || isOwner || p.horoscope_visible
+    if (canViewHoroscope && p.horoscope_key) {
+      try {
+        const { url } = await filesApi.presignGet(p.horoscope_key)
+        horoscopeUrl.value = url
+      } catch {
+        // presign failed – URL stays null
+      }
+    }
+  },
+  { immediate: true },
+)
 
 // ── Formatters ───────────────────────────────────────────────────────────────
 function fmtLabel(v: string | null | undefined): string {
@@ -272,7 +441,7 @@ function fmtHeight(cm: number | null | undefined): string {
   return `${cm} cm (${ft}'${inch}")`
 }
 
-// ── Age ──────────────────────────────────────────────────────────────────────
+// ── Age (calculated from date_of_birth only) ─────────────────────────────────
 const ageLabel = computed(() => {
   const dob = profile.value?.date_of_birth
   if (!dob) return '—'
@@ -280,6 +449,8 @@ const ageLabel = computed(() => {
   const t = new Date()
   let age = t.getFullYear() - d.getFullYear()
   if (t.getMonth() < d.getMonth() || (t.getMonth() === d.getMonth() && t.getDate() < d.getDate())) age--
+  // Guard: only show if within plausible matrimonial range
+  if (age < 18 || age > 80) return '—'
   return `${age} yrs`
 })
 
@@ -334,8 +505,7 @@ const birthRows = computed((): DetailRow[] => {
     { label: 'Rashi (Zodiac)',   value: fmtLabel(p.rashi) },
     { label: 'Star (Nakshatra)', value: fmtLabel(p.star) },
     { label: 'Dhosam',           value: fmtLabel(p.dhosam) },
-    { label: 'Manglik',          value: p.manglik === null || p.manglik === undefined ? null : p.manglik ? 'Yes' : 'No' },
-    { label: 'Horoscope',        value: p.horoscope_key ? 'Available (contact for copy)' : null },
+    { label: 'Manglik', value: p.manglik === null || p.manglik === undefined ? null : p.manglik ? 'Yes' : 'No' },
   ]
 })
 

@@ -212,6 +212,7 @@ class ProfileRead(BaseModel):
     family_visible: bool
     contact_visible: bool
     horoscope_visible: bool
+    horoscope_key: str | None
     photo_keys: list[str] | None
     status: ProfileStatus
     created_at: datetime

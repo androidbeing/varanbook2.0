@@ -192,6 +192,10 @@
                     variant="outlined"
                     density="comfortable"
                     prepend-inner-icon="mdi-calendar"
+                    :max="maxDob"
+                    :rules="[dobRule]"
+                    hint="Must be at least 18 years old"
+                    persistent-hint
                   />
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -844,7 +848,7 @@ const fullName = ref('')
 const openPanels = ref([0])
 const avatarInput = ref<HTMLInputElement | null>(null)
 const photoInput = ref<HTMLInputElement | null>(null)
-const horoscopeFile = ref<File[]>([])
+const horoscopeFile = ref<File | null>(null)
 const sec = ref({ personal: false, birth: false, professional: false, family: false, contact: false, privacy: false, prefs: false })
 const snack = ref({ show: false, color: 'success', message: '' })
 
@@ -915,6 +919,19 @@ const prefForm = ref<Partial<PartnerPreference>>({
   rashi: [],
   star: [],
 })
+
+// ── Date of Birth max constraint (member must be ≥ 18 years old) ─────────────
+const maxDob = computed(() => {
+  const d = new Date()
+  d.setFullYear(d.getFullYear() - 18)
+  return d.toISOString().split('T')[0]   // YYYY-MM-DD
+})
+
+function dobRule(v: string | null | undefined): true | string {
+  if (!v) return true  // field is optional
+  if (v > maxDob.value) return 'Member must be at least 18 years old'
+  return true
+}
 
 // ── Range slider computed helpers ─────────────────────────────────────────────
 const ageRange = computed({
@@ -1208,17 +1225,35 @@ async function savePreferences() {
 }
 
 async function uploadHoroscope() {
-  if (!horoscopeFile.value?.[0] || !profileData.value) return
-  const file = horoscopeFile.value[0]
+  // v-file-input without `multiple` emits a single File (not File[]).
+  const file = Array.isArray(horoscopeFile.value)
+    ? horoscopeFile.value[0]
+    : horoscopeFile.value
+  if (!file || !profileData.value) return
+  // Ensure a consistent content-type for both the presign and the S3 PUT.
+  // Some browsers leave file.type empty for certain file extensions.
+  const contentType = file.type || 'application/pdf'
   try {
     const { upload_url, object_key } = await profilesApi.presign({
       file_name: file.name,
-      content_type: file.type || 'application/pdf',
+      content_type: contentType,
       upload_purpose: 'horoscope',
     })
-    await fetch(upload_url, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } })
+    // Use the same content-type for the PUT so the S3 signature matches.
+    const s3Res = await fetch(upload_url, {
+      method: 'PUT',
+      body: file,
+      headers: { 'Content-Type': contentType },
+    })
+    if (!s3Res.ok) {
+      throw new Error(`S3 upload failed: ${s3Res.status} ${s3Res.statusText}`)
+    }
     await profilesApi.registerMedia(profileData.value.id, object_key, 'horoscope')
     form.value.horoscope_key = object_key
+    // Bust the TanStack Query cache for this profile so that viewing it in
+    // ProfileDetailView always shows the new horoscope_key immediately.
+    await qc.invalidateQueries({ queryKey: ['my-profile'] })
+    await qc.invalidateQueries({ queryKey: ['profile', profileData.value.id] })
     notify('Horoscope uploaded successfully!')
   } catch {
     notify('Horoscope upload failed. Cloud storage may not be configured.', 'warning')

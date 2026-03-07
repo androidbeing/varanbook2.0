@@ -6,7 +6,7 @@ A multi-tenant matrimonial platform built with **FastAPI** (backend) and **Vue 3
 
 ## Table of Contents
 
-- [Varanbook â€“ Matrimonial SaaS Platform](#varanbook--matrimonial-saas-platform)
+- [Varanbook â€“ Matrimonial SaaS Platform](#varanbook-â-matrimonial-saas-platform)
   - [Table of Contents](#table-of-contents)
   - [Prerequisites](#prerequisites)
   - [Project Structure](#project-structure)
@@ -24,6 +24,21 @@ A multi-tenant matrimonial platform built with **FastAPI** (backend) and **Vue 3
   - [Environment Variables](#environment-variables)
   - [Database Migrations](#database-migrations)
   - [Running Tests](#running-tests)
+  - [Production Deployment](#production-deployment)
+    - [Architecture](#architecture)
+    - [One-Time Setup](#one-time-setup)
+      - [1. Install required tools](#1-install-required-tools)
+      - [2. Configure Terraform variables](#2-configure-terraform-variables)
+      - [3. Bootstrap infrastructure (first time only)](#3-bootstrap-infrastructure-first-time-only)
+    - [Deploying Changes](#deploying-changes)
+      - [Deploy everything (backend + frontend)](#deploy-everything-backend--frontend)
+      - [Deploy backend (FastAPI) only](#deploy-backend-fastapi-only)
+      - [Deploy frontend (Vue) only](#deploy-frontend-vue-only)
+    - [Applying Database Migrations on the Server](#applying-database-migrations-on-the-server)
+    - [Standard Change Workflow](#standard-change-workflow)
+    - [S3 Bucket — CORS Configuration](#s3-bucket--cors-configuration)
+    - [IAM Permissions Required](#iam-permissions-required)
+    - [Monitoring \& Troubleshooting](#monitoring--troubleshooting)
 
 ---
 
