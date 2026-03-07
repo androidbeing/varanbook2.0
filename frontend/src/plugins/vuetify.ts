@@ -28,9 +28,7 @@ export default createVuetify({
     themes: { varanTheme },
   },
   defaults: {
-    VBtn: { style: 'text-transform: none; font-family: Inter, sans-serif;' },
+    VBtn: { style: 'text-transform: none;' },
     VCard: { rounded: 'lg' },
-    VCardTitle: { style: "font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.4rem; font-weight: 600; letter-spacing: 0.01em;" },
-    VToolbarTitle: { style: "font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600;" },
   },
 })
