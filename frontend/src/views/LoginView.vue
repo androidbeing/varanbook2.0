@@ -6,7 +6,6 @@
           <v-col cols="12" sm="8" md="5" lg="4">
             <!-- Logo/Branding -->
             <div class="text-center mb-8">
-              <v-icon color="primary" size="56">mdi-heart-circle</v-icon>
               <h1 class="text-h4 font-weight-bold text-primary mt-2">Varanbook</h1>
               <p class="text-body-2 text-medium-emphasis">Find your perfect match</p>
             </div>

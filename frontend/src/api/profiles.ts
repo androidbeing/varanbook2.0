@@ -5,6 +5,7 @@ export interface ProfilesQuery {
   page?: number
   size?: number
   gender?: string
+  status?: string
   city?: string
   dhosam?: string
   min_age?: number

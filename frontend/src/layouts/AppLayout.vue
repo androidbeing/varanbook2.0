@@ -4,7 +4,7 @@
     <v-app-bar color="primary" elevation="2">
       <v-app-bar-nav-icon @click="drawer = !drawer" />
       <v-app-bar-title>
-        <span class="font-weight-bold text-white">Varanbook</span>
+        <span style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.4rem; font-weight: 700; letter-spacing: 0.03em;" class="text-white">Varanbook</span>
       </v-app-bar-title>
       <v-spacer />
       <v-btn icon @click="toggleTheme">

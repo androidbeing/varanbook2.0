@@ -153,7 +153,7 @@
         <v-col>
           <v-card color="primary" rounded="xl" class="pa-6">
             <div class="d-flex align-center flex-wrap gap-4">
-              <v-icon size="48" class="opacity-75">mdi-account-tie</v-icon>
+              <v-icon size="48" class="opacity-75">mdi-account-circle</v-icon>
               <div>
                 <h1 class="text-h5 font-weight-bold">
                   Welcome, {{ firstName }}!
@@ -499,21 +499,17 @@ async function loadTenants() {
 // ────────────────────────────────────────────────────────────────────────────
 const members = ref<any[]>([])
 const loadingMembers = ref(false)
-const allProfiles = ref<Profile[]>([])
 
-const adminStats = computed(() => {
-  const active = allProfiles.value.filter((p) => p.status === 'active').length
-  const draft = allProfiles.value.filter((p) => p.status !== 'active').length
-  const male = allProfiles.value.filter((p) => p.gender === 'male').length
-  const female = allProfiles.value.filter((p) => p.gender === 'female').length
-  return {
-    totalMembers: members.value.length,
-    activeProfiles: active,
-    draftProfiles: draft,
-    maleCount: male,
-    femaleCount: female,
-  }
-})
+// Server-side accurate counts (avoid frontend pagination truncation)
+const adminStatCounts = ref({ active: 0, draft: 0, male: 0, female: 0 })
+
+const adminStats = computed(() => ({
+  totalMembers: members.value.length,
+  activeProfiles: adminStatCounts.value.active,
+  draftProfiles: adminStatCounts.value.draft,
+  maleCount: adminStatCounts.value.male,
+  femaleCount: adminStatCounts.value.female,
+}))
 
 const memberHeaders = [
   { title: 'Name', key: 'full_name', sortable: true },
@@ -543,10 +539,20 @@ async function loadMembers() {
 
 async function loadAdminProfiles() {
   try {
-    const res = await profilesApi.list({ size: 200 })
-    allProfiles.value = res.items ?? []
+    const [totalRes, activeRes, maleRes, femaleRes] = await Promise.all([
+      profilesApi.list({ size: 1 }),
+      profilesApi.list({ status: 'active', size: 1 }),
+      profilesApi.list({ gender: 'male', size: 1 }),
+      profilesApi.list({ gender: 'female', size: 1 }),
+    ])
+    adminStatCounts.value = {
+      active: activeRes.total ?? 0,
+      draft: (totalRes.total ?? 0) - (activeRes.total ?? 0),
+      male: maleRes.total ?? 0,
+      female: femaleRes.total ?? 0,
+    }
   } catch {
-    allProfiles.value = []
+    adminStatCounts.value = { active: 0, draft: 0, male: 0, female: 0 }
   }
 }
 
