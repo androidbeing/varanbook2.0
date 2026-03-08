@@ -109,6 +109,7 @@ const navItems = computed(() => {
     return [
       { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
       { title: 'Tenants', icon: 'mdi-office-building-cog', to: '/admin/tenants' },
+      { title: 'Change Password', icon: 'mdi-lock-reset', to: '/change-password' },
     ]
   }
   if (auth.isAdmin) {
@@ -117,6 +118,7 @@ const navItems = computed(() => {
       { title: 'Browse Profiles', icon: 'mdi-account-group', to: '/profiles' },
       { title: 'Onboard Members', icon: 'mdi-account-plus', to: '/admin/onboard-members' },
       { title: 'My Account', icon: 'mdi-account-cog', to: '/admin/profile' },
+      { title: 'Change Password', icon: 'mdi-lock-reset', to: '/change-password' },
     ]
   }
   // Member
@@ -124,6 +126,7 @@ const navItems = computed(() => {
     { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
     { title: 'Browse Profiles', icon: 'mdi-account-group', to: '/profiles' },
     { title: 'My Profile', icon: 'mdi-account-circle', to: '/my-profile' },
+    { title: 'Change Password', icon: 'mdi-lock-reset', to: '/change-password' },
   ]
 })
 </script>

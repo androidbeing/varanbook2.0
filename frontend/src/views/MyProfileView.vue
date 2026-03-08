@@ -456,6 +456,24 @@
                     prepend-inner-icon="mdi-map-marker"
                   />
                 </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="form.city"
+                    label="City"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-city"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="form.state"
+                    label="State"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-map"
+                  />
+                </v-col>
               </v-row>
               <v-btn
                 color="blue-darken-2"
@@ -892,6 +910,8 @@ const form = ref<Partial<Profile>>({
   whatsapp: '',
   native_place: '',
   current_location: '',
+  city: '',
+  state: '',
   photo_keys: [],
   personal_visible: true,
   photo_visible: false,
@@ -1181,6 +1201,8 @@ async function saveContact() {
       whatsapp: toE164(form.value.whatsapp),
       native_place: form.value.native_place,
       current_location: form.value.current_location,
+      city: form.value.city,
+      state: form.value.state,
     })
     await qc.invalidateQueries({ queryKey: ['my-profile'] })
     notify('Contact details saved!')

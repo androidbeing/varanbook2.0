@@ -11,6 +11,18 @@ const router = createRouter({
       meta: { public: true },
     },
     {
+      path: '/forgot-password',
+      name: 'forgot-password',
+      component: () => import('@/views/ForgotPasswordView.vue'),
+      meta: { public: true },
+    },
+    {
+      path: '/reset-password',
+      name: 'reset-password',
+      component: () => import('@/views/ResetPasswordView.vue'),
+      meta: { public: true },
+    },
+    {
       path: '/',
       component: () => import('@/layouts/AppLayout.vue'),
       meta: { requiresAuth: true },
@@ -56,6 +68,11 @@ const router = createRouter({
           name: 'onboard-members',
           component: () => import('@/views/OnboardMembersView.vue'),
           meta: { adminOnly: true },
+        },
+        {
+          path: 'change-password',
+          name: 'change-password',
+          component: () => import('@/views/ChangePasswordView.vue'),
         },
       ],
     },

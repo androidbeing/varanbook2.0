@@ -39,10 +39,11 @@ client.interceptors.request.use((config) => {
 })
 
 // 401 → clear tokens and redirect to login
+// Exception: skip redirect for the login endpoint itself (wrong credentials)
 client.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err.response?.status === 401) {
+    if (err.response?.status === 401 && !err.config?.url?.includes('/auth/login')) {
       localStorage.removeItem('access_token')
       localStorage.removeItem('refresh_token')
       window.location.href = '/login'

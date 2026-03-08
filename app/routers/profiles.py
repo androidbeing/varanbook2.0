@@ -151,6 +151,10 @@ async def list_profiles(
         query = query.where(Profile.dhosam == dhosam)
     if city:
         query = query.where(Profile.city.ilike(f"%{city}%"))
+    if search:
+        query = query.join(User, Profile.user_id == User.id).where(
+            User.full_name.ilike(f"%{search}%")
+        )
 
     total_result = await db.execute(select(func.count()).select_from(query.subquery()))
     total = total_result.scalar_one()

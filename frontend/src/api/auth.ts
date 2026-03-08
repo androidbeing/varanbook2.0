@@ -21,12 +21,12 @@ export const authApi = {
   },
 
   requestPasswordReset(email: string): Promise<void> {
-    return client.post('/auth/password-reset/request', { email }).then(() => undefined)
+    return client.post('/auth/forgot-password', { email }).then(() => undefined)
   },
 
   confirmPasswordReset(token: string, newPassword: string): Promise<void> {
     return client
-      .post('/auth/password-reset/confirm', { token, new_password: newPassword })
+      .post('/auth/reset-password', { token, new_password: newPassword })
       .then(() => undefined)
   },
 }
