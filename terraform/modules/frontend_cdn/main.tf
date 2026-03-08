@@ -65,7 +65,7 @@ resource "aws_cloudfront_distribution" "frontend" {
   default_root_object = "index.html"
   price_class         = var.cloudfront_price_class
   comment             = "${var.project_name} frontend (${var.environment})"
-  aliases             = var.custom_domain != "" ? [var.custom_domain] : []
+  aliases             = var.custom_domain != "" ? [var.custom_domain, "www.${var.custom_domain}"] : []
 
   # ── Origin: S3 ─────────────────────────────────────────────────────────────
   origin {

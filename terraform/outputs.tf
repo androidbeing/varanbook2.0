@@ -4,8 +4,8 @@
 
 # Backend (Lightsail)
 output "api_url" {
-  description = "HTTPS URL of the FastAPI backend on Lightsail (use as VITE_API_BASE_URL)"
-  value       = module.lightsail.service_url
+  description = "HTTPS URL of the FastAPI backend (custom domain when set, Lightsail default otherwise)"
+  value       = var.domain_name != "" ? "https://api.${var.domain_name}" : module.lightsail.service_url
 }
 
 output "lightsail_service_name" {
@@ -16,7 +16,7 @@ output "lightsail_service_name" {
 # Frontend (S3 + CloudFront)
 output "frontend_url" {
   description = "Public HTTPS URL of the Vue.js frontend"
-  value       = module.frontend_cdn.frontend_url
+  value       = var.domain_name != "" ? "https://${var.domain_name}" : module.frontend_cdn.frontend_url
 }
 
 output "cloudfront_distribution_id" {

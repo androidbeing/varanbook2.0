@@ -150,3 +150,12 @@ variable "firebase_creds_secret_arn" {
   type    = string
   default = ""
 }
+
+################################################################################
+# Custom Domain (Route 53 + ACM + CloudFront)
+################################################################################
+variable "domain_name" {
+  description = "Root domain registered in Route 53 (e.g. varanbook.in). Leave empty to skip custom domain setup."
+  type        = string
+  default     = ""
+}
