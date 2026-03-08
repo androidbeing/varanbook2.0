@@ -90,6 +90,18 @@
           </v-chip>
         </template>
 
+        <!-- Active Members -->
+        <template #item.active_members_count="{ item }">
+          <v-chip
+            :color="item.active_members_count > 0 ? 'teal' : 'grey'"
+            size="small"
+            variant="tonal"
+          >
+            <v-icon start size="14">mdi-account-group</v-icon>
+            {{ item.active_members_count }}
+          </v-chip>
+        </template>
+
         <!-- Limits -->
         <template #item.limits="{ item }">
           <span class="text-body-2 text-medium-emphasis">
@@ -261,6 +273,7 @@ const headers = [
   { title: 'Slug', key: 'slug' },
   { title: 'Email', key: 'contact_email' },
   { title: 'Plan', key: 'plan' },
+  { title: 'Active Members', key: 'active_members_count', sortable: true },
   { title: 'Limits', key: 'limits', sortable: false },
   { title: 'Status', key: 'is_active' },
   { title: 'Created', key: 'created_at', sortable: true },

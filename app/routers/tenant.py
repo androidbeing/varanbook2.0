@@ -16,7 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth.dependencies import require_super_admin
 from app.database import get_db
 from app.models.tenant import Tenant
-from app.models.user import User
+from app.models.user import User, UserRole
 from app.schemas.tenant import TenantCreate, TenantList, TenantRead, TenantUpdate
 
 router = APIRouter(prefix="/admin/tenants", tags=["Tenant Management"])
@@ -76,7 +76,28 @@ async def list_tenants(
     items_result = await db.execute(
         query.offset((page - 1) * page_size).limit(page_size)
     )
-    items = [TenantRead.model_validate(t) for t in items_result.scalars().all()]
+    tenant_objs = items_result.scalars().all()
+
+    # Count active members per tenant in one query
+    if tenant_objs:
+        tenant_ids = [t.id for t in tenant_objs]
+        cnt_result = await db.execute(
+            select(User.tenant_id, func.count().label("cnt"))
+            .where(
+                User.tenant_id.in_(tenant_ids),
+                User.role == UserRole.MEMBER,
+                User.is_active.is_(True),
+            )
+            .group_by(User.tenant_id)
+        )
+        count_map: dict = {row.tenant_id: row.cnt for row in cnt_result}
+    else:
+        count_map = {}
+
+    items = [
+        TenantRead.model_validate(t).model_copy(update={"active_members_count": count_map.get(t.id, 0)})
+        for t in tenant_objs
+    ]
 
     return TenantList(items=items, total=total, page=page, page_size=page_size)
 

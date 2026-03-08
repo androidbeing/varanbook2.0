@@ -352,12 +352,23 @@
           </v-card>
         </v-col>
         <v-col cols="12" sm="6" lg="3">
-          <v-card rounded="xl" color="pink" variant="tonal">
+          <v-card rounded="xl" color="pink" variant="tonal" class="cursor-pointer" @click="router.push('/my-interests')">
             <v-card-text class="d-flex align-center gap-4 pa-5">
-              <v-icon color="pink" size="36">mdi-heart</v-icon>
+              <v-icon color="pink" size="36">mdi-heart-arrow</v-icon>
               <div>
-                <p class="text-body-2 text-medium-emphasis mb-0">Shortlisted</p>
+                <p class="text-body-2 text-medium-emphasis mb-0">Interests Sent</p>
                 <p class="text-h5 font-weight-bold mb-0">{{ memberStats.shortlisted }}</p>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="12" sm="6" lg="3">
+          <v-card rounded="xl" color="deep-orange" variant="tonal" class="cursor-pointer" @click="router.push('/my-interests?tab=received')">
+            <v-card-text class="d-flex align-center gap-4 pa-5">
+              <v-icon color="deep-orange" size="36">mdi-heart-flash</v-icon>
+              <div>
+                <p class="text-body-2 text-medium-emphasis mb-0">Pending Requests</p>
+                <p class="text-h5 font-weight-bold mb-0">{{ memberStats.pendingReceived }}</p>
               </div>
             </v-card-text>
           </v-card>
@@ -452,6 +463,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { profilesApi } from '@/api/profiles'
+import { shortlistApi } from '@/api/shortlist'
 import client from '@/api/client'
 import type { Profile } from '@/types'
 
@@ -522,7 +534,7 @@ const memberHeaders = [
 
 const adminActions = [
   { title: 'Browse Profiles', subtitle: 'View all member profiles', icon: 'mdi-account-group', color: 'primary', to: '/profiles' },
-  { title: 'Shortlist Manager', subtitle: 'Review shortlisted pairs', icon: 'mdi-heart-multiple', color: 'pink', to: '/profiles' },
+  { title: 'Shortlist Manager', subtitle: 'Review shortlisted pairs', icon: 'mdi-heart-multiple', color: 'pink', to: '/admin/shortlists' },
 ]
 
 async function loadMembers() {
@@ -560,7 +572,7 @@ async function loadAdminProfiles() {
 // MEMBER state
 // ────────────────────────────────────────────────────────────────────────────
 const myProfile = ref<Profile | null>(null)
-const memberStats = ref({ shortlisted: '—', totalProfiles: '—' })
+const memberStats = ref({ shortlisted: '—', pendingReceived: '—', totalProfiles: '—' })
 
 const profileSections = computed(() => {
   const p = myProfile.value
@@ -583,6 +595,7 @@ const profileCompletion = computed(() => {
 
 const memberActions = [
   { title: 'Browse Profiles', subtitle: 'Find your match', icon: 'mdi-account-group', color: 'primary', to: '/profiles' },
+  { title: 'My Interests', subtitle: 'Sent & received interest requests', icon: 'mdi-heart-multiple-outline', color: 'pink', to: '/my-interests' },
   { title: 'Edit My Profile', subtitle: 'Keep your biodata updated', icon: 'mdi-account-edit', color: 'teal', to: '/my-profile' },
   { title: 'Partner Preferences', subtitle: 'Set your ideal match criteria', icon: 'mdi-heart-search', color: 'pink', to: '/my-profile' },
 ]
@@ -597,8 +610,14 @@ async function loadMyProfile() {
 
 async function loadMemberBrowseCount() {
   try {
-    const res = await profilesApi.list({ size: 1 })
-    memberStats.value.totalProfiles = String(res.total)
+    const [profilesRes, sentRes, receivedRes] = await Promise.all([
+      profilesApi.list({ size: 1 }),
+      shortlistApi.sentInterests(1, 1),
+      shortlistApi.receivedInterests(1, 1, 'shortlisted'),
+    ])
+    memberStats.value.totalProfiles = String(profilesRes.total)
+    memberStats.value.shortlisted = String(sentRes.total)
+    memberStats.value.pendingReceived = String(receivedRes.total)
   } catch {
     // ignore
   }

@@ -75,10 +75,12 @@ import { useRoute, useRouter } from 'vue-router'
 import { useDisplay, useTheme } from 'vuetify'
 import { useQueryClient } from '@tanstack/vue-query'
 import { useAuthStore } from '@/stores/auth'
+import { useShortlistStore } from '@/stores/shortlist'
 
 const router = useRouter()
 const route = useRoute()
 const auth = useAuthStore()
+const shortlistStore = useShortlistStore()
 const qc = useQueryClient()
 const { mobile: isMobile } = useDisplay()
 const theme = useTheme()
@@ -97,9 +99,9 @@ const userInitials = computed(() => {
 
 async function handleLogout() {
   await auth.logout()
+  // Reset shortlist store so no data leaks to the next session
+  shortlistStore.reset()
   // Clear the entire query cache so the next user starts with a clean slate.
-  // Without this, the previous user's profile data would pre-fill the form
-  // for the next user who logs in on the same browser session.
   qc.clear()
   router.push('/login')
 }
@@ -125,6 +127,7 @@ const navItems = computed(() => {
   return [
     { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
     { title: 'Browse Profiles', icon: 'mdi-account-group', to: '/profiles' },
+    { title: 'My Interests', icon: 'mdi-heart-multiple-outline', to: '/my-interests' },
     { title: 'My Profile', icon: 'mdi-account-circle', to: '/my-profile' },
     { title: 'Change Password', icon: 'mdi-lock-reset', to: '/change-password' },
   ]

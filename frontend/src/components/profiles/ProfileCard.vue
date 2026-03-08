@@ -33,6 +33,18 @@
       >
         {{ profile.status }}
       </v-chip>
+
+      <!-- Shortlist heart button -->
+      <v-btn
+        v-if="showShortlist"
+        :icon="shortlisted ? 'mdi-heart' : 'mdi-heart-outline'"
+        :color="shortlisted ? 'red' : 'white'"
+        size="small"
+        :loading="toggling"
+        style="position:absolute;bottom:8px;right:8px;z-index:1"
+        variant="elevated"
+        @click.stop="handleShortlist"
+      />
     </div>
 
     <v-card-text class="pa-4">
@@ -87,13 +99,41 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import type { Profile } from '@/types'
+import { useAuthStore } from '@/stores/auth'
 
 // photoUrl is resolved by the parent (ProfilesView) and passed in as a prop
 // to avoid firing one HTTP request per card on mount.
-const props = defineProps<{ profile: Profile; photoUrl?: string | null }>()
-const emit = defineEmits<{ click: [] }>()
+const props = defineProps<{
+  profile: Profile
+  photoUrl?: string | null
+  /** Whether this profile is currently shortlisted by the viewer */
+  shortlisted?: boolean
+}>()
+const emit = defineEmits<{
+  click: []
+  /** Emitted when the user taps the heart; parent handles store + API call */
+  shortlist: []
+}>()
+
+const auth = useAuthStore()
+const toggling = ref(false)
+
+// Only members see the shortlist button (not on their own profile)
+const showShortlist = computed(
+  () => auth.user?.role === 'member' && auth.user?.id !== props.profile.user_id,
+)
+
+async function handleShortlist() {
+  toggling.value = true
+  try {
+    emit('shortlist')
+  } finally {
+    // Reset after a short delay to let the parent's async toggle finish
+    setTimeout(() => { toggling.value = false }, 600)
+  }
+}
 
 function fmtLabel(v: string | null | undefined): string {
   if (!v) return '—'

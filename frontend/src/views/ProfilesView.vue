@@ -72,7 +72,9 @@
           <ProfileCard
             :profile="profile"
             :photo-url="photoUrls[profile.id] ?? null"
+            :shortlisted="shortlistStore.isShortlisted(profile.id)"
             @click="goToProfile(profile.id)"
+            @shortlist="handleShortlist(profile.id)"
           />
         </v-col>
       </v-row>
@@ -93,20 +95,35 @@
       <p class="text-h6">No profiles found</p>
       <p class="text-body-2">Try adjusting your filters.</p>
     </div>
+
+    <!-- Snackbar feedback for shortlist toggle -->
+    <v-snackbar v-model="snackbar" :color="snackColor" timeout="2500" location="bottom end">
+      {{ snackText }}
+    </v-snackbar>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, computed, watch, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { useQuery } from '@tanstack/vue-query'
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { profilesApi, filesApi } from '@/api/profiles'
 import { useAuthStore } from '@/stores/auth'
+import { useShortlistStore } from '@/stores/shortlist'
 import ProfileCard from '@/components/profiles/ProfileCard.vue'
 import type { Profile } from '@/types'
 
 const router = useRouter()
 const auth = useAuthStore()
+const shortlistStore = useShortlistStore()
+const qc = useQueryClient()
+
+// Seed the shortlist store so heart icons reflect correct state
+shortlistStore.init()
+
+const snackbar = ref(false)
+const snackText = ref('')
+const snackColor = ref<'error' | 'success'>('success')
 
 const page = ref(1)
 const pageSize = 12
@@ -175,6 +192,19 @@ function applyFilters() {
 
 function goToProfile(id: string) {
   router.push(`/profiles/${id}`)
+}
+
+async function handleShortlist(profileId: string) {
+  try {
+    const added = await shortlistStore.toggle(profileId)
+    await qc.invalidateQueries({ queryKey: ['shortlisted-profiles'] })
+    snackText.value = added ? 'Added to shortlist' : 'Removed from shortlist'
+    snackColor.value = 'success'
+  } catch {
+    snackText.value = 'Failed to update shortlist. Please try again.'
+    snackColor.value = 'error'
+  }
+  snackbar.value = true
 }
 
 watch(page, () => window.scrollTo({ top: 0, behavior: 'smooth' }))

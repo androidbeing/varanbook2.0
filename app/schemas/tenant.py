@@ -118,6 +118,7 @@ class TenantRead(BaseModel):
     upi_id: str | None
     castes: list[str] | None
     logo_key: str | None = None
+    active_members_count: int = 0
     created_at: datetime
     updated_at: datetime
 

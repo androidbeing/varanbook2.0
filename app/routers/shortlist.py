@@ -2,26 +2,43 @@
 routers/shortlist.py – Express interest, accept / reject matches.
 
 Endpoints:
-  POST   /shortlists/              – shortlist a profile (express interest)
-  GET    /shortlists/sent          – list shortlists sent by current user's profile
-  GET    /shortlists/received      – list shortlists received by current user's profile
-  PATCH  /shortlists/{id}          – accept or reject
-  DELETE /shortlists/{id}          – withdraw (sender only)
+  POST   /shortlists/                            – shortlist a profile (express interest)
+  GET    /shortlists/sent                        – list shortlists sent by current user's profile
+  GET    /shortlists/received                    – list shortlists received by current user's profile
+  GET    /shortlists/shortlisted-profiles        – paginated Profile objects for shortlisted profiles
+  PATCH  /shortlists/{id}                        – accept or reject
+  DELETE /shortlists/{id}                        – withdraw (sender only)
+  DELETE /shortlists/by-profile/{to_profile_id} – unshortlist by profile ID
 """
 
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
-from sqlalchemy import select
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
-from app.auth.dependencies import get_current_user, require_member
+from app.auth.dependencies import get_current_user, require_admin, require_member
 from app.database import get_db
 from app.models.profile import Profile
 from app.models.shortlist import Shortlist, ShortlistStatus
 from app.models.user import User
-from app.schemas.shortlist import ShortlistCreate, ShortlistList, ShortlistRead, ShortlistStatusUpdate
+from app.schemas.profile import ProfileRead
+from app.schemas.shortlist import (
+    ShortlistCreate, ShortlistList, ShortlistPairList, ShortlistPairRead,
+    ProfileSummary, ShortlistRead, ShortlistStatusUpdate,
+    InterestRead, InterestList,
+)
+
+
+def _read_profile(profile: Profile) -> ProfileRead:
+    base = ProfileRead.model_validate(profile)
+    try:
+        fn = profile.user.full_name if profile.user else None
+    except Exception:
+        fn = None
+    return base.model_copy(update={"full_name": fn}) if fn else base
 
 router = APIRouter(prefix="/shortlists", tags=["Shortlist / Accept"])
 
@@ -119,6 +136,197 @@ async def list_received(
     )
     items = result.scalars().all()
     return ShortlistList(items=[ShortlistRead.model_validate(i) for i in items], total=len(items))
+
+
+@router.get(
+    "/admin/pairs",
+    response_model=ShortlistPairList,
+    summary="[Admin] List all shortlist pairs in this tenant",
+)
+async def admin_list_pairs(
+    db: Annotated["AsyncSession", Depends(get_db)],
+    current_user: Annotated[User, Depends(require_admin)],
+    status_filter: str | None = Query(None, alias="status"),
+    page: int = Query(1, ge=1),
+    size: int = Query(20, ge=1, le=100),
+) -> ShortlistPairList:
+    query = (
+        select(Shortlist)
+        .where(Shortlist.tenant_id == current_user.tenant_id)
+        .options(
+            selectinload(Shortlist.from_profile).selectinload(Profile.user),
+            selectinload(Shortlist.to_profile).selectinload(Profile.user),
+        )
+    )
+    if status_filter:
+        query = query.where(Shortlist.status == status_filter)
+
+    total_result = await db.execute(select(func.count()).select_from(query.subquery()))
+    total = total_result.scalar_one()
+
+    items_result = await db.execute(
+        query.order_by(Shortlist.created_at.desc())
+        .offset((page - 1) * size)
+        .limit(size)
+    )
+
+    def _pair(entry: Shortlist) -> ShortlistPairRead:
+        def _summary(p: Profile) -> ProfileSummary:
+            fn = None
+            try:
+                fn = p.user.full_name if p.user else None
+            except Exception:
+                pass
+            dob = p.date_of_birth.isoformat() if p.date_of_birth else None
+            return ProfileSummary(
+                id=p.id, full_name=fn, gender=p.gender,
+                date_of_birth=dob, city=p.city, state=p.state,
+            )
+        return ShortlistPairRead(
+            id=entry.id,
+            from_profile=_summary(entry.from_profile),
+            to_profile=_summary(entry.to_profile),
+            status=entry.status,
+            note=entry.note,
+            created_at=entry.created_at,
+            updated_at=entry.updated_at,
+        )
+
+    items = [_pair(e) for e in items_result.scalars().all()]
+    pages = max(1, -(-total // size))
+    return ShortlistPairList(items=items, total=total, page=page, size=size, pages=pages)
+
+
+@router.get(
+    "/shortlisted-profiles",
+    response_model=dict,
+    summary="Browse shortlisted profiles (paginated, same shape as GET /profiles/)",
+)
+async def list_shortlisted_profiles(
+    db: Annotated["AsyncSession", Depends(get_db)],
+    current_user: Annotated[User, Depends(require_member)],
+    page: int = Query(1, ge=1),
+    size: int = Query(20, ge=1, le=100),
+) -> dict:
+    caller = await _get_caller_profile(current_user, db)
+
+    subq = select(Shortlist.to_profile_id).where(Shortlist.from_profile_id == caller.id)
+    query = select(Profile).where(Profile.id.in_(subq))
+
+    total_result = await db.execute(select(func.count()).select_from(query.subquery()))
+    total = total_result.scalar_one()
+
+    items_result = await db.execute(
+        query.options(selectinload(Profile.user))
+        .order_by(Profile.created_at.desc())
+        .offset((page - 1) * size)
+        .limit(size)
+    )
+    items = [_read_profile(p) for p in items_result.scalars().all()]
+    pages = max(1, -(-total // size))
+    return {"items": items, "total": total, "page": page, "size": size, "pages": pages}
+
+
+@router.delete(
+    "/by-profile/{to_profile_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Unshortlist a profile by its ID (sender only)",
+)
+async def delete_shortlist_by_profile(
+    to_profile_id: uuid.UUID,
+    db: Annotated["AsyncSession", Depends(get_db)],
+    current_user: Annotated[User, Depends(require_member)],
+) -> None:
+    caller = await _get_caller_profile(current_user, db)
+    result = await db.execute(
+        select(Shortlist).where(
+            Shortlist.from_profile_id == caller.id,
+            Shortlist.to_profile_id == to_profile_id,
+        )
+    )
+    entry = result.scalar_one_or_none()
+    if not entry:
+        raise HTTPException(status_code=404, detail="Shortlist entry not found.")
+    await db.delete(entry)
+    await db.flush()
+
+
+@router.get(
+    "/sent-interests",
+    response_model=InterestList,
+    summary="Interests sent by me – with full profile of the recipient and current status",
+)
+async def list_sent_interests(
+    db: Annotated["AsyncSession", Depends(get_db)],
+    current_user: Annotated[User, Depends(require_member)],
+    page: int = Query(1, ge=1),
+    size: int = Query(20, ge=1, le=100),
+) -> InterestList:
+    caller = await _get_caller_profile(current_user, db)
+
+    query = (
+        select(Shortlist)
+        .where(Shortlist.from_profile_id == caller.id)
+        .options(selectinload(Shortlist.to_profile).selectinload(Profile.user))
+        .order_by(Shortlist.created_at.desc())
+    )
+    total_result = await db.execute(select(func.count()).select_from(query.subquery()))
+    total = total_result.scalar_one()
+
+    rows = (await db.execute(query.offset((page - 1) * size).limit(size))).scalars().all()
+    items = [
+        InterestRead(
+            shortlist_id=r.id,
+            status=r.status,
+            note=r.note,
+            created_at=r.created_at,
+            profile=_read_profile(r.to_profile),
+        )
+        for r in rows
+    ]
+    pages = max(1, -(-total // size))
+    return InterestList(items=items, total=total, page=page, size=size, pages=pages)
+
+
+@router.get(
+    "/received-interests",
+    response_model=InterestList,
+    summary="Interests received by me – with full profile of the sender and current status",
+)
+async def list_received_interests(
+    db: Annotated["AsyncSession", Depends(get_db)],
+    current_user: Annotated[User, Depends(require_member)],
+    status_filter: str | None = Query(None, alias="status"),
+    page: int = Query(1, ge=1),
+    size: int = Query(20, ge=1, le=100),
+) -> InterestList:
+    caller = await _get_caller_profile(current_user, db)
+
+    query = (
+        select(Shortlist)
+        .where(Shortlist.to_profile_id == caller.id)
+        .options(selectinload(Shortlist.from_profile).selectinload(Profile.user))
+        .order_by(Shortlist.created_at.desc())
+    )
+    if status_filter:
+        query = query.where(Shortlist.status == status_filter)
+
+    total_result = await db.execute(select(func.count()).select_from(query.subquery()))
+    total = total_result.scalar_one()
+
+    rows = (await db.execute(query.offset((page - 1) * size).limit(size))).scalars().all()
+    items = [
+        InterestRead(
+            shortlist_id=r.id,
+            status=r.status,
+            note=r.note,
+            created_at=r.created_at,
+            profile=_read_profile(r.from_profile),
+        )
+        for r in rows
+    ]
+    pages = max(1, -(-total // size))
+    return InterestList(items=items, total=total, page=page, size=size, pages=pages)
 
 
 @router.patch("/{shortlist_id}", response_model=ShortlistRead, summary="Accept or reject")

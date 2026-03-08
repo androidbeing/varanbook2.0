@@ -176,6 +176,7 @@ export interface Tenant {
   pin: string | null
   upi_id: string | null
   castes: string[] | null
+  active_members_count: number
   created_at: string
   updated_at: string
 }
@@ -224,4 +225,39 @@ export interface TenantList {
 // ── API Error ────────────────────────────────────────────────────────────────
 export interface ApiError {
   detail: string | { msg: string; type: string }[]
+}
+
+// ── Shortlist ────────────────────────────────────────────────────────────────
+export type ShortlistStatus = 'shortlisted' | 'accepted' | 'rejected'
+
+export interface ShortlistEntry {
+  id: string
+  tenant_id: string
+  from_profile_id: string
+  to_profile_id: string
+  status: ShortlistStatus
+  note: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface ShortlistList {
+  items: ShortlistEntry[]
+  total: number
+}
+
+export interface InterestEntry {
+  shortlist_id: string
+  status: ShortlistStatus
+  note: string | null
+  created_at: string
+  profile: Profile
+}
+
+export interface InterestList {
+  items: InterestEntry[]
+  total: number
+  page: number
+  size: number
+  pages: number
 }

@@ -50,6 +50,16 @@ const router = createRouter({
           props: true,
         },
         {
+          path: 'shortlisted',
+          name: 'shortlisted',
+          component: () => import('@/views/ShortlistedView.vue'),
+        },
+        {
+          path: 'my-interests',
+          name: 'my-interests',
+          component: () => import('@/views/MyInterestsView.vue'),
+        },
+        {
           path: 'my-profile',
           name: 'my-profile',
           component: () => import('@/views/MyProfileView.vue'),
@@ -73,6 +83,12 @@ const router = createRouter({
           path: 'admin/onboard-members',
           name: 'onboard-members',
           component: () => import('@/views/OnboardMembersView.vue'),
+          meta: { adminOnly: true },
+        },
+        {
+          path: 'admin/shortlists',
+          name: 'admin-shortlists',
+          component: () => import('@/views/AdminShortlistsView.vue'),
           meta: { adminOnly: true },
         },
         {
