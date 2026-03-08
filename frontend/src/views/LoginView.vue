@@ -63,8 +63,15 @@
               </v-card-text>
             </v-card>
 
-            <p class="text-center text-caption text-medium-emphasis mt-6">
+            <p class="text-center text-caption text-medium-emphasis mt-4">
               © {{ new Date().getFullYear() }} Varanbook. All rights reserved.
+            </p>
+            <p class="text-center mt-2">
+              <router-link
+                to="/privacy-policy"
+                class="text-caption text-medium-emphasis text-decoration-none"
+                style="opacity: 0.8;"
+              >Privacy Policy</router-link>
             </p>
           </v-col>
         </v-row>
