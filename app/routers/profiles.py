@@ -9,13 +9,14 @@ import uuid
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.auth.dependencies import get_current_user, require_admin
 from app.database import get_db
 from app.models.profile import Profile, ProfileStatus
+from app.models.shortlist import Shortlist, ShortlistStatus
 from app.models.user import User, UserRole
 from app.schemas.profile import ProfileCreate, ProfileRead, ProfileUpdate
 
@@ -240,8 +241,42 @@ async def get_profile(
     profile = result.scalar_one_or_none()
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found.")
-    _assert_profile_access(profile, current_user)
-    return _profile_read(profile)
+
+    # For MEMBER viewers, check for an accepted shortlist connection BEFORE the
+    # standard access check so that accepted connections bypass the profile-status
+    # restriction (e.g. DRAFT profiles created by an admin are still reachable by
+    # the connected member).
+    connection_status: str | None = None
+    is_accepted_connection = False
+    if current_user.role == UserRole.MEMBER and profile.user_id != current_user.id:
+        viewer_profile_result = await db.execute(
+            select(Profile.id).where(Profile.user_id == current_user.id)
+        )
+        viewer_profile_id = viewer_profile_result.scalar_one_or_none()
+        if viewer_profile_id:
+            sl_result = await db.execute(
+                select(Shortlist.status).where(
+                    or_(
+                        (Shortlist.from_profile_id == viewer_profile_id) & (Shortlist.to_profile_id == profile_id),
+                        (Shortlist.from_profile_id == profile_id) & (Shortlist.to_profile_id == viewer_profile_id),
+                    )
+                ).where(Shortlist.status == ShortlistStatus.ACCEPTED).limit(1)
+            )
+            sl_status = sl_result.scalar_one_or_none()
+            if sl_status:
+                connection_status = sl_status.value
+                is_accepted_connection = True
+
+    if is_accepted_connection:
+        # Accepted connections bypass the profile-status restriction, but
+        # tenant isolation is still enforced.
+        if profile.tenant_id != current_user.tenant_id:
+            raise HTTPException(status_code=403, detail="Access denied.")
+    else:
+        _assert_profile_access(profile, current_user)
+
+    read = _profile_read(profile)
+    return read.model_copy(update={"connection_status": connection_status})
 
 
 @router.patch(

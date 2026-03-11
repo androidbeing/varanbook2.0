@@ -217,6 +217,9 @@ class ProfileRead(BaseModel):
     status: ProfileStatus
     created_at: datetime
     updated_at: datetime
+    # Populated by the API when the viewer has an accepted shortlist with this profile.
+    # "accepted" means both parties have confirmed the connection → full profile visible.
+    connection_status: str | None = None
 
     model_config = {"from_attributes": True}
 

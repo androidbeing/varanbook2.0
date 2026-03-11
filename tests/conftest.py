@@ -23,6 +23,9 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from sqlalchemy import JSON
+from sqlalchemy.dialects.postgresql import ARRAY
+
 from app.database import Base, get_db
 from app.main import create_app
 from app.models.tenant import Tenant
@@ -39,11 +42,25 @@ _TestSession = async_sessionmaker(
 _pwd = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
+def _replace_array_with_json(conn) -> None:
+    """
+    SQLite does not support PostgreSQL's ARRAY type.
+    Replace every ARRAY column in the metadata with JSON before create_all,
+    so the in-memory test DB can create the tables without errors.
+    Array values will be stored/retrieved as JSON, which is fine for tests.
+    """
+    for table in Base.metadata.tables.values():
+        for column in table.columns:
+            if isinstance(column.type, ARRAY):
+                column.type = JSON()
+    Base.metadata.create_all(conn)
+
+
 # ── Create tables once per test session ───────────────────────────────────────
 @pytest_asyncio.fixture(scope="session", autouse=True)
 async def create_test_tables():
     async with _test_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(_replace_array_with_json)
     yield
     async with _test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)

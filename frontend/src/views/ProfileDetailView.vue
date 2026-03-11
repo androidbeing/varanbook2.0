@@ -359,10 +359,15 @@ const canViewPhotos = ref(false)
 const horoscopeUrl = ref<string | null>(null)
 
 // Admins, super-admins and the profile owner bypass ALL visibility flags.
-// Regular members must respect each member's own privacy settings.
+// Members who have an accepted shortlist connection also bypass privacy.
 const canBypassPrivacy = computed(() => {
   if (!profile.value) return false
-  return auth.isAdmin || auth.isSuperAdmin || auth.user?.id === profile.value.user_id
+  return (
+    auth.isAdmin ||
+    auth.isSuperAdmin ||
+    auth.user?.id === profile.value.user_id ||
+    profile.value.connection_status === 'accepted'
+  )
 })
 
 // Convenience: the presigned URL for the first photo (used in the hero card).
@@ -384,9 +389,10 @@ watch(
     horoscopeUrl.value = null
     if (!p) return
     const isOwner = auth.user?.id === p.user_id
+    const isConnected = p.connection_status === 'accepted'
 
-    // Photos — respect photo_visible (bypassed for admin / owner).
-    const canViewPhoto = auth.isAdmin || auth.isSuperAdmin || isOwner || p.photo_visible
+    // Photos — respect photo_visible (bypassed for admin / owner / accepted connection).
+    const canViewPhoto = auth.isAdmin || auth.isSuperAdmin || isOwner || isConnected || p.photo_visible
     canViewPhotos.value = canViewPhoto
     if (canViewPhoto && p.photo_keys?.length) {
       await Promise.allSettled(
@@ -402,7 +408,7 @@ watch(
     }
 
     // Horoscope — uses its own horoscope_visible flag (independent of birth_visible).
-    const canViewHoroscope = auth.isAdmin || auth.isSuperAdmin || isOwner || p.horoscope_visible
+    const canViewHoroscope = auth.isAdmin || auth.isSuperAdmin || isOwner || isConnected || p.horoscope_visible
     if (canViewHoroscope && p.horoscope_key) {
       try {
         const { url } = await filesApi.presignGet(p.horoscope_key)

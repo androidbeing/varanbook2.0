@@ -38,17 +38,95 @@ client.interceptors.request.use((config) => {
   return config
 })
 
-// 401 → clear tokens and redirect to login
-// Exception: skip redirect for the login endpoint itself (wrong credentials)
+// Token refresh logic with request queuing to handle concurrent 401s.
+// While a refresh is in flight, subsequent 401 failures are queued and
+// resolved/rejected once the refresh completes instead of each triggering
+// their own refresh attempt.
+let isRefreshing = false
+let refreshQueue: Array<{ resolve: (token: string) => void; reject: (err: unknown) => void }> = []
+
+function drainQueue(token: string) {
+  refreshQueue.forEach((p) => p.resolve(token))
+  refreshQueue = []
+}
+
+function rejectQueue(err: unknown) {
+  refreshQueue.forEach((p) => p.reject(err))
+  refreshQueue = []
+}
+
+function clearSession() {
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('refresh_token')
+  window.location.href = '/login'
+}
+
+// 401 → attempt silent token refresh, then retry the original request.
+// Exceptions: login and refresh endpoints themselves are passed through.
 client.interceptors.response.use(
   (res) => res,
-  (err) => {
-    if (err.response?.status === 401 && !err.config?.url?.includes('/auth/login')) {
-      localStorage.removeItem('access_token')
-      localStorage.removeItem('refresh_token')
-      window.location.href = '/login'
+  async (err) => {
+    const originalConfig = err.config
+    const url: string = originalConfig?.url ?? ''
+
+    // Pass through errors from auth endpoints to avoid infinite loops
+    if (
+      err.response?.status !== 401 ||
+      url.includes('/auth/login') ||
+      url.includes('/auth/refresh') ||
+      originalConfig?._retry
+    ) {
+      return Promise.reject(err)
     }
-    return Promise.reject(err)
+
+    originalConfig._retry = true
+
+    if (isRefreshing) {
+      // Another refresh is already in flight — queue this request
+      return new Promise<string>((resolve, reject) => {
+        refreshQueue.push({ resolve, reject })
+      })
+        .then((newToken) => {
+          originalConfig.headers.Authorization = `Bearer ${newToken}`
+          return client(originalConfig)
+        })
+        .catch(() => Promise.reject(err))
+    }
+
+    const storedRefreshToken = localStorage.getItem('refresh_token')
+    if (!storedRefreshToken) {
+      clearSession()
+      return Promise.reject(err)
+    }
+
+    isRefreshing = true
+    try {
+      // Call refresh directly via axios to avoid going through this interceptor
+      const response = await axios.post<{ access_token: string; refresh_token?: string }>(
+        `${BASE_URL}/auth/refresh`,
+        { refresh_token: storedRefreshToken },
+        { headers: { 'Content-Type': 'application/json' } },
+      )
+      const { access_token, refresh_token } = response.data
+
+      localStorage.setItem('access_token', access_token)
+      if (refresh_token) {
+        localStorage.setItem('refresh_token', refresh_token)
+      }
+
+      // Update the shared client default so future requests use the new token
+      client.defaults.headers.common.Authorization = `Bearer ${access_token}`
+
+      drainQueue(access_token)
+      originalConfig.headers.Authorization = `Bearer ${access_token}`
+      return client(originalConfig)
+    } catch (refreshErr) {
+      rejectQueue(refreshErr)
+      clearSession()
+      return Promise.reject(refreshErr)
+    } finally {
+      isRefreshing = false
+    }
   },
 )
 

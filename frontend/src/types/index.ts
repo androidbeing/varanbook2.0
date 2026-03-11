@@ -112,6 +112,8 @@ export interface Profile {
 
   // Derived from user (populated by backend)
   full_name?: string | null
+  // "accepted" when viewer has a mutually confirmed shortlist connection with this profile
+  connection_status?: string | null
 }
 
 // ── Partner Preference ───────────────────────────────────────────────────────
