@@ -5,7 +5,7 @@
       <v-row class="mb-6">
         <v-col>
           <v-card color="primary" rounded="xl" class="pa-6">
-            <div class="d-flex align-center flex-wrap gap-4">
+            <div class="d-flex align-center flex-wrap ga-4">
               <v-icon size="48" class="opacity-75">mdi-shield-crown</v-icon>
               <div>
                 <h1 class="text-h5 font-weight-bold">Super Admin Console</h1>
@@ -22,7 +22,7 @@
       <v-row class="mb-4">
         <v-col cols="12" sm="6" lg="3">
           <v-card rounded="xl" color="blue" variant="tonal">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-icon color="blue" size="36">mdi-office-building-cog</v-icon>
               <div>
                 <p class="text-body-2 text-medium-emphasis mb-0">Total Tenants</p>
@@ -33,7 +33,7 @@
         </v-col>
         <v-col cols="12" sm="6" lg="3">
           <v-card rounded="xl" color="green" variant="tonal">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-icon color="green" size="36">mdi-check-circle</v-icon>
               <div>
                 <p class="text-body-2 text-medium-emphasis mb-0">Active</p>
@@ -44,7 +44,7 @@
         </v-col>
         <v-col cols="12" sm="6" lg="3">
           <v-card rounded="xl" color="red" variant="tonal">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-icon color="red" size="36">mdi-close-circle</v-icon>
               <div>
                 <p class="text-body-2 text-medium-emphasis mb-0">Inactive</p>
@@ -55,7 +55,7 @@
         </v-col>
         <v-col cols="12" sm="6" lg="3">
           <v-card rounded="xl" color="purple" variant="tonal">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-icon color="purple" size="36">mdi-account-group</v-icon>
               <div>
                 <p class="text-body-2 text-medium-emphasis mb-0">Total Admins</p>
@@ -73,7 +73,7 @@
         </v-col>
         <v-col cols="12" sm="6" md="4">
           <v-card rounded="xl" hover class="cursor-pointer" @click="router.push('/admin/tenants')">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-avatar color="blue" variant="tonal" size="44">
                 <v-icon>mdi-office-building-plus</v-icon>
               </v-avatar>
@@ -88,7 +88,7 @@
         </v-col>
         <v-col cols="12" sm="6" md="4">
           <v-card rounded="xl" hover class="cursor-pointer" @click="router.push('/admin/tenants')">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-avatar color="purple" variant="tonal" size="44">
                 <v-icon>mdi-office-building-cog</v-icon>
               </v-avatar>
@@ -152,7 +152,7 @@
       <v-row class="mb-6">
         <v-col>
           <v-card color="primary" rounded="xl" class="pa-6">
-            <div class="d-flex align-center flex-wrap gap-4">
+            <div class="d-flex align-center flex-wrap ga-4">
               <v-icon size="48" class="opacity-75">mdi-account-circle</v-icon>
               <div>
                 <h1 class="text-h5 font-weight-bold">
@@ -180,7 +180,7 @@
       <v-row class="mb-4">
         <v-col cols="12" sm="6" lg="3">
           <v-card rounded="xl" color="blue" variant="tonal">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-icon color="blue" size="36">mdi-account-group</v-icon>
               <div>
                 <p class="text-body-2 text-medium-emphasis mb-0">Total Members</p>
@@ -191,7 +191,7 @@
         </v-col>
         <v-col cols="12" sm="6" lg="3">
           <v-card rounded="xl" color="green" variant="tonal">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-icon color="green" size="36">mdi-account-check</v-icon>
               <div>
                 <p class="text-body-2 text-medium-emphasis mb-0">Active Profiles</p>
@@ -202,7 +202,7 @@
         </v-col>
         <v-col cols="12" sm="6" lg="3">
           <v-card rounded="xl" color="orange" variant="tonal">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-icon color="orange" size="36">mdi-account-clock</v-icon>
               <div>
                 <p class="text-body-2 text-medium-emphasis mb-0">Draft/Pending</p>
@@ -213,7 +213,7 @@
         </v-col>
         <v-col cols="12" sm="6" lg="3">
           <v-card rounded="xl" color="purple" variant="tonal">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-icon color="purple" size="36">mdi-gender-male-female</v-icon>
               <div>
                 <p class="text-body-2 text-medium-emphasis mb-0">Male / Female</p>
@@ -231,7 +231,7 @@
         </v-col>
         <v-col v-for="action in adminActions" :key="action.title" cols="12" sm="6" md="4">
           <v-card rounded="xl" hover class="cursor-pointer" @click="router.push(action.to)">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-avatar :color="action.color" variant="tonal" size="44">
                 <v-icon :icon="action.icon" />
               </v-avatar>
@@ -297,7 +297,7 @@
       <v-row class="mb-6">
         <v-col>
           <v-card color="primary" rounded="xl" class="pa-6">
-            <div class="d-flex align-center flex-wrap gap-4">
+            <div class="d-flex align-center flex-wrap ga-4">
               <v-icon size="48" class="opacity-75">mdi-heart-circle</v-icon>
               <div>
                 <h1 class="text-h5 font-weight-bold">
@@ -325,7 +325,7 @@
       <v-row v-if="profileCompletion < 60" class="mb-4">
         <v-col>
           <v-alert type="warning" variant="tonal" rounded="xl" border="start">
-            <div class="d-flex align-center flex-wrap gap-3">
+            <div class="d-flex align-center flex-wrap ga-3">
               <div>
                 <strong>Your profile is {{ profileCompletion }}% complete.</strong>
                 Complete your profile to get better matches!
@@ -342,7 +342,7 @@
       <v-row class="mb-4">
         <v-col cols="12" sm="6" lg="3">
           <v-card rounded="xl" color="green" variant="tonal">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-icon color="green" size="36">mdi-check-circle</v-icon>
               <div>
                 <p class="text-body-2 text-medium-emphasis mb-0">Profile Complete</p>
@@ -353,7 +353,7 @@
         </v-col>
         <v-col cols="12" sm="6" lg="3">
           <v-card rounded="xl" color="pink" variant="tonal" class="cursor-pointer" @click="router.push('/my-interests')">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-icon color="pink" size="36">mdi-heart-arrow</v-icon>
               <div>
                 <p class="text-body-2 text-medium-emphasis mb-0">Interests Sent</p>
@@ -364,7 +364,7 @@
         </v-col>
         <v-col cols="12" sm="6" lg="3">
           <v-card rounded="xl" color="deep-orange" variant="tonal" class="cursor-pointer" @click="router.push('/my-interests?tab=received')">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-icon color="deep-orange" size="36">mdi-heart-flash</v-icon>
               <div>
                 <p class="text-body-2 text-medium-emphasis mb-0">Pending Requests</p>
@@ -375,7 +375,7 @@
         </v-col>
         <v-col cols="12" sm="6" lg="3">
           <v-card rounded="xl" color="blue" variant="tonal">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-icon color="blue" size="36">mdi-account-multiple-check</v-icon>
               <div>
                 <p class="text-body-2 text-medium-emphasis mb-0">Total Profiles</p>
@@ -386,7 +386,7 @@
         </v-col>
         <v-col cols="12" sm="6" lg="3">
           <v-card rounded="xl" :color="myProfile?.status === 'active' ? 'green' : 'orange'" variant="tonal">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-icon :color="myProfile?.status === 'active' ? 'green' : 'orange'" size="36">
                 mdi-account-circle
               </v-icon>
@@ -417,7 +417,7 @@
               rounded
               bg-color="grey-lighten-3"
             />
-            <div class="d-flex flex-wrap gap-2 mt-3">
+            <div class="d-flex flex-wrap ga-2 mt-3">
               <v-chip
                 v-for="sec in profileSections"
                 :key="sec.label"
@@ -440,7 +440,7 @@
         </v-col>
         <v-col v-for="action in memberActions" :key="action.title" cols="12" sm="6" md="4">
           <v-card rounded="xl" hover class="cursor-pointer" @click="router.push(action.to)">
-            <v-card-text class="d-flex align-center gap-4 pa-5">
+            <v-card-text class="d-flex align-center ga-4 pa-5">
               <v-avatar :color="action.color" variant="tonal" size="44">
                 <v-icon :icon="action.icon" />
               </v-avatar>

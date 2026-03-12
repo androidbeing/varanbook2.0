@@ -1,11 +1,11 @@
 :root {
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  line-height: 1.65;
   font-weight: 400;
 
   color-scheme: light;
   color: #1a1a2e;
-  background-color: #EBF5FF;
+  background-color: #EDF3FF;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,7 +19,9 @@ h1, h2, h3, h4, h5, h6,
 .v-toolbar-title,
 .display-font {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  letter-spacing: 0.01em;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
 }
 
 /* Vuetify component font overrides */
@@ -81,11 +83,11 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    color: #1a1a2e;
+    background-color: #EDF3FF;
   }
   a:hover {
-    color: #747bff;
+    color: #1E88E5;
   }
   button {
     background-color: #f9f9f9;

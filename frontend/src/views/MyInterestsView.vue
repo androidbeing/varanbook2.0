@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h1 class="text-h5 font-weight-bold mb-1">My Interests</h1>
     <p class="text-body-2 text-medium-emphasis mb-4">
@@ -84,7 +84,7 @@
                   <p class="text-caption text-medium-emphasis mb-1">
                     {{ ageLine(item.profile) }}
                   </p>
-                  <div v-if="item.profile.city || item.profile.state" class="d-flex align-center gap-1">
+                  <div v-if="item.profile.city || item.profile.state" class="d-flex align-center ga-1">
                     <v-icon size="12" color="medium-emphasis">mdi-map-marker-outline</v-icon>
                     <span class="text-caption text-medium-emphasis text-truncate">
                       {{ [item.profile.city, item.profile.state].filter(Boolean).join(', ') }}
@@ -134,7 +134,7 @@
       <!-- ── RECEIVED TAB ──────────────────────────────────────────────── -->
       <v-window-item value="received">
         <!-- Status filter -->
-        <div class="d-flex gap-2 flex-wrap mb-5">
+        <div class="d-flex ga-2 flex-wrap mb-5">
           <v-chip
             v-for="opt in receivedFilters"
             :key="opt.value ?? 'all'"
@@ -220,13 +220,13 @@
                   <p class="text-caption text-medium-emphasis mb-1">
                     {{ ageLine(item.profile) }}
                   </p>
-                  <div v-if="item.profile.city || item.profile.state" class="d-flex align-center gap-1">
+                  <div v-if="item.profile.city || item.profile.state" class="d-flex align-center ga-1">
                     <v-icon size="12" color="medium-emphasis">mdi-map-marker-outline</v-icon>
                     <span class="text-caption text-medium-emphasis text-truncate">
                       {{ [item.profile.city, item.profile.state].filter(Boolean).join(', ') }}
                     </span>
                   </div>
-                  <div v-if="item.profile.profession" class="d-flex align-center gap-1 mt-1">
+                  <div v-if="item.profile.profession" class="d-flex align-center ga-1 mt-1">
                     <v-icon size="12" color="medium-emphasis">mdi-briefcase-outline</v-icon>
                     <span class="text-caption text-medium-emphasis text-truncate">
                       {{ item.profile.profession }}
@@ -241,7 +241,7 @@
                 </v-card-text>
 
                 <!-- Accept / Reject (pending only) -->
-                <v-card-actions v-if="item.status === 'shortlisted'" class="pt-0 px-3 pb-3 gap-2">
+                <v-card-actions v-if="item.status === 'shortlisted'" class="pt-0 px-3 pb-3 ga-2">
                   <v-btn
                     size="small"
                     color="success"

@@ -344,13 +344,15 @@ async def list_subscriptions(
     current_user: Annotated[User, Depends(require_admin)],
     status_filter: str | None = Query(None, alias="status"),
     user_id: uuid.UUID | None = Query(None),
+    search: str | None = Query(None),
     page: int = Query(1, ge=1),
     size: int = Query(20, ge=1, le=100),
 ) -> dict:
-    from sqlalchemy import func
+    from sqlalchemy import func, or_
 
     query = (
         select(MemberSubscription)
+        .join(User, User.id == MemberSubscription.user_id)
         .where(MemberSubscription.tenant_id == current_user.tenant_id)
         .options(selectinload(MemberSubscription.plan_template))
     )
@@ -364,6 +366,14 @@ async def list_subscriptions(
             )
     if user_id:
         query = query.where(MemberSubscription.user_id == user_id)
+    if search:
+        term = f"%{search.strip()}%"
+        query = query.where(
+            or_(
+                User.full_name.ilike(term),
+                User.email.ilike(term),
+            )
+        )
 
     total_result = await db.execute(
         select(func.count()).select_from(query.subquery())

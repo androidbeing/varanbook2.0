@@ -1,11 +1,11 @@
-<template>
+﻿<template>
   <div>
     <!-- ── Header ─────────────────────────────────────────────────────────── -->
     <v-row class="mb-6">
       <v-col>
         <v-card color="primary" rounded="xl" class="pa-6">
-          <div class="d-flex align-center justify-space-between flex-wrap gap-4">
-            <div class="d-flex align-center gap-4">
+          <div class="d-flex align-center justify-space-between flex-wrap ga-4">
+            <div class="d-flex align-center ga-4">
               <v-icon size="48" class="opacity-75">mdi-card-account-details-star</v-icon>
               <div>
                 <h1 class="text-h5 font-weight-bold">Manage Memberships</h1>
@@ -200,7 +200,7 @@
             </v-alert>
           </v-form>
         </v-card-text>
-        <v-card-actions class="pa-5 pt-0 gap-2">
+        <v-card-actions class="pa-5 pt-0 ga-2">
           <v-spacer />
           <v-btn variant="text" @click="assignDialog = false">Cancel</v-btn>
           <v-btn
@@ -227,7 +227,7 @@
           subscription for <strong>{{ cancelTarget?.member_name ?? cancelTarget?.user_id }}</strong>.
           This action cannot be undone.
         </v-card-text>
-        <v-card-actions class="pa-5 pt-0 gap-2">
+        <v-card-actions class="pa-5 pt-0 ga-2">
           <v-spacer />
           <v-btn variant="text" @click="cancelDialog = false">Back</v-btn>
           <v-btn
@@ -335,6 +335,7 @@ async function loadSubscriptions() {
       size: pageSize.value,
     }
     if (statusFilter.value) params.status = statusFilter.value
+    if (search.value?.trim()) params.search = search.value.trim()
 
     const res = await membershipApi.listSubscriptions(params)
     rows.value = (res.items ?? []).map((s) => {

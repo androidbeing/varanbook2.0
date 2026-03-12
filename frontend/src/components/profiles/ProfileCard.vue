@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <v-card
     rounded="xl"
     hover
@@ -59,7 +59,7 @@
       </p>
 
       <!-- Location -->
-      <div v-if="profile.city || profile.state" class="d-flex align-center gap-1">
+      <div v-if="profile.city || profile.state" class="d-flex align-center ga-1">
         <v-icon size="14" color="medium-emphasis">mdi-map-marker-outline</v-icon>
         <span class="text-caption text-medium-emphasis text-truncate">
           {{ [profile.city, profile.state].filter(Boolean).join(', ') }}
@@ -67,7 +67,7 @@
       </div>
 
       <!-- Profession -->
-      <div v-if="profile.profession" class="d-flex align-center gap-1 mt-1">
+      <div v-if="profile.profession" class="d-flex align-center ga-1 mt-1">
         <v-icon size="14" color="medium-emphasis">mdi-briefcase-outline</v-icon>
         <span class="text-caption text-medium-emphasis text-truncate">
           {{ profile.profession }}
@@ -75,7 +75,7 @@
       </div>
 
       <!-- Religion / Caste -->
-      <div v-if="profile.religion || profile.caste" class="d-flex align-center gap-1 mt-1">
+      <div v-if="profile.religion || profile.caste" class="d-flex align-center ga-1 mt-1">
         <v-icon size="14" color="medium-emphasis">mdi-om</v-icon>
         <span class="text-caption text-medium-emphasis text-truncate">
           {{ [profile.religion, profile.caste].filter(Boolean).join(' · ') }}

@@ -1,10 +1,10 @@
-<template>
+﻿<template>
   <div>
     <!-- Header -->
     <v-row class="mb-6">
       <v-col>
         <v-card color="primary" rounded="xl" class="pa-6">
-          <div class="d-flex align-center flex-wrap gap-4">
+          <div class="d-flex align-center flex-wrap ga-4">
             <v-icon size="48" class="opacity-75">mdi-office-building-cog</v-icon>
             <div class="flex-grow-1">
               <h1 class="text-h5 font-weight-bold">Manage Tenants</h1>
@@ -116,7 +116,7 @@
 
         <!-- Actions -->
         <template #item.actions="{ item }">
-          <div class="d-flex gap-1">
+          <div class="d-flex ga-1">
             <v-tooltip text="Edit tenant">
               <template #activator="{ props }">
                 <v-btn

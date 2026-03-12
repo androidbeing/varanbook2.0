@@ -1,9 +1,9 @@
-<template>
+﻿<template>
   <div>
     <v-row class="mb-6">
       <v-col>
         <v-card color="primary" rounded="xl" class="pa-6">
-          <div class="d-flex align-center gap-4">
+          <div class="d-flex align-center ga-4">
             <v-icon size="40" class="opacity-75">mdi-lock-reset</v-icon>
             <div>
               <h1 class="text-h5 font-weight-bold">Change Password</h1>

@@ -1,10 +1,10 @@
-<template>
+﻿<template>
   <div>
     <!-- Header -->
     <v-row class="mb-6">
       <v-col>
         <v-card color="primary" rounded="xl" class="pa-6">
-          <div class="d-flex align-center gap-4">
+          <div class="d-flex align-center ga-4">
             <!-- Clickable avatar with upload support -->
             <v-tooltip text="Click to change profile picture" location="bottom">
               <template #activator="{ props: tp }">
@@ -172,7 +172,7 @@
             <v-icon class="mr-2" size="20">mdi-storefront-outline</v-icon>Tenant / Centre Logo
           </v-card-title>
           <v-card-text class="pa-5 pt-2">
-            <div class="d-flex align-center gap-4 flex-wrap">
+            <div class="d-flex align-center ga-4 flex-wrap">
               <v-avatar size="80" rounded="lg" color="grey-lighten-3" style="border:2px dashed #bbb">
                 <v-img v-if="logoUrl" :src="logoUrl" cover />
                 <v-icon v-else size="36" color="grey-darken-1">mdi-image-outline</v-icon>

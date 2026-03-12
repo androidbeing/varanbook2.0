@@ -1,10 +1,10 @@
-<template>
+﻿<template>
   <div>
     <!-- Header -->
     <v-row class="mb-6">
       <v-col>
         <v-card color="primary" rounded="xl" class="pa-6">
-          <div class="d-flex align-center flex-wrap gap-4">
+          <div class="d-flex align-center flex-wrap ga-4">
             <v-btn
               icon="mdi-arrow-left"
               variant="text"
@@ -271,7 +271,7 @@
               <v-icon class="mr-2" size="20">mdi-tag-multiple-outline</v-icon>Caste Categories (optional)
             </v-card-title>
             <v-card-text class="pa-5 pt-2">
-              <div class="d-flex flex-wrap gap-2 mb-3">
+              <div class="d-flex flex-wrap ga-2 mb-3">
                 <v-chip
                   v-for="(caste, i) in form.castes"
                   :key="i"
@@ -281,7 +281,7 @@
                   {{ caste }}
                 </v-chip>
               </div>
-              <div class="d-flex gap-2">
+              <div class="d-flex ga-2">
                 <v-text-field
                   v-model="casteInput"
                   label="Add a caste"
@@ -298,7 +298,7 @@
 
         <!-- ── Actions ─────────────────────────────────────────────────────── -->
         <v-col cols="12">
-          <div class="d-flex justify-end gap-3">
+          <div class="d-flex justify-end ga-3">
             <v-btn variant="outlined" size="large" @click="router.push('/admin/tenants')">
               Cancel
             </v-btn>

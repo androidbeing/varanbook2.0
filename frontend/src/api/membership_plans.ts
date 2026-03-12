@@ -4,6 +4,7 @@ import type { TenantPlan, Subscription, PaginatedResponse } from '@/types'
 export interface SubscriptionsQuery {
   status?: string
   user_id?: string
+  search?: string
   page?: number
   size?: number
 }

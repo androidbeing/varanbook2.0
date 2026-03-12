@@ -1,10 +1,10 @@
-<template>
+﻿<template>
   <div>
     <!-- ── Header ─────────────────────────────────────────────────────────── -->
     <v-row class="mb-6">
       <v-col>
         <v-card color="primary" rounded="xl" class="pa-6">
-          <div class="d-flex align-center gap-4">
+          <div class="d-flex align-center ga-4">
             <v-icon size="48" class="opacity-75">mdi-card-account-details-star</v-icon>
             <div>
               <h1 class="text-h5 font-weight-bold">Membership</h1>
@@ -38,9 +38,9 @@
           class="mb-2"
         >
           <v-card-text class="pa-5">
-            <div class="d-flex align-center justify-space-between flex-wrap gap-3">
+            <div class="d-flex align-center justify-space-between flex-wrap ga-3">
               <div>
-                <div class="d-flex align-center gap-2 mb-1">
+                <div class="d-flex align-center ga-2 mb-1">
                   <v-icon color="success" size="22">mdi-check-decagram</v-icon>
                   <span class="text-subtitle-1 font-weight-bold">
                     {{ store.mySubscription.plan_name }}
@@ -71,7 +71,7 @@
 
         <!-- No subscription -->
         <v-card v-else rounded="xl" variant="outlined" class="mb-2">
-          <v-card-text class="pa-5 d-flex align-center gap-4">
+          <v-card-text class="pa-5 d-flex align-center ga-4">
             <v-icon size="40" color="warning">mdi-information-outline</v-icon>
             <div>
               <p class="text-subtitle-1 font-weight-semibold mb-0">No active subscription</p>
