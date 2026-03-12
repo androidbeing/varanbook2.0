@@ -18,6 +18,7 @@ export interface User {
   id: string
   email: string
   full_name: string
+  phone?: string | null
   role: UserRole
   is_active: boolean
   tenant_id: string | null

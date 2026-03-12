@@ -81,6 +81,9 @@
                     variant="outlined"
                     density="comfortable"
                     prepend-inner-icon="mdi-gender-male-female"
+                    :readonly="!!profileData?.gender"
+                    :hint="profileData?.gender ? 'Set during registration — cannot be changed' : ''"
+                    :persistent-hint="!!profileData?.gender"
                   />
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -423,7 +426,8 @@
                     variant="outlined"
                     density="comfortable"
                     prepend-inner-icon="mdi-cellphone"
-                    hint="10-digit (7558112327) or with code (+917558112327)"
+                    :readonly="!!authUser?.phone"
+                    :hint="authUser?.phone ? 'Set during registration — cannot be changed' : '10-digit (7558112327) or with code (+917558112327)'"
                     persistent-hint
                   />
                 </v-col>
@@ -975,6 +979,10 @@ function populateFormFromProfile(p: Profile | null | undefined) {
   // Also restore the display name from the profile response (belt-and-suspenders
   // fallback in case authStore.user hasn't resolved yet on remount)
   if (p.full_name) fullName.value = p.full_name
+  // Auto-fill mobile from the user account phone if not set on the profile
+  if (!form.value.mobile && authStore.user?.phone) {
+    form.value.mobile = authStore.user.phone
+  }
 }
 
 async function populatePrefForm(p: Profile | null | undefined) {

@@ -210,8 +210,16 @@ async def update_my_profile(
         raise HTTPException(status_code=404, detail="Profile not found. Create one first.")
 
     _ORPHAN_FIELDS = {"annual_income_inr", "siblings", "nakshatra", "occupation", "education", "about_me", "display_name"}
+
+    # Lock fields set by admin at onboarding — members cannot overwrite them
+    _LOCKED_FIELDS: set[str] = set()
+    if profile.gender is not None:
+        _LOCKED_FIELDS.add("gender")
+    if current_user.phone is not None:
+        _LOCKED_FIELDS.add("mobile")
+
     for field, value in payload.model_dump(exclude_unset=True).items():
-        if field not in _ORPHAN_FIELDS and hasattr(profile, field):
+        if field not in _ORPHAN_FIELDS and field not in _LOCKED_FIELDS and hasattr(profile, field):
             setattr(profile, field, value)
 
     # Promote draft profiles to active whenever the member saves any section

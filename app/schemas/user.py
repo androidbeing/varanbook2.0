@@ -15,6 +15,7 @@ from typing import Literal
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
+from app.models.profile import Gender
 from app.models.user import UserRole
 
 
@@ -169,6 +170,7 @@ class MemberOnboardRequest(BaseModel):
     full_name: str = Field(..., min_length=2, max_length=200)
     email: EmailStr
     phone: str | None = Field(None, pattern=r"^\+?[1-9]\d{6,14}$")
+    gender: Gender  # required — set by admin at onboarding and locked for member editing
 
     @field_validator("email")
     @classmethod

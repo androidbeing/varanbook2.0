@@ -38,6 +38,7 @@ from app.auth.jwt import (
 )
 from app.config import get_settings
 from app.database import get_db
+from app.models.profile import Profile, ProfileStatus
 from app.models.tenant import Tenant
 from app.models.user import User, UserRole
 from app.models.refresh_token import RefreshToken
@@ -382,8 +383,11 @@ async def onboard_admin(
     try:
         from app.services.email import EmailService
         await EmailService.send_member_invite(user.email, temp_password, user.full_name)
-    except Exception:
-        pass
+    except Exception as exc:
+        import logging
+        logging.getLogger(__name__).error(
+            "onboard_admin_email_failed", extra={"email": user.email, "error": str(exc)}
+        )
 
     return AdminOnboardResponse(
         user=UserRead.model_validate(user),
@@ -434,13 +438,30 @@ async def onboard_member(
 
     await db.refresh(user)
 
+    # Pre-create a profile with the gender and mobile set by the admin,
+    # so the member sees them locked on first login.
+    profile = Profile(
+        user_id=user.id,
+        tenant_id=user.tenant_id,
+        gender=payload.gender,
+        mobile=user.phone,   # mirror User.phone → Profile.mobile
+        status=ProfileStatus.ACTIVE,
+    )
+    db.add(profile)
+    try:
+        await db.flush()
+    except Exception:
+        pass  # profile creation should not block the user record
+
     # Send invite email — never fail the request if email delivery fails
     try:
         from app.services.email import EmailService
         await EmailService.send_member_invite(user.email, temp_password, user.full_name)
-    except Exception:
-        pass
-
+    except Exception as exc:
+        import logging
+        logging.getLogger(__name__).error(
+            "onboard_member_email_failed", extra={"email": user.email, "error": str(exc)}
+        )
     return MemberOnboardResponse(
         user=UserRead.model_validate(user),
         temp_password=temp_password,
@@ -489,6 +510,10 @@ async def onboard_members_bulk(
         email = (record.get("email") or "").strip().lower()
         full_name = (record.get("full_name") or "").strip()
         phone = (record.get("phone") or "").strip() or None
+        gender_raw = (record.get("gender") or "").strip().lower() or None
+        # Validate gender value; ignore unrecognised values gracefully
+        from app.models.profile import Gender as _Gender
+        gender = gender_raw if gender_raw in {g.value for g in _Gender} else None
 
         if not email or not full_name:
             errors += 1
@@ -519,6 +544,16 @@ async def onboard_members_bulk(
                 db.add(user)
                 await db.flush()
                 await db.refresh(user)
+                # Pre-create profile with gender and mobile locked from onboarding
+                profile = Profile(
+                    user_id=user.id,
+                    tenant_id=current_user.tenant_id,
+                    gender=gender,
+                    mobile=phone,
+                    status=ProfileStatus.ACTIVE,
+                )
+                db.add(profile)
+                await db.flush()
 
             created += 1
             rows.append(BulkOnboardRow(row=row_num, email=email, status="created"))
@@ -614,6 +649,9 @@ async def update_me(
     current_user: Annotated[User, Depends(get_current_user)],
 ) -> UserRead:
     for field, value in payload.model_dump(exclude_none=True).items():
+        # Lock phone if it was set during admin onboarding
+        if field == "phone" and current_user.phone is not None:
+            continue
         setattr(current_user, field, value)
     await db.flush()
     await db.refresh(current_user)

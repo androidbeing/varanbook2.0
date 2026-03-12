@@ -51,6 +51,14 @@ async def _send(to: str, subject: str, html_body: str) -> None:
         logger.info("email_dev_mode", to=to, subject=subject)
         return
 
+    if not cfg["username"] or not cfg["password"]:
+        logger.error(
+            "email_smtp_credentials_missing",
+            to=to, subject=subject,
+            hint="Set SMTP_USERNAME and SMTP_PASSWORD in your environment / terraform.tfvars",
+        )
+        return
+
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
     msg["From"] = cfg["from_addr"]

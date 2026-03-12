@@ -44,6 +44,14 @@
               :rules="[required, emailRule]"
               class="mb-2"
             />
+            <v-select
+              v-model="single.gender"
+              label="Gender *"
+              :items="[{title: 'Male', value: 'male'}, {title: 'Female', value: 'female'}, {title: 'Other', value: 'other'}]"
+              prepend-inner-icon="mdi-gender-male-female"
+              :rules="[required]"
+              class="mb-2"
+            />
             <v-text-field
               v-model="single.phone"
               label="Phone (optional)"
@@ -122,7 +130,7 @@
           </v-card-title>
           <p class="text-body-2 text-medium-emphasis mb-4">
             CSV must have a header row with at least <code>full_name</code> and <code>email</code> columns.
-            An optional <code>phone</code> column is also supported.
+            Optional columns: <code>phone</code> and <code>gender</code> (male / female / other).
           </p>
 
           <!-- Template download hint -->
@@ -255,7 +263,7 @@ const singleError = ref('')
 const singleSuccessDialog = ref(false)
 const singleResult = ref<MemberOnboardResponse | null>(null)
 
-const single = reactive({ full_name: '', email: '', phone: '' })
+const single = reactive({ full_name: '', email: '', phone: '', gender: '' as 'male' | 'female' | 'other' | '' })
 
 async function submitSingle() {
   const { valid } = await singleForm.value.validate()
@@ -268,6 +276,7 @@ async function submitSingle() {
       full_name: single.full_name.trim(),
       email: single.email.trim().toLowerCase(),
       phone: single.phone.trim() || undefined,
+      gender: single.gender,
     })
     singleResult.value = data
     singleSuccessDialog.value = true
@@ -292,6 +301,7 @@ function onboardAnother() {
   single.full_name = ''
   single.email = ''
   single.phone = ''
+  single.gender = ''
   singleResult.value = null
   singleForm.value?.reset()
 }
@@ -375,7 +385,7 @@ function statusColor(s: string) {
 }
 
 function downloadTemplate() {
-  const csv = 'full_name,email,phone\nAnita Kumar,anita@example.com,+919876543210\nRaj Mehta,raj@example.com,\n'
+  const csv = 'full_name,email,phone,gender\nAnita Kumar,anita@example.com,+919876543210,female\nRaj Mehta,raj@example.com,,male\n'
   const blob = new Blob([csv], { type: 'text/csv' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
