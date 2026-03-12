@@ -39,6 +39,9 @@ async def test_create_tenant_as_super_admin(
         "name": "Sharma Vivah Kendra",
         "slug": "sharma-vivah",
         "contact_email": "sharma@example.com",
+        "contact_person": "Ravi Sharma",
+        "contact_number": "+919876543210",
+        "pin": "600001",
         "plan": "growth",
         "max_users": 1000,
         "max_admins": 10,
@@ -74,6 +77,9 @@ async def test_create_tenant_as_regular_admin_forbidden(
             "name": "Another Centre",
             "slug": "another-centre",
             "contact_email": "x@example.com",
+            "contact_person": "Test Admin",
+            "contact_number": "+911234567890",
+            "pin": "110001",
         },
         headers=_auth_header(admin),
     )
@@ -94,6 +100,9 @@ async def test_create_tenant_duplicate_slug(
             "name": "Duplicate",
             "slug": "dup-slug",
             "contact_email": "dup@example.com",
+            "contact_person": "Test Admin",
+            "contact_number": "+911234567890",
+            "pin": "110001",
         },
         headers=_auth_header(super_admin),
     )
@@ -154,6 +163,9 @@ async def test_invalid_slug_rejected(client: AsyncClient, db: AsyncSession):
             "name": "Bad Slug",
             "slug": "UPPERCASE_SLUG",   # invalid
             "contact_email": "bad@example.com",
+            "contact_person": "Test Admin",
+            "contact_number": "+911234567890",
+            "pin": "110001",
         },
         headers=_auth_header(super_admin),
     )

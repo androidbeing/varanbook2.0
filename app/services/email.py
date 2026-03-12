@@ -140,3 +140,39 @@ class EmailService:
         <p>If you were not expecting this invitation, ignore this email.</p>
         """
         await _send(to_email, "You are invited to Varanbook", html)
+
+    # ── Subscription expired ───────────────────────────────────────────────────
+    @staticmethod
+    async def send_subscription_expired(
+        to_email: str,
+        full_name: str,
+        plan_name: str,
+    ) -> None:
+        cfg = _get_smtp_config()
+        login_url = f"{cfg['frontend_url']}/plans"
+        html = f"""
+        <p>Dear <strong>{full_name}</strong>,</p>
+        <p>Your <strong>{plan_name}</strong> membership has expired.</p>
+        <p>Renew now to continue browsing profiles and sending interest requests.</p>
+        <p><a href="{login_url}">Renew your membership</a></p>
+        """
+        await _send(to_email, f"Your {plan_name} membership has expired", html)
+
+    # ── Subscription expiry warning (3 days before) ────────────────────────────
+    @staticmethod
+    async def send_subscription_expiry_warning(
+        to_email: str,
+        full_name: str,
+        plan_name: str,
+        expires_on: str,
+    ) -> None:
+        cfg = _get_smtp_config()
+        login_url = f"{cfg['frontend_url']}/plans"
+        html = f"""
+        <p>Dear <strong>{full_name}</strong>,</p>
+        <p>Your <strong>{plan_name}</strong> membership will expire on
+        <strong>{expires_on}</strong> (3 days from now).</p>
+        <p>Renew early to avoid any interruption to your profile and matches.</p>
+        <p><a href="{login_url}">Renew your membership</a></p>
+        """
+        await _send(to_email, f"Your {plan_name} membership expires in 3 days", html)

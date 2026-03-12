@@ -55,7 +55,7 @@ async def test_create_profile_success(client: AsyncClient, db: AsyncSession):
     assert response.status_code == 201, response.text
     data = response.json()
     assert data["user_id"] == str(user.id)
-    assert data["status"] == "draft"
+    assert data["status"] == "active"  # self-service profiles are active immediately
 
 
 @pytest.mark.asyncio
@@ -111,25 +111,26 @@ async def test_member_can_get_own_profile(client: AsyncClient, db: AsyncSession)
 
 
 @pytest.mark.asyncio
-async def test_member_cannot_get_other_member_profile(
+async def test_member_can_view_active_profile_in_same_tenant(
     client: AsyncClient, db: AsyncSession
 ):
-    """Member A must not be able to read Member B's profile."""
+    """Member A can browse active profiles of other members in the same tenant."""
     tenant = await make_tenant(db, slug="prof-cross")
     user_a = await make_user(db, tenant=tenant)
     user_b = await make_user(db, tenant=tenant, email="b@example.com")
 
-    # Create profile as user_b
+    # Create profile as user_b (becomes active immediately)
     create_resp = await client.post(
         "/profiles/", json=_valid_profile_payload(), headers=_auth_header(user_b)
     )
+    assert create_resp.status_code == 201, create_resp.text
     profile_id = create_resp.json()["id"]
 
-    # Try to access as user_a
+    # Member A can view the active profile
     response = await client.get(
         f"/profiles/{profile_id}", headers=_auth_header(user_a)
     )
-    assert response.status_code == 403
+    assert response.status_code == 200
 
 
 @pytest.mark.asyncio
@@ -167,13 +168,13 @@ async def test_update_profile_field(client: AsyncClient, db: AsyncSession):
 
     patch_resp = await client.patch(
         f"/profiles/{profile_id}",
-        json={"education": "B.Tech Computer Science", "city": "Pune"},
+        json={"city": "Pune", "profession": "Software Engineer"},
         headers=_auth_header(user),
     )
     assert patch_resp.status_code == 200
     data = patch_resp.json()
-    assert data["education"] == "B.Tech Computer Science"
     assert data["city"] == "Pune"
+    assert data["profession"] == "Software Engineer"
 
 
 # ── Pydantic validation ───────────────────────────────────────────────────────
@@ -225,7 +226,7 @@ async def test_privacy_flags_hide_sections_from_stranger(
         client, db, "priv_b1@test.com", "female", slug_suffix="b1"
     )
     # Create user_a in the SAME tenant; activate profile_b so it's visible
-    result = await db.execute(select(Profile).where(Profile.id == profile_b_id))
+    result = await db.execute(select(Profile).where(Profile.id == uuid.UUID(profile_b_id)))
     profile_b = result.scalar_one()
     profile_b.status = ProfileStatus.ACTIVE
     await db.flush()
@@ -266,7 +267,7 @@ async def test_accepted_connection_returns_connection_status(
         client, db, "acc_a@test.com", "male", slug_suffix="acc"
     )
     # B must be in the same tenant
-    result = await db.execute(select(Profile).where(Profile.id == profile_a_id))
+    result = await db.execute(select(Profile).where(Profile.id == uuid.UUID(profile_a_id)))
     profile_a = result.scalar_one()
     tenant_result = await db.execute(
         select(Tenant).where(Tenant.id == profile_a.tenant_id)
@@ -338,7 +339,7 @@ async def test_pending_shortlist_does_not_grant_connection_status(
     profile_b_id = create_resp.json()["id"]
 
     # Activate profile_b so a non-connected member can still view it (status=200)
-    result = await db.execute(select(Profile).where(Profile.id == profile_b_id))
+    result = await db.execute(select(Profile).where(Profile.id == uuid.UUID(profile_b_id)))
     pend_profile_b = result.scalar_one()
     pend_profile_b.status = ProfileStatus.ACTIVE
     await db.flush()
@@ -387,7 +388,7 @@ async def test_accepted_connection_allows_access_regardless_of_profile_status(
     profile_b_id = create_resp.json()["id"]
 
     # Force profile_b to DRAFT status directly
-    result = await db.execute(select(Profile).where(Profile.id == profile_b_id))
+    result = await db.execute(select(Profile).where(Profile.id == uuid.UUID(profile_b_id)))
     profile_b = result.scalar_one()
     profile_b.status = ProfileStatus.DRAFT
     await db.flush()

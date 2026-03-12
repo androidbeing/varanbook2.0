@@ -1,0 +1,87 @@
+﻿.........F
+================================== FAILURES ===================================
+_________________________ test_create_profile_success _________________________
+tests\test_profiles.py:58: in test_create_profile_success
+    assert data["status"] == "draft"
+E   AssertionError: assert 'active' == 'draft'
+E     
+E     - draft
+E     + active
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 21:24:19,844 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 21:24:19,845 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 21:24:19,845 INFO sqlalchemy.engine.Engine [cached since 6.233s ago] (UUID('29251972-db94-4ab8-b832-e7301438ad6f'), None, None, 'post:/profiles/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 78}', 201)
+2026-03-11 21:24:19,847 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('29251972-db94-4ab8-b832-e7301438ad6f'), None, None, 'post:/profiles/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 78}', 201)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/profiles/", "request_id": "9a4fa41f-af0a-4c71-8543-f796ab49d9d3", "method": "POST", "level": "warning", "timestamp": "2026-03-11T15:54:19.849672Z"}
+{"status": 201, "elapsed_ms": 97.07, "event": "request_complete", "path": "/profiles/", "request_id": "9a4fa41f-af0a-4c71-8543-f796ab49d9d3", "method": "POST", "level": "info", "timestamp": "2026-03-11T15:54:19.851203Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 6.233s ago] (UUID('29251972-db94-4ab8-b832-e7301438ad6f'), None, None, 'post:/profiles/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 78}', 201)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+============================== warnings summary ===============================
+tests/test_auth.py::test_refresh_token_rotation
+tests/test_auth.py::test_refresh_token_rotation
+tests/test_auth.py::test_logout_revokes_refresh_token
+tests/test_auth.py::test_change_password
+tests/test_auth.py::test_change_password_wrong_current
+tests/test_profiles.py::test_create_profile_success
+  C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\jose\jwt.py:311: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = timegm(datetime.utcnow().utctimetuple())
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.12.5-final-0 -----------
+Name                                Stmts   Miss  Cover   Missing
+-----------------------------------------------------------------
+app\__init__.py                         0      0   100%
+app\auth\__init__.py                    0      0   100%
+app\auth\dependencies.py               36     11    69%   56-58, 61, 68-73, 83-88
+app\auth\jwt.py                        28      0   100%
+app\config.py                          40      1    98%   69
+app\database.py                        33     17    48%   60-68, 82-95
+app\main.py                            85     19    78%   59-73, 139-154, 174, 184
+app\middleware\__init__.py              0      0   100%
+app\middleware\audit.py                44      5    89%   50, 70, 72, 111-122
+app\middleware\rate_limit.py            6      0   100%
+app\middleware\tenant.py               49     14    71%   67, 78-82, 88-89, 94-100, 103-109
+app\models\__init__.py                 10      0   100%
+app\models\audit_log.py                19      0   100%
+app\models\file_record.py              26      0   100%
+app\models\membership_plan.py          58      3    95%   95, 148, 221
+app\models\partner_preference.py       30      0   100%
+app\models\password_reset.py           16      0   100%
+app\models\profile.py                 144      1    99%   263
+app\models\refresh_token.py            17      0   100%
+app\models\shortlist.py                24      0   100%
+app\models\tenant.py                   32      1    97%   111
+app\models\user.py                     32      1    97%   112
+app\routers\__init__.py                 0      0   100%
+app\routers\files.py                   92     57    38%   72-86, 107-128, 149-166, 183-184, 202-207, 226-230, 245-267
+app\routers\membership_plans.py       145    109    25%   57-58, 79-84, 99-103, 118-136, 150-161, 181-224, 246-284, 311-323, 339-369, 389-443, 457-476
+app\routers\notifications.py           39     23    41%   43-70, 94-124
+app\routers\partner_preference.py      41     24    41%   34-41, 56-73, 86-94
+app\routers\profiles.py               139    105    24%   29-30, 45-57, 80-99, 125-172, 184-191, 205-225, 238-279, 293-307, 321-326
+app\routers\shortlist.py              142    106    25%   36-41, 51-57, 72-102, 112-120, 130-138, 153-197, 211-227, 240-251, 265-288, 303-329, 339-355, 364-373
+app\routers\tenant.py                  62     40    35%   42-53, 69-102, 115-118, 132-142, 155-159
+app\routers\users.py                  226    154    32%   99-127, 144-145, 148, 158-189, 205-208, 221-238, 255-266, 295-315, 329-355, 379-408, 438-508, 540-561, 571, 580-584
+app\schemas\__init__.py                 0      0   100%
+app\schemas\membership_plan.py         77      0   100%
+app\schemas\partner_preference.py      26      0   100%
+app\schemas\profile.py                171     17    90%   47-49, 56, 63-75, 130, 135, 140, 165
+app\schemas\shortlist.py               58      0   100%
+app\schemas\tenant.py                  88      9    90%   25-27, 35-40, 71, 76, 106
+app\schemas\user.py                   116      9    92%   25, 27, 29, 31, 33, 35, 56, 61, 176
+app\services\__init__.py                0      0   100%
+app\services\email.py                  54     54     0%   15-142
+app\services\notification.py           27     16    41%   63-87, 99-127
+app\services\s3.py                     38     22    42%   63-65, 84-109, 127-139, 143-149
+-----------------------------------------------------------------
+TOTAL                                2270    818    64%
+Coverage HTML written to dir htmlcov
+
+FAIL Required test coverage of 75% not reached. Total coverage: 63.96%
+=========================== short test summary info ===========================
+FAILED tests/test_profiles.py::test_create_profile_success - AssertionError: ...
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 9 passed, 6 warnings in 12.21s

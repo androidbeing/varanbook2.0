@@ -159,6 +159,41 @@ export interface PaginatedResponse<T> {
   pages: number
 }
 
+// ── Membership Plans ─────────────────────────────────────────────────────────
+export interface TenantPlan {
+  id: string
+  name: string
+  tagline: string | null
+  duration_months: number
+  base_price_inr: number
+  effective_price_inr: number
+  has_override: boolean
+  description: string | null
+  features: string[] | null
+  is_active: boolean
+  sort_order: number
+}
+
+export type SubscriptionStatus = 'active' | 'expired' | 'cancelled'
+
+export interface Subscription {
+  id: string
+  user_id: string
+  tenant_id: string
+  plan_template_id: string
+  plan_name: string
+  plan_tagline: string | null
+  duration_months: number
+  price_paid_inr: number
+  starts_at: string
+  expires_at: string
+  status: SubscriptionStatus
+  notes: string | null
+  created_by_id: string | null
+  created_at: string
+  updated_at: string
+}
+
 // ── Tenant ───────────────────────────────────────────────────────────────────
 export type TenantPlan = 'starter' | 'growth' | 'enterprise'
 

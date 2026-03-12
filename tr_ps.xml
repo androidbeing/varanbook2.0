@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="19" time="12.450" timestamp="2026-03-11T22:02:50.487405" hostname="KGPrakash"><testcase classname="tests.test_profiles" name="test_create_profile_success" time="1.901" /><testcase classname="tests.test_profiles" name="test_create_profile_underage_rejected" time="0.393" /><testcase classname="tests.test_profiles" name="test_create_duplicate_profile_rejected" time="0.510" /><testcase classname="tests.test_profiles" name="test_member_can_get_own_profile" time="0.260" /><testcase classname="tests.test_profiles" name="test_member_can_view_active_profile_in_same_tenant" time="0.305" /><testcase classname="tests.test_profiles" name="test_admin_can_get_any_profile_in_tenant" time="0.306" /><testcase classname="tests.test_profiles" name="test_update_profile_field" time="0.268" /><testcase classname="tests.test_profiles" name="test_invalid_blood_group_rejected" time="0.579" /><testcase classname="tests.test_profiles" name="test_privacy_flags_hide_sections_from_stranger" time="0.383"><failure message="sqlalchemy.exc.StatementError: (builtins.AttributeError) 'str' object has no attribute 'hex'&#10;[SQL: SELECT profiles.id, profiles.user_id, profiles.tenant_id, profiles.gender, profiles.date_of_birth, profiles.time_of_birth, profiles.height_cm, profiles.weight_kg, profiles.complexion, profiles.blood_group, profiles.marital_status, profiles.disabilities, profiles.religion, profiles.caste, profiles.sub_caste, profiles.gotra, profiles.mother_tongue, profiles.birth_place, profiles.rashi, profiles.star, profiles.dhosam, profiles.manglik, profiles.qualification, profiles.profession, profiles.working_at, profiles.income_range, profiles.city, profiles.state, profiles.country, profiles.native_place, profiles.current_location, profiles.father_name, profiles.father_occupation, profiles.mother_name, profiles.mother_occupation, profiles.siblings_details, profiles.mobile, profiles.whatsapp, profiles.photo_keys, profiles.horoscope_key, profiles.personal_visible, profiles.photo_visible, profiles.birth_visible, profiles.professional_visible, profiles.family_visible, profiles.contact_visible, profiles.horoscope_visible, profiles.status, profiles.created_at, profiles.updated_at &#10;FROM profiles &#10;WHERE profiles.id = ?]&#10;[parameters: [{}]]">.venv\Lib\site-packages\sqlalchemy\engine\base.py:1815: in _execute_context
+    context = constructor(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:1459: in _init_compiled
+    flattened_processors[key](compiled_params[key])
+.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py:3590: in process
+    value = value.hex
+E   AttributeError: 'str' object has no attribute 'hex'
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:229: in test_privacy_flags_hide_sections_from_stranger
+    result = await db.execute(select(Profile).where(Profile.id == profile_b_id))
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:461: in execute
+    result = await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:190: in greenlet_spawn
+    result = context.switch(*args, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2351: in execute
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2236: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:293: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1821: in _execute_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1815: in _execute_context
+    context = constructor(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:1459: in _init_compiled
+    flattened_processors[key](compiled_params[key])
+.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py:3590: in process
+    value = value.hex
+E   sqlalchemy.exc.StatementError: (builtins.AttributeError) 'str' object has no attribute 'hex'
+E   [SQL: SELECT profiles.id, profiles.user_id, profiles.tenant_id, profiles.gender, profiles.date_of_birth, profiles.time_of_birth, profiles.height_cm, profiles.weight_kg, profiles.complexion, profiles.blood_group, profiles.marital_status, profiles.disabilities, profiles.religion, profiles.caste, profiles.sub_caste, profiles.gotra, profiles.mother_tongue, profiles.birth_place, profiles.rashi, profiles.star, profiles.dhosam, profiles.manglik, profiles.qualification, profiles.profession, profiles.working_at, profiles.income_range, profiles.city, profiles.state, profiles.country, profiles.native_place, profiles.current_location, profiles.father_name, profiles.father_occupation, profiles.mother_name, profiles.mother_occupation, profiles.siblings_details, profiles.mobile, profiles.whatsapp, profiles.photo_keys, profiles.horoscope_key, profiles.personal_visible, profiles.photo_visible, profiles.birth_visible, profiles.professional_visible, profiles.family_visible, profiles.contact_visible, profiles.horoscope_visible, profiles.status, profiles.created_at, profiles.updated_at 
+E   FROM profiles 
+E   WHERE profiles.id = ?]
+E   [parameters: [{}]]</failure></testcase><testcase classname="tests.test_profiles" name="test_accepted_connection_returns_connection_status" time="0.280"><failure message="sqlalchemy.exc.StatementError: (builtins.AttributeError) 'str' object has no attribute 'hex'&#10;[SQL: SELECT profiles.id, profiles.user_id, profiles.tenant_id, profiles.gender, profiles.date_of_birth, profiles.time_of_birth, profiles.height_cm, profiles.weight_kg, profiles.complexion, profiles.blood_group, profiles.marital_status, profiles.disabilities, profiles.religion, profiles.caste, profiles.sub_caste, profiles.gotra, profiles.mother_tongue, profiles.birth_place, profiles.rashi, profiles.star, profiles.dhosam, profiles.manglik, profiles.qualification, profiles.profession, profiles.working_at, profiles.income_range, profiles.city, profiles.state, profiles.country, profiles.native_place, profiles.current_location, profiles.father_name, profiles.father_occupation, profiles.mother_name, profiles.mother_occupation, profiles.siblings_details, profiles.mobile, profiles.whatsapp, profiles.photo_keys, profiles.horoscope_key, profiles.personal_visible, profiles.photo_visible, profiles.birth_visible, profiles.professional_visible, profiles.family_visible, profiles.contact_visible, profiles.horoscope_visible, profiles.status, profiles.created_at, profiles.updated_at &#10;FROM profiles &#10;WHERE profiles.id = ?]&#10;[parameters: [{}]]">.venv\Lib\site-packages\sqlalchemy\engine\base.py:1815: in _execute_context
+    context = constructor(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:1459: in _init_compiled
+    flattened_processors[key](compiled_params[key])
+.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py:3590: in process
+    value = value.hex
+E   AttributeError: 'str' object has no attribute 'hex'
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:270: in test_accepted_connection_returns_connection_status
+    result = await db.execute(select(Profile).where(Profile.id == profile_a_id))
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:461: in execute
+    result = await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:190: in greenlet_spawn
+    result = context.switch(*args, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2351: in execute
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2236: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:293: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1821: in _execute_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1815: in _execute_context
+    context = constructor(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:1459: in _init_compiled
+    flattened_processors[key](compiled_params[key])
+.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py:3590: in process
+    value = value.hex
+E   sqlalchemy.exc.StatementError: (builtins.AttributeError) 'str' object has no attribute 'hex'
+E   [SQL: SELECT profiles.id, profiles.user_id, profiles.tenant_id, profiles.gender, profiles.date_of_birth, profiles.time_of_birth, profiles.height_cm, profiles.weight_kg, profiles.complexion, profiles.blood_group, profiles.marital_status, profiles.disabilities, profiles.religion, profiles.caste, profiles.sub_caste, profiles.gotra, profiles.mother_tongue, profiles.birth_place, profiles.rashi, profiles.star, profiles.dhosam, profiles.manglik, profiles.qualification, profiles.profession, profiles.working_at, profiles.income_range, profiles.city, profiles.state, profiles.country, profiles.native_place, profiles.current_location, profiles.father_name, profiles.father_occupation, profiles.mother_name, profiles.mother_occupation, profiles.siblings_details, profiles.mobile, profiles.whatsapp, profiles.photo_keys, profiles.horoscope_key, profiles.personal_visible, profiles.photo_visible, profiles.birth_visible, profiles.professional_visible, profiles.family_visible, profiles.contact_visible, profiles.horoscope_visible, profiles.status, profiles.created_at, profiles.updated_at 
+E   FROM profiles 
+E   WHERE profiles.id = ?]
+E   [parameters: [{}]]</failure></testcase><testcase classname="tests.test_profiles" name="test_pending_shortlist_does_not_grant_connection_status" time="0.232"><failure message="sqlalchemy.exc.StatementError: (builtins.AttributeError) 'str' object has no attribute 'hex'&#10;[SQL: SELECT profiles.id, profiles.user_id, profiles.tenant_id, profiles.gender, profiles.date_of_birth, profiles.time_of_birth, profiles.height_cm, profiles.weight_kg, profiles.complexion, profiles.blood_group, profiles.marital_status, profiles.disabilities, profiles.religion, profiles.caste, profiles.sub_caste, profiles.gotra, profiles.mother_tongue, profiles.birth_place, profiles.rashi, profiles.star, profiles.dhosam, profiles.manglik, profiles.qualification, profiles.profession, profiles.working_at, profiles.income_range, profiles.city, profiles.state, profiles.country, profiles.native_place, profiles.current_location, profiles.father_name, profiles.father_occupation, profiles.mother_name, profiles.mother_occupation, profiles.siblings_details, profiles.mobile, profiles.whatsapp, profiles.photo_keys, profiles.horoscope_key, profiles.personal_visible, profiles.photo_visible, profiles.birth_visible, profiles.professional_visible, profiles.family_visible, profiles.contact_visible, profiles.horoscope_visible, profiles.status, profiles.created_at, profiles.updated_at &#10;FROM profiles &#10;WHERE profiles.id = ?]&#10;[parameters: [{}]]">.venv\Lib\site-packages\sqlalchemy\engine\base.py:1815: in _execute_context
+    context = constructor(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:1459: in _init_compiled
+    flattened_processors[key](compiled_params[key])
+.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py:3590: in process
+    value = value.hex
+E   AttributeError: 'str' object has no attribute 'hex'
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:342: in test_pending_shortlist_does_not_grant_connection_status
+    result = await db.execute(select(Profile).where(Profile.id == profile_b_id))
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:461: in execute
+    result = await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:190: in greenlet_spawn
+    result = context.switch(*args, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2351: in execute
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2236: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:293: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1821: in _execute_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1815: in _execute_context
+    context = constructor(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:1459: in _init_compiled
+    flattened_processors[key](compiled_params[key])
+.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py:3590: in process
+    value = value.hex
+E   sqlalchemy.exc.StatementError: (builtins.AttributeError) 'str' object has no attribute 'hex'
+E   [SQL: SELECT profiles.id, profiles.user_id, profiles.tenant_id, profiles.gender, profiles.date_of_birth, profiles.time_of_birth, profiles.height_cm, profiles.weight_kg, profiles.complexion, profiles.blood_group, profiles.marital_status, profiles.disabilities, profiles.religion, profiles.caste, profiles.sub_caste, profiles.gotra, profiles.mother_tongue, profiles.birth_place, profiles.rashi, profiles.star, profiles.dhosam, profiles.manglik, profiles.qualification, profiles.profession, profiles.working_at, profiles.income_range, profiles.city, profiles.state, profiles.country, profiles.native_place, profiles.current_location, profiles.father_name, profiles.father_occupation, profiles.mother_name, profiles.mother_occupation, profiles.siblings_details, profiles.mobile, profiles.whatsapp, profiles.photo_keys, profiles.horoscope_key, profiles.personal_visible, profiles.photo_visible, profiles.birth_visible, profiles.professional_visible, profiles.family_visible, profiles.contact_visible, profiles.horoscope_visible, profiles.status, profiles.created_at, profiles.updated_at 
+E   FROM profiles 
+E   WHERE profiles.id = ?]
+E   [parameters: [{}]]</failure></testcase><testcase classname="tests.test_profiles" name="test_accepted_connection_allows_access_regardless_of_profile_status" time="0.210"><failure message="sqlalchemy.exc.StatementError: (builtins.AttributeError) 'str' object has no attribute 'hex'&#10;[SQL: SELECT profiles.id, profiles.user_id, profiles.tenant_id, profiles.gender, profiles.date_of_birth, profiles.time_of_birth, profiles.height_cm, profiles.weight_kg, profiles.complexion, profiles.blood_group, profiles.marital_status, profiles.disabilities, profiles.religion, profiles.caste, profiles.sub_caste, profiles.gotra, profiles.mother_tongue, profiles.birth_place, profiles.rashi, profiles.star, profiles.dhosam, profiles.manglik, profiles.qualification, profiles.profession, profiles.working_at, profiles.income_range, profiles.city, profiles.state, profiles.country, profiles.native_place, profiles.current_location, profiles.father_name, profiles.father_occupation, profiles.mother_name, profiles.mother_occupation, profiles.siblings_details, profiles.mobile, profiles.whatsapp, profiles.photo_keys, profiles.horoscope_key, profiles.personal_visible, profiles.photo_visible, profiles.birth_visible, profiles.professional_visible, profiles.family_visible, profiles.contact_visible, profiles.horoscope_visible, profiles.status, profiles.created_at, profiles.updated_at &#10;FROM profiles &#10;WHERE profiles.id = ?]&#10;[parameters: [{}]]">.venv\Lib\site-packages\sqlalchemy\engine\base.py:1815: in _execute_context
+    context = constructor(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:1459: in _init_compiled
+    flattened_processors[key](compiled_params[key])
+.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py:3590: in process
+    value = value.hex
+E   AttributeError: 'str' object has no attribute 'hex'
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:391: in test_accepted_connection_allows_access_regardless_of_profile_status
+    result = await db.execute(select(Profile).where(Profile.id == profile_b_id))
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:461: in execute
+    result = await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:190: in greenlet_spawn
+    result = context.switch(*args, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2351: in execute
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2236: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:293: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1821: in _execute_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1815: in _execute_context
+    context = constructor(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:1459: in _init_compiled
+    flattened_processors[key](compiled_params[key])
+.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py:3590: in process
+    value = value.hex
+E   sqlalchemy.exc.StatementError: (builtins.AttributeError) 'str' object has no attribute 'hex'
+E   [SQL: SELECT profiles.id, profiles.user_id, profiles.tenant_id, profiles.gender, profiles.date_of_birth, profiles.time_of_birth, profiles.height_cm, profiles.weight_kg, profiles.complexion, profiles.blood_group, profiles.marital_status, profiles.disabilities, profiles.religion, profiles.caste, profiles.sub_caste, profiles.gotra, profiles.mother_tongue, profiles.birth_place, profiles.rashi, profiles.star, profiles.dhosam, profiles.manglik, profiles.qualification, profiles.profession, profiles.working_at, profiles.income_range, profiles.city, profiles.state, profiles.country, profiles.native_place, profiles.current_location, profiles.father_name, profiles.father_occupation, profiles.mother_name, profiles.mother_occupation, profiles.siblings_details, profiles.mobile, profiles.whatsapp, profiles.photo_keys, profiles.horoscope_key, profiles.personal_visible, profiles.photo_visible, profiles.birth_visible, profiles.professional_visible, profiles.family_visible, profiles.contact_visible, profiles.horoscope_visible, profiles.status, profiles.created_at, profiles.updated_at 
+E   FROM profiles 
+E   WHERE profiles.id = ?]
+E   [parameters: [{}]]</failure></testcase><testcase classname="tests.test_shortlist" name="test_shortlist_create" time="0.247" /><testcase classname="tests.test_shortlist" name="test_shortlist_duplicate_rejected" time="0.272" /><testcase classname="tests.test_shortlist" name="test_shortlist_cannot_shortlist_self" time="0.225" /><testcase classname="tests.test_shortlist" name="test_list_sent_and_received" time="0.400" /><testcase classname="tests.test_shortlist" name="test_accept_shortlist" time="0.419" /><testcase classname="tests.test_shortlist" name="test_only_recipient_can_accept" time="0.309" /><testcase classname="tests.test_shortlist" name="test_withdraw_shortlist" time="0.444" /></testsuite></testsuites>

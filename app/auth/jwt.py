@@ -18,7 +18,7 @@ Token payload structure:
 
 from datetime import datetime, timedelta, timezone
 from typing import Any
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from jose import JWTError, jwt
 from pydantic import BaseModel
@@ -33,6 +33,7 @@ class TokenPayload(BaseModel):
     tid: str | None   # tenant_id; None for SUPER_ADMIN
     rol: str          # UserRole
     typ: str          # "access" or "refresh"
+    jti: str          # unique token ID
     exp: int
     iat: int
 
@@ -53,6 +54,7 @@ def create_access_token(
         "tid": str(tenant_id) if tenant_id else None,
         "rol": role,
         "typ": "access",
+        "jti": str(uuid4()),
         "iat": int(now.timestamp()),
         "exp": int(
             (now + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)).timestamp()
@@ -73,6 +75,7 @@ def create_refresh_token(
         "tid": str(tenant_id) if tenant_id else None,
         "rol": role,
         "typ": "refresh",
+        "jti": str(uuid4()),
         "iat": int(now.timestamp()),
         "exp": int(
             (now + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)).timestamp()

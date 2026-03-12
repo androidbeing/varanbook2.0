@@ -1,0 +1,521 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.12.5, pytest-8.2.0, pluggy-1.6.0 -- C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook
+configfile: pytest.ini
+plugins: anyio-4.12.1, Faker-24.11.0, asyncio-0.23.6, cov-5.0.0
+asyncio: mode=Mode.AUTO
+collecting ... collected 18 items
+
+tests/test_auth.py::test_login_success PASSED                            [  5%]
+tests/test_auth.py::test_login_wrong_password PASSED                     [ 11%]
+tests/test_auth.py::test_login_unknown_user PASSED                       [ 16%]
+tests/test_auth.py::test_refresh_token_rotation PASSED                   [ 22%]
+tests/test_auth.py::test_logout_revokes_refresh_token PASSED             [ 27%]
+tests/test_auth.py::test_forgot_password_always_204 PASSED               [ 33%]
+tests/test_auth.py::test_reset_password_invalid_token PASSED             [ 38%]
+tests/test_auth.py::test_change_password PASSED                          [ 44%]
+tests/test_auth.py::test_change_password_wrong_current PASSED            [ 50%]
+tests/test_users.py::test_member_registration_success FAILED             [ 55%]
+tests/test_users.py::test_member_registration_weak_password FAILED       [ 61%]
+tests/test_users.py::test_member_registration_duplicate_email FAILED     [ 66%]
+tests/test_users.py::test_login_success PASSED                           [ 72%]
+tests/test_users.py::test_login_wrong_password PASSED                    [ 77%]
+tests/test_users.py::test_admin_onboarding_by_super_admin PASSED         [ 83%]
+tests/test_users.py::test_admin_cannot_onboard_admin_for_other_tenant PASSED [ 88%]
+tests/test_users.py::test_get_me PASSED                                  [ 94%]
+tests/test_users.py::test_get_me_unauthenticated PASSED                  [100%]
+
+================================== FAILURES ===================================
+______________________ test_member_registration_success _______________________
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:840: in _start_transaction
+    await self._transaction.start()
+.venv\Lib\site-packages\asyncpg\transaction.py:146: in start
+    await self._connection.execute(query)
+.venv\Lib\site-packages\asyncpg\connection.py:350: in execute
+    result = await self._protocol.query(query, timeout)
+asyncpg\protocol\protocol.pyx:359: in query
+    ???
+asyncpg\protocol\protocol.pyx:744: in asyncpg.protocol.protocol.BaseProtocol._check_state
+    ???
+E   asyncpg.exceptions._base.InterfaceError: cannot perform operation: another operation is in progress
+
+The above exception was the direct cause of the following exception:
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:572: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _prepare_and_execute
+    await adapt_connection._start_transaction()
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:842: in _start_transaction
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:789: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.InterfaceError: <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress
+
+The above exception was the direct cause of the following exception:
+tests\test_users.py:38: in test_member_registration_success
+    response = await client.post(
+.venv\Lib\site-packages\httpx\_client.py:1892: in post
+    return await self.request(
+.venv\Lib\site-packages\httpx\_client.py:1574: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+.venv\Lib\site-packages\httpx\_client.py:1661: in send
+    response = await self._send_handling_auth(
+.venv\Lib\site-packages\httpx\_client.py:1689: in _send_handling_auth
+    response = await self._send_handling_redirects(
+.venv\Lib\site-packages\httpx\_client.py:1726: in _send_handling_redirects
+    response = await self._send_single_request(request)
+.venv\Lib\site-packages\httpx\_client.py:1763: in _send_single_request
+    response = await transport.handle_async_request(request)
+.venv\Lib\site-packages\httpx\_transports\asgi.py:164: in handle_async_request
+    await self.app(scope, receive, send)
+.venv\Lib\site-packages\fastapi\applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+.venv\Lib\site-packages\starlette\applications.py:123: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv\Lib\site-packages\starlette\middleware\errors.py:186: in __call__
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv\Lib\site-packages\starlette\middleware\base.py:189: in __call__
+    with collapse_excgroups():
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:93: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:191: in __call__
+    response = await self.dispatch_func(request, call_next)
+app\main.py:130: in request_context_middleware
+    response = await call_next(request)
+.venv\Lib\site-packages\starlette\middleware\base.py:165: in call_next
+    raise app_exc
+.venv\Lib\site-packages\starlette\middleware\base.py:151: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv\Lib\site-packages\starlette\middleware\base.py:189: in __call__
+    with collapse_excgroups():
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:93: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:191: in __call__
+    response = await self.dispatch_func(request, call_next)
+app\middleware\audit.py:46: in dispatch
+    response: Response = await call_next(request)
+.venv\Lib\site-packages\starlette\middleware\base.py:165: in call_next
+    raise app_exc
+.venv\Lib\site-packages\starlette\middleware\base.py:151: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv\Lib\site-packages\starlette\middleware\base.py:189: in __call__
+    with collapse_excgroups():
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:93: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:191: in __call__
+    response = await self.dispatch_func(request, call_next)
+app\middleware\tenant.py:63: in dispatch
+    tenant = await self._resolve_tenant(request)
+app\middleware\tenant.py:82: in _resolve_tenant
+    return await self._fetch_by_id(tid)
+app\middleware\tenant.py:95: in _fetch_by_id
+    result = await session.execute(
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:461: in execute
+    result = await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2351: in execute
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2236: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:293: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:572: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _prepare_and_execute
+    await adapt_connection._start_transaction()
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:842: in _start_transaction
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:789: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.InterfaceError: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress
+E   [SQL: SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at 
+E   FROM tenants 
+E   WHERE tenants.id = $1::UUID AND tenants.is_active = true]
+E   [parameters: (UUID('b2990d61-0c55-4d66-a71d-9e0d597ba608'),)]
+E   (Background on this error at: https://sqlalche.me/e/20/rvf5)
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 21:58:48,933 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 21:58:48,933 INFO sqlalchemy.engine.Engine SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at 
+FROM tenants 
+WHERE tenants.id = $1::UUID AND tenants.is_active = true
+2026-03-11 21:58:48,933 INFO sqlalchemy.engine.Engine [generated in 0.00032s] (UUID('b2990d61-0c55-4d66-a71d-9e0d597ba608'),)
+2026-03-11 21:58:48,933 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at \nFROM tenants \nWHERE tenants.id = $1::UUID AND tenants.is_active = true]\n[parameters: (UUID('b2990d61-0c55-4d66-a71d-9e0d597ba608'),)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 840, in _start_transaction\n    await self._transaction.start()\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\asyncpg\\transaction.py\", line 146, in start\n    await self._connection.execute(query)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\asyncpg\\connection.py\", line 350, in execute\n    result = await self._protocol.query(query, timeout)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"asyncpg\\protocol\\protocol.pyx\", line 359, in query\n  File \"asyncpg\\protocol\\protocol.pyx\", line 744, in asyncpg.protocol.protocol.BaseProtocol._check_state\nasyncpg.exceptions._base.InterfaceError: cannot perform operation: another operation is in progress\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1967, in _exec_single_context\n    self.dialect.do_execute(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\default.py\", line 924, in do_execute\n    cursor.execute(statement, parameters)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 572, in execute\n    self._adapt_connection.await_(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 131, in await_only\n    return current.driver.switch(awaitable)  # type: ignore[no-any-return]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 196, in greenlet_spawn\n    value = await result\n            ^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 508, in _prepare_and_execute\n    await adapt_connection._start_transaction()\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 842, in _start_transaction\n    self._handle_exception(error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 789, in _handle_exception\n    raise translated_error from error\nsqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.InterfaceError: <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\errors.py\", line 164, in __call__\n    await self.app(scope, receive, _send)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 189, in __call__\n    with collapse_excgroups():\n  File \"C:\\Users\\kgpra\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py\", line 158, in __exit__\n    self.gen.throw(value)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\_utils.py\", line 93, in collapse_excgroups\n    raise exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 191, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\main.py\", line 130, in request_context_middleware\n    response = await call_next(request)\n               ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 165, in call_next\n    raise app_exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 151, in coro\n    await self.app(scope, receive_or_disconnect, send_no_error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 189, in __call__\n    with collapse_excgroups():\n  File \"C:\\Users\\kgpra\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py\", line 158, in __exit__\n    self.gen.throw(value)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\_utils.py\", line 93, in collapse_excgroups\n    raise exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 191, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\audit.py\", line 46, in dispatch\n    response: Response = await call_next(request)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 165, in call_next\n    raise app_exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 151, in coro\n    await self.app(scope, receive_or_disconnect, send_no_error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 189, in __call__\n    with collapse_excgroups():\n  File \"C:\\Users\\kgpra\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py\", line 158, in __exit__\n    self.gen.throw(value)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\_utils.py\", line 93, in collapse_excgroups\n    raise exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 191, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\tenant.py\", line 63, in dispatch\n    tenant = await self._resolve_tenant(request)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\tenant.py\", line 82, in _resolve_tenant\n    return await self._fetch_by_id(tid)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\tenant.py\", line 95, in _fetch_by_id\n    result = await session.execute(\n             ^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\ext\\asyncio\\session.py\", line 461, in execute\n    result = await greenlet_spawn(\n             ^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 201, in greenlet_spawn\n    result = context.throw(*sys.exc_info())\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\orm\\session.py\", line 2351, in execute\n    return self._execute_internal(\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\orm\\session.py\", line 2236, in _execute_internal\n    result: Result[Any] = compile_state_cls.orm_execute_statement(\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\orm\\context.py\", line 293, in orm_execute_statement\n    result = conn.execute(\n             ^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1418, in execute\n    return meth(\n           ^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\sql\\elements.py\", line 515, in _execute_on_connection\n    return connection._execute_clauseelement(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1640, in _execute_clauseelement\n    ret = self._execute_context(\n          ^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1846, in _execute_context\n    return self._exec_single_context(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1986, in _exec_single_context\n    self._handle_dbapi_exception(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 2353, in _handle_dbapi_exception\n    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1967, in _exec_single_context\n    self.dialect.do_execute(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\default.py\", line 924, in do_execute\n    cursor.execute(statement, parameters)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 572, in execute\n    self._adapt_connection.await_(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 131, in await_only\n    return current.driver.switch(awaitable)  # type: ignore[no-any-return]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 196, in greenlet_spawn\n    value = await result\n            ^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 508, in _prepare_and_execute\n    await adapt_connection._start_transaction()\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 842, in _start_transaction\n    self._handle_exception(error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 789, in _handle_exception\n    raise translated_error from error\nsqlalchemy.exc.InterfaceError: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at \nFROM tenants \nWHERE tenants.id = $1::UUID AND tenants.is_active = true]\n[parameters: (UUID('b2990d61-0c55-4d66-a71d-9e0d597ba608'),)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)\n", "exc_info": true, "event": "unhandled_error", "path": "/users/", "request_id": "3639939c-1549-48b8-b2f4-8903988c8816", "method": "POST", "level": "error", "timestamp": "2026-03-11T16:28:48.966626Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at 
+FROM tenants 
+WHERE tenants.id = $1::UUID AND tenants.is_active = true
+INFO     sqlalchemy.engine.Engine:base.py:1846 [generated in 0.00032s] (UUID('b2990d61-0c55-4d66-a71d-9e0d597ba608'),)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+___________________ test_member_registration_weak_password ____________________
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:840: in _start_transaction
+    await self._transaction.start()
+.venv\Lib\site-packages\asyncpg\transaction.py:146: in start
+    await self._connection.execute(query)
+.venv\Lib\site-packages\asyncpg\connection.py:350: in execute
+    result = await self._protocol.query(query, timeout)
+asyncpg\protocol\protocol.pyx:359: in query
+    ???
+asyncpg\protocol\protocol.pyx:744: in asyncpg.protocol.protocol.BaseProtocol._check_state
+    ???
+E   asyncpg.exceptions._base.InterfaceError: cannot perform operation: another operation is in progress
+
+The above exception was the direct cause of the following exception:
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:572: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _prepare_and_execute
+    await adapt_connection._start_transaction()
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:842: in _start_transaction
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:789: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.InterfaceError: <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress
+
+The above exception was the direct cause of the following exception:
+tests\test_users.py:60: in test_member_registration_weak_password
+    response = await client.post(
+.venv\Lib\site-packages\httpx\_client.py:1892: in post
+    return await self.request(
+.venv\Lib\site-packages\httpx\_client.py:1574: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+.venv\Lib\site-packages\httpx\_client.py:1661: in send
+    response = await self._send_handling_auth(
+.venv\Lib\site-packages\httpx\_client.py:1689: in _send_handling_auth
+    response = await self._send_handling_redirects(
+.venv\Lib\site-packages\httpx\_client.py:1726: in _send_handling_redirects
+    response = await self._send_single_request(request)
+.venv\Lib\site-packages\httpx\_client.py:1763: in _send_single_request
+    response = await transport.handle_async_request(request)
+.venv\Lib\site-packages\httpx\_transports\asgi.py:164: in handle_async_request
+    await self.app(scope, receive, send)
+.venv\Lib\site-packages\fastapi\applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+.venv\Lib\site-packages\starlette\applications.py:123: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv\Lib\site-packages\starlette\middleware\errors.py:186: in __call__
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv\Lib\site-packages\starlette\middleware\base.py:189: in __call__
+    with collapse_excgroups():
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:93: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:191: in __call__
+    response = await self.dispatch_func(request, call_next)
+app\main.py:130: in request_context_middleware
+    response = await call_next(request)
+.venv\Lib\site-packages\starlette\middleware\base.py:165: in call_next
+    raise app_exc
+.venv\Lib\site-packages\starlette\middleware\base.py:151: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv\Lib\site-packages\starlette\middleware\base.py:189: in __call__
+    with collapse_excgroups():
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:93: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:191: in __call__
+    response = await self.dispatch_func(request, call_next)
+app\middleware\audit.py:46: in dispatch
+    response: Response = await call_next(request)
+.venv\Lib\site-packages\starlette\middleware\base.py:165: in call_next
+    raise app_exc
+.venv\Lib\site-packages\starlette\middleware\base.py:151: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv\Lib\site-packages\starlette\middleware\base.py:189: in __call__
+    with collapse_excgroups():
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:93: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:191: in __call__
+    response = await self.dispatch_func(request, call_next)
+app\middleware\tenant.py:63: in dispatch
+    tenant = await self._resolve_tenant(request)
+app\middleware\tenant.py:82: in _resolve_tenant
+    return await self._fetch_by_id(tid)
+app\middleware\tenant.py:95: in _fetch_by_id
+    result = await session.execute(
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:461: in execute
+    result = await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2351: in execute
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2236: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:293: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:572: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _prepare_and_execute
+    await adapt_connection._start_transaction()
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:842: in _start_transaction
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:789: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.InterfaceError: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress
+E   [SQL: SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at 
+E   FROM tenants 
+E   WHERE tenants.id = $1::UUID AND tenants.is_active = true]
+E   [parameters: (UUID('c023fdaf-b43c-465e-a820-cbbfd336546e'),)]
+E   (Background on this error at: https://sqlalche.me/e/20/rvf5)
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 21:58:50,534 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 21:58:50,534 INFO sqlalchemy.engine.Engine SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at 
+FROM tenants 
+WHERE tenants.id = $1::UUID AND tenants.is_active = true
+2026-03-11 21:58:50,534 INFO sqlalchemy.engine.Engine [cached since 1.595s ago] (UUID('c023fdaf-b43c-465e-a820-cbbfd336546e'),)
+2026-03-11 21:58:50,534 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at \nFROM tenants \nWHERE tenants.id = $1::UUID AND tenants.is_active = true]\n[parameters: (UUID('c023fdaf-b43c-465e-a820-cbbfd336546e'),)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 840, in _start_transaction\n    await self._transaction.start()\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\asyncpg\\transaction.py\", line 146, in start\n    await self._connection.execute(query)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\asyncpg\\connection.py\", line 350, in execute\n    result = await self._protocol.query(query, timeout)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"asyncpg\\protocol\\protocol.pyx\", line 359, in query\n  File \"asyncpg\\protocol\\protocol.pyx\", line 744, in asyncpg.protocol.protocol.BaseProtocol._check_state\nasyncpg.exceptions._base.InterfaceError: cannot perform operation: another operation is in progress\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1967, in _exec_single_context\n    self.dialect.do_execute(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\default.py\", line 924, in do_execute\n    cursor.execute(statement, parameters)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 572, in execute\n    self._adapt_connection.await_(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 131, in await_only\n    return current.driver.switch(awaitable)  # type: ignore[no-any-return]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 196, in greenlet_spawn\n    value = await result\n            ^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 508, in _prepare_and_execute\n    await adapt_connection._start_transaction()\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 842, in _start_transaction\n    self._handle_exception(error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 789, in _handle_exception\n    raise translated_error from error\nsqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.InterfaceError: <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\errors.py\", line 164, in __call__\n    await self.app(scope, receive, _send)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 189, in __call__\n    with collapse_excgroups():\n  File \"C:\\Users\\kgpra\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py\", line 158, in __exit__\n    self.gen.throw(value)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\_utils.py\", line 93, in collapse_excgroups\n    raise exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 191, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\main.py\", line 130, in request_context_middleware\n    response = await call_next(request)\n               ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 165, in call_next\n    raise app_exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 151, in coro\n    await self.app(scope, receive_or_disconnect, send_no_error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 189, in __call__\n    with collapse_excgroups():\n  File \"C:\\Users\\kgpra\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py\", line 158, in __exit__\n    self.gen.throw(value)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\_utils.py\", line 93, in collapse_excgroups\n    raise exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 191, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\audit.py\", line 46, in dispatch\n    response: Response = await call_next(request)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 165, in call_next\n    raise app_exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 151, in coro\n    await self.app(scope, receive_or_disconnect, send_no_error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 189, in __call__\n    with collapse_excgroups():\n  File \"C:\\Users\\kgpra\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py\", line 158, in __exit__\n    self.gen.throw(value)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\_utils.py\", line 93, in collapse_excgroups\n    raise exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 191, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\tenant.py\", line 63, in dispatch\n    tenant = await self._resolve_tenant(request)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\tenant.py\", line 82, in _resolve_tenant\n    return await self._fetch_by_id(tid)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\tenant.py\", line 95, in _fetch_by_id\n    result = await session.execute(\n             ^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\ext\\asyncio\\session.py\", line 461, in execute\n    result = await greenlet_spawn(\n             ^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 201, in greenlet_spawn\n    result = context.throw(*sys.exc_info())\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\orm\\session.py\", line 2351, in execute\n    return self._execute_internal(\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\orm\\session.py\", line 2236, in _execute_internal\n    result: Result[Any] = compile_state_cls.orm_execute_statement(\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\orm\\context.py\", line 293, in orm_execute_statement\n    result = conn.execute(\n             ^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1418, in execute\n    return meth(\n           ^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\sql\\elements.py\", line 515, in _execute_on_connection\n    return connection._execute_clauseelement(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1640, in _execute_clauseelement\n    ret = self._execute_context(\n          ^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1846, in _execute_context\n    return self._exec_single_context(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1986, in _exec_single_context\n    self._handle_dbapi_exception(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 2353, in _handle_dbapi_exception\n    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1967, in _exec_single_context\n    self.dialect.do_execute(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\default.py\", line 924, in do_execute\n    cursor.execute(statement, parameters)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 572, in execute\n    self._adapt_connection.await_(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 131, in await_only\n    return current.driver.switch(awaitable)  # type: ignore[no-any-return]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 196, in greenlet_spawn\n    value = await result\n            ^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 508, in _prepare_and_execute\n    await adapt_connection._start_transaction()\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 842, in _start_transaction\n    self._handle_exception(error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 789, in _handle_exception\n    raise translated_error from error\nsqlalchemy.exc.InterfaceError: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at \nFROM tenants \nWHERE tenants.id = $1::UUID AND tenants.is_active = true]\n[parameters: (UUID('c023fdaf-b43c-465e-a820-cbbfd336546e'),)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)\n", "exc_info": true, "event": "unhandled_error", "path": "/users/", "request_id": "f277170e-05a8-4030-825e-34fbafb8e1c6", "method": "POST", "level": "error", "timestamp": "2026-03-11T16:28:50.534163Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at 
+FROM tenants 
+WHERE tenants.id = $1::UUID AND tenants.is_active = true
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 1.595s ago] (UUID('c023fdaf-b43c-465e-a820-cbbfd336546e'),)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+__________________ test_member_registration_duplicate_email ___________________
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:840: in _start_transaction
+    await self._transaction.start()
+.venv\Lib\site-packages\asyncpg\transaction.py:146: in start
+    await self._connection.execute(query)
+.venv\Lib\site-packages\asyncpg\connection.py:350: in execute
+    result = await self._protocol.query(query, timeout)
+asyncpg\protocol\protocol.pyx:359: in query
+    ???
+asyncpg\protocol\protocol.pyx:744: in asyncpg.protocol.protocol.BaseProtocol._check_state
+    ???
+E   asyncpg.exceptions._base.InterfaceError: cannot perform operation: another operation is in progress
+
+The above exception was the direct cause of the following exception:
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:572: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _prepare_and_execute
+    await adapt_connection._start_transaction()
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:842: in _start_transaction
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:789: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.InterfaceError: <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress
+
+The above exception was the direct cause of the following exception:
+tests\test_users.py:78: in test_member_registration_duplicate_email
+    response = await client.post(
+.venv\Lib\site-packages\httpx\_client.py:1892: in post
+    return await self.request(
+.venv\Lib\site-packages\httpx\_client.py:1574: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+.venv\Lib\site-packages\httpx\_client.py:1661: in send
+    response = await self._send_handling_auth(
+.venv\Lib\site-packages\httpx\_client.py:1689: in _send_handling_auth
+    response = await self._send_handling_redirects(
+.venv\Lib\site-packages\httpx\_client.py:1726: in _send_handling_redirects
+    response = await self._send_single_request(request)
+.venv\Lib\site-packages\httpx\_client.py:1763: in _send_single_request
+    response = await transport.handle_async_request(request)
+.venv\Lib\site-packages\httpx\_transports\asgi.py:164: in handle_async_request
+    await self.app(scope, receive, send)
+.venv\Lib\site-packages\fastapi\applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+.venv\Lib\site-packages\starlette\applications.py:123: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv\Lib\site-packages\starlette\middleware\errors.py:186: in __call__
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv\Lib\site-packages\starlette\middleware\base.py:189: in __call__
+    with collapse_excgroups():
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:93: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:191: in __call__
+    response = await self.dispatch_func(request, call_next)
+app\main.py:130: in request_context_middleware
+    response = await call_next(request)
+.venv\Lib\site-packages\starlette\middleware\base.py:165: in call_next
+    raise app_exc
+.venv\Lib\site-packages\starlette\middleware\base.py:151: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv\Lib\site-packages\starlette\middleware\base.py:189: in __call__
+    with collapse_excgroups():
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:93: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:191: in __call__
+    response = await self.dispatch_func(request, call_next)
+app\middleware\audit.py:46: in dispatch
+    response: Response = await call_next(request)
+.venv\Lib\site-packages\starlette\middleware\base.py:165: in call_next
+    raise app_exc
+.venv\Lib\site-packages\starlette\middleware\base.py:151: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv\Lib\site-packages\starlette\middleware\base.py:189: in __call__
+    with collapse_excgroups():
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:93: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:191: in __call__
+    response = await self.dispatch_func(request, call_next)
+app\middleware\tenant.py:63: in dispatch
+    tenant = await self._resolve_tenant(request)
+app\middleware\tenant.py:82: in _resolve_tenant
+    return await self._fetch_by_id(tid)
+app\middleware\tenant.py:95: in _fetch_by_id
+    result = await session.execute(
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:461: in execute
+    result = await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2351: in execute
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2236: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:293: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:572: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _prepare_and_execute
+    await adapt_connection._start_transaction()
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:842: in _start_transaction
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:789: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.InterfaceError: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress
+E   [SQL: SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at 
+E   FROM tenants 
+E   WHERE tenants.id = $1::UUID AND tenants.is_active = true]
+E   [parameters: (UUID('c0ac6643-c6ff-4d72-8cf7-82ddc1c47174'),)]
+E   (Background on this error at: https://sqlalche.me/e/20/rvf5)
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 21:58:52,233 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 21:58:52,233 INFO sqlalchemy.engine.Engine SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at 
+FROM tenants 
+WHERE tenants.id = $1::UUID AND tenants.is_active = true
+2026-03-11 21:58:52,233 INFO sqlalchemy.engine.Engine [cached since 3.304s ago] (UUID('c0ac6643-c6ff-4d72-8cf7-82ddc1c47174'),)
+2026-03-11 21:58:52,233 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at \nFROM tenants \nWHERE tenants.id = $1::UUID AND tenants.is_active = true]\n[parameters: (UUID('c0ac6643-c6ff-4d72-8cf7-82ddc1c47174'),)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 840, in _start_transaction\n    await self._transaction.start()\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\asyncpg\\transaction.py\", line 146, in start\n    await self._connection.execute(query)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\asyncpg\\connection.py\", line 350, in execute\n    result = await self._protocol.query(query, timeout)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"asyncpg\\protocol\\protocol.pyx\", line 359, in query\n  File \"asyncpg\\protocol\\protocol.pyx\", line 744, in asyncpg.protocol.protocol.BaseProtocol._check_state\nasyncpg.exceptions._base.InterfaceError: cannot perform operation: another operation is in progress\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1967, in _exec_single_context\n    self.dialect.do_execute(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\default.py\", line 924, in do_execute\n    cursor.execute(statement, parameters)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 572, in execute\n    self._adapt_connection.await_(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 131, in await_only\n    return current.driver.switch(awaitable)  # type: ignore[no-any-return]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 196, in greenlet_spawn\n    value = await result\n            ^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 508, in _prepare_and_execute\n    await adapt_connection._start_transaction()\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 842, in _start_transaction\n    self._handle_exception(error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 789, in _handle_exception\n    raise translated_error from error\nsqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.InterfaceError: <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\errors.py\", line 164, in __call__\n    await self.app(scope, receive, _send)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 189, in __call__\n    with collapse_excgroups():\n  File \"C:\\Users\\kgpra\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py\", line 158, in __exit__\n    self.gen.throw(value)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\_utils.py\", line 93, in collapse_excgroups\n    raise exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 191, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\main.py\", line 130, in request_context_middleware\n    response = await call_next(request)\n               ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 165, in call_next\n    raise app_exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 151, in coro\n    await self.app(scope, receive_or_disconnect, send_no_error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 189, in __call__\n    with collapse_excgroups():\n  File \"C:\\Users\\kgpra\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py\", line 158, in __exit__\n    self.gen.throw(value)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\_utils.py\", line 93, in collapse_excgroups\n    raise exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 191, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\audit.py\", line 46, in dispatch\n    response: Response = await call_next(request)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 165, in call_next\n    raise app_exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 151, in coro\n    await self.app(scope, receive_or_disconnect, send_no_error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 189, in __call__\n    with collapse_excgroups():\n  File \"C:\\Users\\kgpra\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py\", line 158, in __exit__\n    self.gen.throw(value)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\_utils.py\", line 93, in collapse_excgroups\n    raise exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 191, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\tenant.py\", line 63, in dispatch\n    tenant = await self._resolve_tenant(request)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\tenant.py\", line 82, in _resolve_tenant\n    return await self._fetch_by_id(tid)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\tenant.py\", line 95, in _fetch_by_id\n    result = await session.execute(\n             ^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\ext\\asyncio\\session.py\", line 461, in execute\n    result = await greenlet_spawn(\n             ^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 201, in greenlet_spawn\n    result = context.throw(*sys.exc_info())\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\orm\\session.py\", line 2351, in execute\n    return self._execute_internal(\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\orm\\session.py\", line 2236, in _execute_internal\n    result: Result[Any] = compile_state_cls.orm_execute_statement(\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\orm\\context.py\", line 293, in orm_execute_statement\n    result = conn.execute(\n             ^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1418, in execute\n    return meth(\n           ^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\sql\\elements.py\", line 515, in _execute_on_connection\n    return connection._execute_clauseelement(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1640, in _execute_clauseelement\n    ret = self._execute_context(\n          ^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1846, in _execute_context\n    return self._exec_single_context(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1986, in _exec_single_context\n    self._handle_dbapi_exception(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 2353, in _handle_dbapi_exception\n    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1967, in _exec_single_context\n    self.dialect.do_execute(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\default.py\", line 924, in do_execute\n    cursor.execute(statement, parameters)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 572, in execute\n    self._adapt_connection.await_(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 131, in await_only\n    return current.driver.switch(awaitable)  # type: ignore[no-any-return]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 196, in greenlet_spawn\n    value = await result\n            ^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 508, in _prepare_and_execute\n    await adapt_connection._start_transaction()\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 842, in _start_transaction\n    self._handle_exception(error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 789, in _handle_exception\n    raise translated_error from error\nsqlalchemy.exc.InterfaceError: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at \nFROM tenants \nWHERE tenants.id = $1::UUID AND tenants.is_active = true]\n[parameters: (UUID('c0ac6643-c6ff-4d72-8cf7-82ddc1c47174'),)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)\n", "exc_info": true, "event": "unhandled_error", "path": "/users/", "request_id": "a9bec93b-2e6b-44d3-9087-bc046f121a33", "method": "POST", "level": "error", "timestamp": "2026-03-11T16:28:52.250792Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at 
+FROM tenants 
+WHERE tenants.id = $1::UUID AND tenants.is_active = true
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 3.304s ago] (UUID('c0ac6643-c6ff-4d72-8cf7-82ddc1c47174'),)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+============================== warnings summary ===============================
+tests/test_auth.py::test_refresh_token_rotation
+tests/test_auth.py::test_refresh_token_rotation
+tests/test_auth.py::test_logout_revokes_refresh_token
+tests/test_auth.py::test_change_password
+tests/test_auth.py::test_change_password_wrong_current
+tests/test_users.py::test_admin_onboarding_by_super_admin
+tests/test_users.py::test_admin_cannot_onboard_admin_for_other_tenant
+tests/test_users.py::test_get_me
+  C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\jose\jwt.py:311: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = timegm(datetime.utcnow().utctimetuple())
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_users.py::test_member_registration_success - sqlalchemy.exc...
+FAILED tests/test_users.py::test_member_registration_weak_password - sqlalche...
+FAILED tests/test_users.py::test_member_registration_duplicate_email - sqlalc...
+================== 3 failed, 15 passed, 8 warnings in 10.80s ==================

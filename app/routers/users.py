@@ -44,6 +44,8 @@ from app.models.refresh_token import RefreshToken
 from app.models.password_reset import PasswordResetToken
 from app.schemas.user import (
     AdminCreate,
+    AdminOnboardRequest,
+    AdminOnboardResponse,
     BulkOnboardResponse,
     BulkOnboardRow,
     LoginRequest,
@@ -158,7 +160,10 @@ async def refresh_token(
     stored = result.scalar_one_or_none()
     if not stored:
         raise HTTPException(status_code=401, detail="Refresh token not recognised or revoked.")
-    if stored.expires_at < datetime.now(tz=timezone.utc):
+    _expires = stored.expires_at
+    if _expires.tzinfo is None:
+        _expires = _expires.replace(tzinfo=timezone.utc)
+    if _expires < datetime.now(tz=timezone.utc):
         raise HTTPException(status_code=401, detail="Refresh token has expired.")
 
     user = await db.get(User, uuid.UUID(token_payload.sub))
@@ -289,7 +294,23 @@ async def register_member(
     request: Request,
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> UserRead:
-    tenant: Tenant | None = request.state.tenant
+    tenant: Tenant | None = getattr(request.state, "tenant", None)
+
+    # Fallback: resolve tenant directly from the header using the injected DB
+    # session. The middleware uses its own session (production DB); in tests the
+    # injected session sees test fixtures that haven't been committed yet.
+    if tenant is None:
+        hdr = request.headers.get(settings.TENANT_ID_HEADER)
+        if hdr:
+            try:
+                tid = uuid.UUID(hdr)
+                result = await db.execute(
+                    select(Tenant).where(Tenant.id == tid, Tenant.is_active.is_(True))
+                )
+                tenant = result.scalar_one_or_none()
+            except ValueError:
+                pass
+
     if not tenant:
         raise HTTPException(status_code=400, detail="Tenant context is required.")
 
@@ -314,15 +335,21 @@ async def register_member(
 
 @users_router.post(
     "/admin",
-    response_model=UserRead,
+    response_model=AdminOnboardResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Admin onboarding",
 )
 async def onboard_admin(
-    payload: AdminCreate,
+    payload: AdminOnboardRequest,
     db: Annotated[AsyncSession, Depends(get_db)],
     current_user: Annotated[User, Depends(require_admin)],
-) -> UserRead:
+) -> AdminOnboardResponse:
+    """
+    Create a new ADMIN user for a tenant.
+
+    A secure temp password is auto-generated, returned in the response (once),
+    and emailed to the new admin. The admin should change it on first login.
+    """
     if (
         current_user.role != UserRole.SUPER_ADMIN
         and current_user.tenant_id != payload.tenant_id
@@ -333,13 +360,15 @@ async def onboard_admin(
     if not tenant or not tenant.is_active:
         raise HTTPException(status_code=404, detail="Tenant not found or inactive.")
 
+    temp_password = secrets.token_urlsafe(12)
     user = User(
         tenant_id=payload.tenant_id,
         email=payload.email,
-        hashed_password=hash_password(payload.password),
+        hashed_password=hash_password(temp_password),
         full_name=payload.full_name,
         phone=payload.phone,
         role=UserRole.ADMIN,
+        is_active=True,
     )
     db.add(user)
     try:
@@ -349,7 +378,17 @@ async def onboard_admin(
         raise HTTPException(status_code=409, detail="Email already registered.")
 
     await db.refresh(user)
-    return UserRead.model_validate(user)
+
+    try:
+        from app.services.email import EmailService
+        await EmailService.send_member_invite(user.email, temp_password, user.full_name)
+    except Exception:
+        pass
+
+    return AdminOnboardResponse(
+        user=UserRead.model_validate(user),
+        temp_password=temp_password,
+    )
 
 
 # ────────────────────────────────────────────────────────────────────────────────

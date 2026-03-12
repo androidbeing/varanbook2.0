@@ -1,0 +1,129 @@
+E
+=================================== ERRORS ====================================
+____________________ ERROR at setup of test_login_success _____________________
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:137: in _compiler_dispatch
+    meth = getter(visitor)
+E   AttributeError: 'SQLiteTypeCompiler' object has no attribute 'visit_JSONB'. Did you mean: 'visit_JSON'?
+
+The above exception was the direct cause of the following exception:
+.venv\Lib\site-packages\sqlalchemy\sql\compiler.py:6645: in visit_create_table
+    processed = self.process(
+.venv\Lib\site-packages\sqlalchemy\sql\compiler.py:915: in process
+    return obj._compiler_dispatch(self, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:141: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore  # noqa: E501
+.venv\Lib\site-packages\sqlalchemy\sql\compiler.py:6676: in visit_create_column
+    text = self.get_column_specification(column, first_pk=first_pk)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\base.py:1534: in get_column_specification
+    coltype = self.dialect.type_compiler_instance.process(
+.venv\Lib\site-packages\sqlalchemy\sql\compiler.py:960: in process
+    return type_._compiler_dispatch(self, **kw)
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:139: in _compiler_dispatch
+    return visitor.visit_unsupported_compilation(self, err, **kw)  # type: ignore  # noqa: E501
+.venv\Lib\site-packages\sqlalchemy\sql\compiler.py:965: in visit_unsupported_compilation
+    raise exc.UnsupportedCompilationError(self, element) from err
+E   sqlalchemy.exc.UnsupportedCompilationError: Compiler <sqlalchemy.dialects.sqlite.base.SQLiteTypeCompiler object at 0x00000231DDDCB590> can't render element of type JSONB (Background on this error at: https://sqlalche.me/e/20/l7de)
+
+The above exception was the direct cause of the following exception:
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:344: in _asyncgen_fixture_wrapper
+    result = event_loop.run_until_complete(setup())
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py:687: in run_until_complete
+    return future.result()
+.venv\Lib\site-packages\pytest_asyncio\plugin.py:326: in setup
+    res = await gen_obj.__anext__()
+tests\conftest.py:63: in create_test_tables
+    await conn.run_sync(_replace_array_with_json)
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\engine.py:886: in run_sync
+    return await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+tests\conftest.py:56: in _replace_array_with_json
+    Base.metadata.create_all(conn)
+.venv\Lib\site-packages\sqlalchemy\sql\schema.py:5857: in create_all
+    bind._run_ddl_visitor(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2457: in _run_ddl_visitor
+    visitorcallable(self.dialect, self, **kwargs).traverse_single(element)
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:918: in visit_metadata
+    self.traverse_single(
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:664: in traverse_single
+    return meth(obj, **kw)
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:956: in visit_table
+    )._invoke_with(self.connection)
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:314: in _invoke_with
+    return bind.execute(self)
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:180: in _execute_on_connection
+    return connection._execute_ddl(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1526: in _execute_ddl
+    compiled = ddl.compile(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:308: in compile
+    return self._compiler(dialect, **kw)
+.venv\Lib\site-packages\sqlalchemy\sql\ddl.py:69: in _compiler
+    return dialect.ddl_compiler(dialect, self, **kw)
+.venv\Lib\site-packages\sqlalchemy\sql\compiler.py:870: in __init__
+    self.string = self.process(self.statement, **compile_kwargs)
+.venv\Lib\site-packages\sqlalchemy\sql\compiler.py:915: in process
+    return obj._compiler_dispatch(self, **kwargs)
+.venv\Lib\site-packages\sqlalchemy\sql\visitors.py:141: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore  # noqa: E501
+.venv\Lib\site-packages\sqlalchemy\sql\compiler.py:6655: in visit_create_table
+    raise exc.CompileError(
+E   sqlalchemy.exc.CompileError: (in table 'audit_logs', column 'payload'): Compiler <sqlalchemy.dialects.sqlite.base.SQLiteTypeCompiler object at 0x00000231DDDCB590> can't render element of type JSONB
+
+---------- coverage: platform win32, python 3.12.5-final-0 -----------
+Name                                Stmts   Miss  Cover   Missing
+-----------------------------------------------------------------
+app\__init__.py                         0      0   100%
+app\auth\__init__.py                    0      0   100%
+app\auth\dependencies.py               35     16    54%   48-72, 82-87
+app\auth\jwt.py                        27      9    67%   41, 50-61, 70-81, 91-96
+app\config.py                          40      1    98%   69
+app\database.py                        33     17    48%   60-68, 82-95
+app\main.py                            85     29    66%   59-73, 121-134, 139-154, 174, 184
+app\middleware\__init__.py              0      0   100%
+app\middleware\audit.py                44     25    43%   42, 45-58, 66-90, 111-122
+app\middleware\rate_limit.py            6      0   100%
+app\middleware\tenant.py               49     29    41%   54, 57-71, 76-91, 94-100, 103-109
+app\models\__init__.py                 10      0   100%
+app\models\audit_log.py                19      0   100%
+app\models\file_record.py              26      0   100%
+app\models\membership_plan.py          58      3    95%   95, 148, 221
+app\models\partner_preference.py       30      0   100%
+app\models\password_reset.py           16      0   100%
+app\models\profile.py                 144      1    99%   263
+app\models\refresh_token.py            17      0   100%
+app\models\shortlist.py                24      0   100%
+app\models\tenant.py                   32      1    97%   111
+app\models\user.py                     32      1    97%   112
+app\routers\__init__.py                 0      0   100%
+app\routers\files.py                   92     57    38%   72-86, 107-128, 149-166, 183-184, 202-207, 226-230, 245-267
+app\routers\membership_plans.py       145    109    25%   57-58, 79-84, 99-103, 118-136, 150-161, 181-224, 246-284, 311-323, 339-369, 389-443, 457-476
+app\routers\notifications.py           39     23    41%   43-70, 94-124
+app\routers\partner_preference.py      41     24    41%   34-41, 56-73, 86-94
+app\routers\profiles.py               139    110    21%   26-31, 45-57, 77-99, 125-172, 184-191, 205-225, 238-279, 293-307, 321-326
+app\routers\shortlist.py              142    106    25%   36-41, 51-57, 72-102, 112-120, 130-138, 153-197, 211-227, 240-251, 265-288, 303-329, 339-355, 364-373
+app\routers\tenant.py                  62     40    35%   42-53, 69-102, 115-118, 132-142, 155-159
+app\routers\users.py                  223    169    24%   70, 74, 79, 96-127, 142-186, 198-205, 217-235, 245-263, 272-275, 292-312, 326-352, 376-405, 435-505, 537-558, 568, 577-581
+app\schemas\__init__.py                 0      0   100%
+app\schemas\membership_plan.py         77      0   100%
+app\schemas\partner_preference.py      26      0   100%
+app\schemas\profile.py                171     26    85%   47-49, 55-57, 63-75, 129-141, 165
+app\schemas\shortlist.py               58      0   100%
+app\schemas\tenant.py                  88      9    90%   25-27, 35-40, 71, 76, 106
+app\schemas\user.py                   116     20    83%   23-36, 56, 61, 88, 106, 128, 176
+app\services\__init__.py                0      0   100%
+app\services\email.py                  54     54     0%   15-142
+app\services\notification.py           27     16    41%   63-87, 99-127
+app\services\s3.py                     38     22    42%   63-65, 84-109, 127-139, 143-149
+-----------------------------------------------------------------
+TOTAL                                2265    917    60%
+Coverage HTML written to dir htmlcov
+
+FAIL Required test coverage of 75% not reached. Total coverage: 59.51%
+=========================== short test summary info ===========================
+ERROR tests/test_auth.py::test_login_success - sqlalchemy.exc.CompileError: (...
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 error in 9.71s

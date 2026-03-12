@@ -183,6 +183,31 @@ class MemberOnboardResponse(BaseModel):
     temp_password: str  # shown once — member must change on first login
 
 
+class AdminOnboardRequest(BaseModel):
+    """Super-admin-initiated onboarding for a new tenant admin account.
+
+    No password required — a secure temp password is auto-generated and
+    emailed to the new admin.
+    """
+
+    full_name: str = Field(..., min_length=2, max_length=200)
+    email: EmailStr
+    phone: str | None = Field(None, pattern=r"^\+?[1-9]\d{6,14}$")
+    tenant_id: uuid.UUID
+
+    @field_validator("email")
+    @classmethod
+    def normalise_email(cls, v: str) -> str:
+        return v.strip().lower()
+
+
+class AdminOnboardResponse(BaseModel):
+    """Returned after admin onboarding; temp_password shown once."""
+
+    user: UserRead
+    temp_password: str
+
+
 class BulkOnboardRow(BaseModel):
     """Per-row result from a bulk CSV onboard operation."""
 

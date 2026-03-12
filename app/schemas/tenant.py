@@ -52,6 +52,10 @@ class TenantCreate(BaseModel):
     plan: Literal["starter", "growth", "enterprise"] = "starter"
     max_users: int = Field(500, ge=10, le=100_000)
     max_admins: int = Field(5, ge=1, le=500)
+    can_override_plan_prices: bool = Field(
+        False,
+        description="When True, the tenant admin may set custom membership plan prices",
+    )
 
     # Phase-2 fields
     contact_person: str = Field(..., min_length=2, max_length=200, examples=["Ravi Sharma"])
@@ -60,6 +64,13 @@ class TenantCreate(BaseModel):
     pin: str = Field(..., pattern=r"^\d{6}$", examples=["600001"])
     upi_id: str | None = Field(None, pattern=r"^[\w.\-]+@[\w.\-]+$", examples=["sharma@upi"])
     castes: list[str] = Field(default_factory=list, examples=[["Brahmin", "Iyer"]])
+
+    # Optional: bootstrap the first admin user for this tenant in one step
+    admin_email: EmailStr | None = Field(
+        None,
+        description="If provided, an ADMIN user is created for this tenant and a welcome email is dispatched.",
+    )
+    admin_name: str | None = Field(None, min_length=2, max_length=200)
 
     @field_validator("slug")
     @classmethod
@@ -83,6 +94,10 @@ class TenantUpdate(BaseModel):
     max_users: int | None = Field(None, ge=10, le=100_000)
     max_admins: int | None = Field(None, ge=1, le=500)
     is_active: bool | None = None
+    can_override_plan_prices: bool | None = Field(
+        None,
+        description="Toggle tenant admin ability to set custom plan prices (SuperAdmin only)",
+    )
 
     # Phase-2 optional updates
     contact_person: str | None = Field(None, min_length=2, max_length=200)
@@ -118,9 +133,12 @@ class TenantRead(BaseModel):
     upi_id: str | None
     castes: list[str] | None
     logo_key: str | None = None
+    can_override_plan_prices: bool = False
     active_members_count: int = 0
     created_at: datetime
     updated_at: datetime
+    # Populated only on tenant creation when admin_email was supplied
+    temp_password: str | None = None
 
     model_config = {"from_attributes": True}  # enables ORM mode
 

@@ -9,6 +9,7 @@ Patterns used:
   - Global exception handler for clean error responses
 """
 
+import asyncio
 import time
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
@@ -32,6 +33,8 @@ from app.routers import files, notifications, profiles, tenant
 from app.routers.users import auth_router, users_router
 from app.routers.shortlist import router as shortlist_router
 from app.routers.partner_preference import router as partner_pref_router
+from app.routers.membership_plans import admin_router as plan_admin_router
+from app.routers.membership_plans import router as membership_router
 
 # ── Configure structured logging ───────────────────────────────────────────────
 structlog.configure(
@@ -51,8 +54,8 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """
-    Startup: log banner, verify DB connectivity.
-    Shutdown: dispose connection pool.
+    Startup: log banner, verify DB connectivity, start background tasks.
+    Shutdown: cancel background tasks, dispose connection pool.
     """
     log.info(
         "startup",
@@ -65,8 +68,113 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         await conn.execute(text("SELECT 1"))
     log.info("db_connected")
 
+    # ── Background task: expire subscriptions hourly ───────────────────────────
+    async def _expiry_loop() -> None:
+        """
+        Every hour:
+          1. Flip status='expired' for overdue active subscriptions.
+          2. Send an expiry email to each affected member.
+        """
+        while True:
+            await asyncio.sleep(3600)
+            try:
+                async with engine.begin() as conn:
+                    # RETURNING gives us the user_id + plan for email dispatch
+                    rows = await conn.execute(
+                        text(
+                            """
+                            UPDATE member_subscriptions ms
+                            SET    status = 'expired'
+                            FROM   membership_plan_templates pt,
+                                   users u
+                            WHERE  ms.plan_template_id = pt.id
+                              AND  ms.user_id          = u.id
+                              AND  ms.status           = 'active'
+                              AND  ms.expires_at       < NOW()
+                            RETURNING u.email, u.full_name, pt.name AS plan_name
+                            """
+                        )
+                    )
+                expired = rows.fetchall()
+                if expired:
+                    log.info("subscriptions_expired", count=len(expired))
+                    from app.services.email import EmailService
+                    for row in expired:
+                        try:
+                            await EmailService.send_subscription_expired(
+                                to_email=row.email,
+                                full_name=row.full_name,
+                                plan_name=row.plan_name,
+                            )
+                        except Exception as mail_exc:
+                            log.warning(
+                                "expiry_email_failed",
+                                email=row.email,
+                                error=str(mail_exc),
+                            )
+            except Exception as exc:
+                log.warning("subscription_expiry_failed", error=str(exc))
+
+    # ── Background task: 3-day expiry warning (daily) ─────────────────────────
+    async def _warning_loop() -> None:
+        """
+        Every 24 hours: find active subscriptions expiring within 3 days
+        that haven't been warned yet, send a warning email, and flip the flag.
+        """
+        while True:
+            await asyncio.sleep(86400)
+            try:
+                async with engine.begin() as conn:
+                    rows = await conn.execute(
+                        text(
+                            """
+                            UPDATE member_subscriptions ms
+                            SET    expiry_warning_sent = TRUE
+                            FROM   membership_plan_templates pt,
+                                   users u
+                            WHERE  ms.plan_template_id    = pt.id
+                              AND  ms.user_id             = u.id
+                              AND  ms.status              = 'active'
+                              AND  ms.expiry_warning_sent = FALSE
+                              AND  ms.expires_at          BETWEEN NOW() AND NOW() + INTERVAL '3 days'
+                            RETURNING u.email, u.full_name, pt.name AS plan_name,
+                                      ms.expires_at
+                            """
+                        )
+                    )
+                warned = rows.fetchall()
+                if warned:
+                    log.info("expiry_warnings_sent", count=len(warned))
+                    from app.services.email import EmailService
+                    for row in warned:
+                        try:
+                            expires_on = row.expires_at.strftime("%d %b %Y")
+                            await EmailService.send_subscription_expiry_warning(
+                                to_email=row.email,
+                                full_name=row.full_name,
+                                plan_name=row.plan_name,
+                                expires_on=expires_on,
+                            )
+                        except Exception as mail_exc:
+                            log.warning(
+                                "warning_email_failed",
+                                email=row.email,
+                                error=str(mail_exc),
+                            )
+            except Exception as exc:
+                log.warning("subscription_warning_failed", error=str(exc))
+
+    expiry_task = asyncio.create_task(_expiry_loop())
+    warning_task = asyncio.create_task(_warning_loop())
+
     yield  # ── application runs here ──────────────────────────────────────────
 
+    expiry_task.cancel()
+    warning_task.cancel()
+    try:
+        await asyncio.gather(expiry_task, warning_task, return_exceptions=True)
+    except asyncio.CancelledError:
+        pass
     await engine.dispose()
     log.info("shutdown", app=settings.APP_NAME)
 
@@ -164,6 +272,8 @@ def create_app() -> FastAPI:
     app.include_router(notifications.router)
     app.include_router(shortlist_router)
     app.include_router(partner_pref_router)
+    app.include_router(plan_admin_router)
+    app.include_router(membership_router)
     # ── Health check ──────────────────────────────────────────────────────────
     @app.get("/health", tags=["Health"], summary="Liveness probe")
     async def health() -> dict:

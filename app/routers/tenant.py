@@ -5,9 +5,11 @@ All routes here require SUPER_ADMIN role.
 Tenants are the top-level multi-tenant entities (matrimonial centres).
 """
 
+import secrets
 import uuid
 from typing import Annotated
 
+import bcrypt as _bcrypt
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
@@ -38,8 +40,11 @@ async def create_tenant(
 
     - slug must be globally unique
     - only SUPER_ADMINs can create tenants
+    - if `admin_email` is supplied, an ADMIN user is created for this tenant
+      with a generated temp password and a welcome email is dispatched
     """
-    tenant = Tenant(**payload.model_dump())
+    tenant_data = payload.model_dump(exclude={"admin_email", "admin_name"})
+    tenant = Tenant(**tenant_data)
     db.add(tenant)
     try:
         await db.flush()  # catch DB constraint errors before commit
@@ -50,7 +55,44 @@ async def create_tenant(
             detail=f"Tenant with slug '{payload.slug}' already exists.",
         )
     await db.refresh(tenant)
-    return TenantRead.model_validate(tenant)
+
+    temp_password: str | None = None
+
+    if payload.admin_email:
+        admin_name = payload.admin_name or payload.contact_person
+        temp_password = secrets.token_urlsafe(12)
+        hashed = _bcrypt.hashpw(temp_password.encode(), _bcrypt.gensalt(12)).decode()
+        admin_user = User(
+            tenant_id=tenant.id,
+            email=payload.admin_email,
+            hashed_password=hashed,
+            full_name=admin_name,
+            role=UserRole.ADMIN,
+            is_active=True,
+        )
+        db.add(admin_user)
+        try:
+            await db.flush()
+        except IntegrityError:
+            await db.rollback()
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"Admin email '{payload.admin_email}' is already registered.",
+            )
+
+        try:
+            from app.services.email import EmailService
+            await EmailService.send_member_invite(
+                to_email=payload.admin_email,
+                temp_password=temp_password,
+                full_name=admin_name,
+            )
+        except Exception:
+            pass  # never fail the request for email errors
+
+    result = TenantRead.model_validate(tenant)
+    result.temp_password = temp_password
+    return result
 
 
 @router.get(

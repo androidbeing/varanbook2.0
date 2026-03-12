@@ -18,3 +18,9 @@ from app.models.file_record import FileRecord, ScanStatus  # noqa: F401
 from app.models.refresh_token import RefreshToken  # noqa: F401
 from app.models.password_reset import PasswordResetToken  # noqa: F401
 from app.models.audit_log import AuditLog  # noqa: F401
+from app.models.membership_plan import (  # noqa: F401
+    MembershipPlanTemplate,
+    TenantPlanOverride,
+    MemberSubscription,
+    SubscriptionStatus,
+)

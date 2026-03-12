@@ -14,6 +14,7 @@ Usage in routers:
         ...
 """
 
+import uuid
 from typing import Annotated
 
 import structlog
@@ -63,7 +64,7 @@ async def get_current_user(
         )
 
     # Load user from the DB (ensures account hasn't been deleted/deactivated)
-    result = await db.execute(select(User).where(User.id == payload.sub))
+    result = await db.execute(select(User).where(User.id == uuid.UUID(payload.sub)))
     user = result.scalar_one_or_none()
 
     if user is None or not user.is_active:

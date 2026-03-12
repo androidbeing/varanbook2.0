@@ -21,6 +21,7 @@ from sqlalchemy.orm import selectinload
 
 from app.auth.dependencies import get_current_user, require_admin, require_member
 from app.database import get_db
+from app.models.membership_plan import MemberSubscription, MembershipPlanTemplate, SubscriptionStatus
 from app.models.profile import Profile
 from app.models.shortlist import Shortlist, ShortlistStatus
 from app.models.user import User
@@ -88,6 +89,37 @@ async def create_shortlist(
     )
     if existing.scalar_one_or_none():
         raise HTTPException(status_code=409, detail="Already shortlisted this profile.")
+
+    # Interest request limit – enforced per subscription period
+    sub_result = await db.execute(
+        select(MemberSubscription)
+        .where(
+            MemberSubscription.user_id == current_user.id,
+            MemberSubscription.tenant_id == current_user.tenant_id,
+            MemberSubscription.status == SubscriptionStatus.ACTIVE,
+        )
+        .order_by(MemberSubscription.created_at.desc())
+        .limit(1)
+    )
+    active_sub = sub_result.scalar_one_or_none()
+    if active_sub:
+        plan = await db.get(MembershipPlanTemplate, active_sub.plan_template_id)
+        if plan and plan.max_interests is not None:
+            sent_count_result = await db.execute(
+                select(func.count()).select_from(Shortlist).where(
+                    Shortlist.from_profile_id == caller.id,
+                    Shortlist.created_at >= active_sub.starts_at,
+                )
+            )
+            sent_count = sent_count_result.scalar_one()
+            if sent_count >= plan.max_interests:
+                raise HTTPException(
+                    status_code=429,
+                    detail=(
+                        f"You have reached the {plan.max_interests} interest request limit "
+                        f"for your {plan.name} plan. Upgrade to send more."
+                    ),
+                )
 
     entry = Shortlist(
         tenant_id=current_user.tenant_id,

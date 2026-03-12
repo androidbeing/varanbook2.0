@@ -16,7 +16,7 @@ import pytest
 import pytest_asyncio
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-from passlib.context import CryptContext
+import bcrypt as _bcrypt_lib
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -24,7 +24,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from sqlalchemy import JSON
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 
 from app.database import Base, get_db
 from app.main import create_app
@@ -39,19 +39,20 @@ _TestSession = async_sessionmaker(
     bind=_test_engine, class_=AsyncSession, expire_on_commit=False
 )
 
-_pwd = CryptContext(schemes=["bcrypt"], deprecated="auto")
+def _hash_password(plain: str) -> str:
+    return _bcrypt_lib.hashpw(plain.encode(), _bcrypt_lib.gensalt(4)).decode()
 
 
 def _replace_array_with_json(conn) -> None:
     """
-    SQLite does not support PostgreSQL's ARRAY type.
-    Replace every ARRAY column in the metadata with JSON before create_all,
+    SQLite does not support PostgreSQL's ARRAY or JSONB types.
+    Replace every ARRAY/JSONB column in the metadata with JSON before create_all,
     so the in-memory test DB can create the tables without errors.
-    Array values will be stored/retrieved as JSON, which is fine for tests.
+    Array/JSONB values will be stored/retrieved as JSON, which is fine for tests.
     """
     for table in Base.metadata.tables.values():
         for column in table.columns:
-            if isinstance(column.type, ARRAY):
+            if isinstance(column.type, (ARRAY, JSONB)):
                 column.type = JSON()
     Base.metadata.create_all(conn)
 
@@ -107,7 +108,9 @@ async def make_tenant(db: AsyncSession, **kwargs) -> Tenant:
         "id": uuid.uuid4(),
         "name": "Test Matrimonial Centre",
         "slug": f"test-{uuid.uuid4().hex[:6]}",
+        "contact_person": "Test Admin",
         "contact_email": "admin@test.example.com",
+        "contact_number": "+911234567890",
         "plan": "starter",
     }
     defaults.update(kwargs)
@@ -120,16 +123,16 @@ async def make_tenant(db: AsyncSession, **kwargs) -> Tenant:
 
 async def make_user(
     db: AsyncSession,
-    tenant: Tenant,
+    tenant: Tenant | None,
     role: UserRole = UserRole.MEMBER,
     **kwargs,
 ) -> User:
     """Create and persist a User with sensible defaults."""
     defaults = {
         "id": uuid.uuid4(),
-        "tenant_id": tenant.id,
+        "tenant_id": tenant.id if tenant is not None else None,
         "email": f"user-{uuid.uuid4().hex[:6]}@example.com",
-        "hashed_password": _pwd.hash("Test@1234"),
+        "hashed_password": _hash_password("Test@1234"),
         "full_name": "Test User",
         "role": role,
     }
@@ -158,12 +161,12 @@ async def make_user_f(db: AsyncSession):
     return _inner
 
 
-# ── Convenience: make_user that creates its own tenant ───────────────────────
+# ── Convenience: make_auth_user that creates its own tenant ─────────────────
 @pytest_asyncio.fixture
-async def make_user(db: AsyncSession):
+async def make_auth_user(db: AsyncSession):
     """
     Simplified fixture used in test_auth.py:
-      await make_user(email="...", password="...")
+      await make_auth_user(email="...", password="...")
     Creates a fresh tenant automatically.
     """
     async def _inner(email: str, password: str, role: UserRole = UserRole.MEMBER) -> User:
@@ -172,7 +175,7 @@ async def make_user(db: AsyncSession):
             id=uuid.uuid4(),
             tenant_id=tenant.id,
             email=email.lower(),
-            hashed_password=_pwd.hash(password),
+            hashed_password=_hash_password(password),
             full_name="Test User",
             role=role,
         )

@@ -1,0 +1,928 @@
+FF.FF..FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF.                             [100%]
+================================== FAILURES ===================================
+_____________________________ test_login_success ______________________________
+tests\test_auth.py:19: in test_login_success
+    user = await make_user(email="auth@test.com", password="Test@1234")
+tests\conftest.py:177: in _inner
+    hashed_password=_pwd.hash(password),
+.venv\Lib\site-packages\passlib\context.py:2258: in hash
+    return record.hash(secret, **kwds)
+.venv\Lib\site-packages\passlib\utils\handlers.py:779: in hash
+    self.checksum = self._calc_checksum(secret)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:591: in _calc_checksum
+    self._stub_requires_backend()
+.venv\Lib\site-packages\passlib\utils\handlers.py:2254: in _stub_requires_backend
+    cls.set_backend()
+.venv\Lib\site-packages\passlib\utils\handlers.py:2156: in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2163: in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2188: in set_backend
+    cls._set_backend(name, dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2311: in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2224: in _set_backend
+    ok = loader(**kwds)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:626: in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:421: in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:380: in detect_wrap_bug
+    if verify(secret, bug_hash):
+.venv\Lib\site-packages\passlib\utils\handlers.py:792: in verify
+    return consteq(self._calc_checksum(secret), chk)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:655: in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+E   ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+------------------------------ Captured log call ------------------------------
+WARNING  passlib.handlers.bcrypt:bcrypt.py:622 (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+__________________________ test_login_wrong_password __________________________
+tests\test_auth.py:33: in test_login_wrong_password
+    await make_user(email="auth2@test.com", password="Test@1234")
+tests\conftest.py:177: in _inner
+    hashed_password=_pwd.hash(password),
+.venv\Lib\site-packages\passlib\context.py:2258: in hash
+    return record.hash(secret, **kwds)
+.venv\Lib\site-packages\passlib\utils\handlers.py:779: in hash
+    self.checksum = self._calc_checksum(secret)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:591: in _calc_checksum
+    self._stub_requires_backend()
+.venv\Lib\site-packages\passlib\utils\handlers.py:2254: in _stub_requires_backend
+    cls.set_backend()
+.venv\Lib\site-packages\passlib\utils\handlers.py:2156: in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2163: in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2188: in set_backend
+    cls._set_backend(name, dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2311: in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2224: in _set_backend
+    ok = loader(**kwds)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:626: in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:421: in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:380: in detect_wrap_bug
+    if verify(secret, bug_hash):
+.venv\Lib\site-packages\passlib\utils\handlers.py:792: in verify
+    return consteq(self._calc_checksum(secret), chk)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:655: in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+E   ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+------------------------------ Captured log call ------------------------------
+WARNING  passlib.handlers.bcrypt:bcrypt.py:622 (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+_________________________ test_refresh_token_rotation _________________________
+tests\test_auth.py:53: in test_refresh_token_rotation
+    await make_user(email="refresh@test.com", password="Test@1234")
+tests\conftest.py:177: in _inner
+    hashed_password=_pwd.hash(password),
+.venv\Lib\site-packages\passlib\context.py:2258: in hash
+    return record.hash(secret, **kwds)
+.venv\Lib\site-packages\passlib\utils\handlers.py:779: in hash
+    self.checksum = self._calc_checksum(secret)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:591: in _calc_checksum
+    self._stub_requires_backend()
+.venv\Lib\site-packages\passlib\utils\handlers.py:2254: in _stub_requires_backend
+    cls.set_backend()
+.venv\Lib\site-packages\passlib\utils\handlers.py:2156: in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2163: in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2188: in set_backend
+    cls._set_backend(name, dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2311: in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2224: in _set_backend
+    ok = loader(**kwds)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:626: in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:421: in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:380: in detect_wrap_bug
+    if verify(secret, bug_hash):
+.venv\Lib\site-packages\passlib\utils\handlers.py:792: in verify
+    return consteq(self._calc_checksum(secret), chk)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:655: in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+E   ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+------------------------------ Captured log call ------------------------------
+WARNING  passlib.handlers.bcrypt:bcrypt.py:622 (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+______________________ test_logout_revokes_refresh_token ______________________
+tests\test_auth.py:73: in test_logout_revokes_refresh_token
+    await make_user(email="logout@test.com", password="Test@1234")
+tests\conftest.py:177: in _inner
+    hashed_password=_pwd.hash(password),
+.venv\Lib\site-packages\passlib\context.py:2258: in hash
+    return record.hash(secret, **kwds)
+.venv\Lib\site-packages\passlib\utils\handlers.py:779: in hash
+    self.checksum = self._calc_checksum(secret)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:591: in _calc_checksum
+    self._stub_requires_backend()
+.venv\Lib\site-packages\passlib\utils\handlers.py:2254: in _stub_requires_backend
+    cls.set_backend()
+.venv\Lib\site-packages\passlib\utils\handlers.py:2156: in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2163: in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2188: in set_backend
+    cls._set_backend(name, dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2311: in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2224: in _set_backend
+    ok = loader(**kwds)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:626: in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:421: in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:380: in detect_wrap_bug
+    if verify(secret, bug_hash):
+.venv\Lib\site-packages\passlib\utils\handlers.py:792: in verify
+    return consteq(self._calc_checksum(secret), chk)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:655: in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+E   ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+------------------------------ Captured log call ------------------------------
+WARNING  passlib.handlers.bcrypt:bcrypt.py:622 (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+____________________________ test_change_password _____________________________
+tests\test_auth.py:108: in test_change_password
+    await make_user(email="chpwd@test.com", password="OldPass@1234")
+tests\conftest.py:177: in _inner
+    hashed_password=_pwd.hash(password),
+.venv\Lib\site-packages\passlib\context.py:2258: in hash
+    return record.hash(secret, **kwds)
+.venv\Lib\site-packages\passlib\utils\handlers.py:779: in hash
+    self.checksum = self._calc_checksum(secret)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:591: in _calc_checksum
+    self._stub_requires_backend()
+.venv\Lib\site-packages\passlib\utils\handlers.py:2254: in _stub_requires_backend
+    cls.set_backend()
+.venv\Lib\site-packages\passlib\utils\handlers.py:2156: in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2163: in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2188: in set_backend
+    cls._set_backend(name, dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2311: in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2224: in _set_backend
+    ok = loader(**kwds)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:626: in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:421: in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:380: in detect_wrap_bug
+    if verify(secret, bug_hash):
+.venv\Lib\site-packages\passlib\utils\handlers.py:792: in verify
+    return consteq(self._calc_checksum(secret), chk)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:655: in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+E   ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+------------------------------ Captured log call ------------------------------
+WARNING  passlib.handlers.bcrypt:bcrypt.py:622 (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+_____________________ test_change_password_wrong_current ______________________
+tests\test_auth.py:132: in test_change_password_wrong_current
+    await make_user(email="chpwd2@test.com", password="OldPass@1234")
+tests\conftest.py:177: in _inner
+    hashed_password=_pwd.hash(password),
+.venv\Lib\site-packages\passlib\context.py:2258: in hash
+    return record.hash(secret, **kwds)
+.venv\Lib\site-packages\passlib\utils\handlers.py:779: in hash
+    self.checksum = self._calc_checksum(secret)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:591: in _calc_checksum
+    self._stub_requires_backend()
+.venv\Lib\site-packages\passlib\utils\handlers.py:2254: in _stub_requires_backend
+    cls.set_backend()
+.venv\Lib\site-packages\passlib\utils\handlers.py:2156: in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2163: in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2188: in set_backend
+    cls._set_backend(name, dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2311: in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+.venv\Lib\site-packages\passlib\utils\handlers.py:2224: in _set_backend
+    ok = loader(**kwds)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:626: in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:421: in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:380: in detect_wrap_bug
+    if verify(secret, bug_hash):
+.venv\Lib\site-packages\passlib\utils\handlers.py:792: in verify
+    return consteq(self._calc_checksum(secret), chk)
+.venv\Lib\site-packages\passlib\handlers\bcrypt.py:655: in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+E   ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+------------------------------ Captured log call ------------------------------
+WARNING  passlib.handlers.bcrypt:bcrypt.py:622 (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+_________________________ test_create_profile_success _________________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+____________________ test_create_profile_underage_rejected ____________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+___________________ test_create_duplicate_profile_rejected ____________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+_______________________ test_member_can_get_own_profile _______________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+_________________ test_member_cannot_get_other_member_profile _________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+__________________ test_admin_can_get_any_profile_in_tenant ___________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+__________________________ test_update_profile_field __________________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+______________________ test_invalid_blood_group_rejected ______________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+_______________ test_privacy_flags_hide_sections_from_stranger ________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+_____________ test_accepted_connection_returns_connection_status ______________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+___________ test_pending_shortlist_does_not_grant_connection_status ___________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+_____ test_accepted_connection_allows_access_regardless_of_profile_status _____
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+____________________________ test_shortlist_create ____________________________
+tests\test_shortlist.py:52: in test_shortlist_create
+    headers_a, _ = await _register_and_login(client, "alice@sl.test")
+tests\test_shortlist.py:34: in _register_and_login
+    token = login.json()["access_token"]
+E   KeyError: 'access_token'
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 20:00:05,781 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:05,781 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 20:00:05,781 INFO sqlalchemy.engine.Engine [cached since 6.811s ago] (UUID('ba6f9831-82c1-4420-9fe8-4ddcacc1c38e'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+2026-03-11 20:00:05,781 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('ba6f9831-82c1-4420-9fe8-4ddcacc1c38e'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 0}', 422)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/users/", "method": "POST", "request_id": "3165e97f-48ae-4ffe-a37c-3b09007a5a38", "level": "warning", "timestamp": "2026-03-11T14:30:05.781176Z"}
+{"status": 422, "elapsed_ms": 8.33, "event": "request_complete", "path": "/users/", "method": "POST", "request_id": "3165e97f-48ae-4ffe-a37c-3b09007a5a38", "level": "info", "timestamp": "2026-03-11T14:30:05.781176Z"}
+2026-03-11 20:00:05,797 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:05,797 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 20:00:05,797 INFO sqlalchemy.engine.Engine [cached since 6.824s ago] (UUID('57c116da-45a6-41ca-8f0d-28efbe7dcfe4'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 14}', 401)
+2026-03-11 20:00:05,797 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('57c116da-45a6-41ca-8f0d-28efbe7dcfe4'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 14}', 401)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/auth/login", "method": "POST", "request_id": "6a733035-30e8-4d2b-b6b0-939ae1ff0ff5", "level": "warning", "timestamp": "2026-03-11T14:30:05.797527Z"}
+{"status": 401, "elapsed_ms": 11.24, "event": "request_complete", "path": "/auth/login", "method": "POST", "request_id": "6a733035-30e8-4d2b-b6b0-939ae1ff0ff5", "level": "info", "timestamp": "2026-03-11T14:30:05.797527Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 6.811s ago] (UUID('ba6f9831-82c1-4420-9fe8-4ddcacc1c38e'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 6.824s ago] (UUID('57c116da-45a6-41ca-8f0d-28efbe7dcfe4'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 14}', 401)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+______________________ test_shortlist_duplicate_rejected ______________________
+tests\test_shortlist.py:68: in test_shortlist_duplicate_rejected
+    headers_a, _ = await _register_and_login(client, "alice2@sl.test")
+tests\test_shortlist.py:34: in _register_and_login
+    token = login.json()["access_token"]
+E   KeyError: 'access_token'
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 20:00:06,019 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:06,019 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 20:00:06,020 INFO sqlalchemy.engine.Engine [cached since 7.04s ago] (UUID('7310b9fe-f19b-4645-b612-7303ddfa5095'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+2026-03-11 20:00:06,020 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('7310b9fe-f19b-4645-b612-7303ddfa5095'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 0}', 422)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/users/", "method": "POST", "request_id": "a86d049e-7069-4f94-a102-e0b0e31f010a", "level": "warning", "timestamp": "2026-03-11T14:30:06.021110Z"}
+{"status": 422, "elapsed_ms": 8.94, "event": "request_complete", "path": "/users/", "method": "POST", "request_id": "a86d049e-7069-4f94-a102-e0b0e31f010a", "level": "info", "timestamp": "2026-03-11T14:30:06.021110Z"}
+2026-03-11 20:00:06,036 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:06,037 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 20:00:06,037 INFO sqlalchemy.engine.Engine [cached since 7.058s ago] (UUID('4682c444-ba2b-45ca-a40e-33c29cd9d1dd'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 16}', 401)
+2026-03-11 20:00:06,038 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('4682c444-ba2b-45ca-a40e-33c29cd9d1dd'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 16}', 401)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/auth/login", "method": "POST", "request_id": "a5ec44d7-39af-4f8c-b692-1af2b429d0cb", "level": "warning", "timestamp": "2026-03-11T14:30:06.039174Z"}
+{"status": 401, "elapsed_ms": 14.74, "event": "request_complete", "path": "/auth/login", "method": "POST", "request_id": "a5ec44d7-39af-4f8c-b692-1af2b429d0cb", "level": "info", "timestamp": "2026-03-11T14:30:06.039174Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 7.04s ago] (UUID('7310b9fe-f19b-4645-b612-7303ddfa5095'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 7.058s ago] (UUID('4682c444-ba2b-45ca-a40e-33c29cd9d1dd'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 16}', 401)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+____________________ test_shortlist_cannot_shortlist_self _____________________
+tests\test_shortlist.py:86: in test_shortlist_cannot_shortlist_self
+    headers_a, profile_a_id = await _register_and_login(client, "alice3@sl.test")
+tests\test_shortlist.py:34: in _register_and_login
+    token = login.json()["access_token"]
+E   KeyError: 'access_token'
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 20:00:06,273 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:06,274 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 20:00:06,274 INFO sqlalchemy.engine.Engine [cached since 7.294s ago] (UUID('85770d20-424a-4c1f-a96b-ac460ab96985'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+2026-03-11 20:00:06,274 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('85770d20-424a-4c1f-a96b-ac460ab96985'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 0}', 422)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/users/", "method": "POST", "request_id": "1992d2e7-8a95-4081-afc1-bf62c5906b06", "level": "warning", "timestamp": "2026-03-11T14:30:06.275186Z"}
+{"status": 422, "elapsed_ms": 8.5, "event": "request_complete", "path": "/users/", "method": "POST", "request_id": "1992d2e7-8a95-4081-afc1-bf62c5906b06", "level": "info", "timestamp": "2026-03-11T14:30:06.275186Z"}
+2026-03-11 20:00:06,285 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:06,285 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 20:00:06,285 INFO sqlalchemy.engine.Engine [cached since 7.308s ago] (UUID('a172cd4d-0bde-4455-b3ef-211ee173f108'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 16}', 401)
+2026-03-11 20:00:06,285 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('a172cd4d-0bde-4455-b3ef-211ee173f108'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 16}', 401)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/auth/login", "method": "POST", "request_id": "101d20a1-757c-4f0c-9d46-8a4bb5e49091", "level": "warning", "timestamp": "2026-03-11T14:30:06.285356Z"}
+{"status": 401, "elapsed_ms": 12.69, "event": "request_complete", "path": "/auth/login", "method": "POST", "request_id": "101d20a1-757c-4f0c-9d46-8a4bb5e49091", "level": "info", "timestamp": "2026-03-11T14:30:06.285356Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 7.294s ago] (UUID('85770d20-424a-4c1f-a96b-ac460ab96985'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 7.308s ago] (UUID('a172cd4d-0bde-4455-b3ef-211ee173f108'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 16}', 401)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+_________________________ test_list_sent_and_received _________________________
+tests\test_shortlist.py:97: in test_list_sent_and_received
+    headers_a, _ = await _register_and_login(client, "alice4@sl.test")
+tests\test_shortlist.py:34: in _register_and_login
+    token = login.json()["access_token"]
+E   KeyError: 'access_token'
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 20:00:06,514 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:06,514 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 20:00:06,514 INFO sqlalchemy.engine.Engine [cached since 7.536s ago] (UUID('452d35ea-1dfe-47fa-8e05-8e6cb21b685d'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+2026-03-11 20:00:06,514 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('452d35ea-1dfe-47fa-8e05-8e6cb21b685d'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 0}', 422)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/users/", "method": "POST", "request_id": "4ff983ff-a5b9-44bc-aba1-02b60bee4192", "level": "warning", "timestamp": "2026-03-11T14:30:06.514197Z"}
+{"status": 422, "elapsed_ms": 13.01, "event": "request_complete", "path": "/users/", "method": "POST", "request_id": "4ff983ff-a5b9-44bc-aba1-02b60bee4192", "level": "info", "timestamp": "2026-03-11T14:30:06.514197Z"}
+2026-03-11 20:00:06,529 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:06,531 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 20:00:06,531 INFO sqlalchemy.engine.Engine [cached since 7.551s ago] (UUID('7a6c55e6-5c4a-4b12-acec-af8e629bfe1a'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 401)
+2026-03-11 20:00:06,531 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('7a6c55e6-5c4a-4b12-acec-af8e629bfe1a'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 0}', 401)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/auth/login", "method": "POST", "request_id": "88c20600-abd6-49a6-b831-d08d185a9114", "level": "warning", "timestamp": "2026-03-11T14:30:06.531091Z"}
+{"status": 401, "elapsed_ms": 12.38, "event": "request_complete", "path": "/auth/login", "method": "POST", "request_id": "88c20600-abd6-49a6-b831-d08d185a9114", "level": "info", "timestamp": "2026-03-11T14:30:06.531091Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 7.536s ago] (UUID('452d35ea-1dfe-47fa-8e05-8e6cb21b685d'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 7.551s ago] (UUID('7a6c55e6-5c4a-4b12-acec-af8e629bfe1a'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 401)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+____________________________ test_accept_shortlist ____________________________
+tests\test_shortlist.py:117: in test_accept_shortlist
+    headers_a, _ = await _register_and_login(client, "alice5@sl.test")
+tests\test_shortlist.py:34: in _register_and_login
+    token = login.json()["access_token"]
+E   KeyError: 'access_token'
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 20:00:06,828 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:06,828 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 20:00:06,829 INFO sqlalchemy.engine.Engine [cached since 7.849s ago] (UUID('1e6d3a9d-61fc-4dc8-ae28-dfd5c984b0ea'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 16}', 422)
+2026-03-11 20:00:06,829 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('1e6d3a9d-61fc-4dc8-ae28-dfd5c984b0ea'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 16}', 422)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/users/", "method": "POST", "request_id": "23c94ccd-8913-4d63-b7eb-2fab3b744a89", "level": "warning", "timestamp": "2026-03-11T14:30:06.830939Z"}
+{"status": 422, "elapsed_ms": 11.81, "event": "request_complete", "path": "/users/", "method": "POST", "request_id": "23c94ccd-8913-4d63-b7eb-2fab3b744a89", "level": "info", "timestamp": "2026-03-11T14:30:06.830939Z"}
+2026-03-11 20:00:06,839 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:06,839 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 20:00:06,840 INFO sqlalchemy.engine.Engine [cached since 7.861s ago] (UUID('623b59c8-d7dc-4822-9a70-d25f1b721f1a'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 401)
+2026-03-11 20:00:06,840 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('623b59c8-d7dc-4822-9a70-d25f1b721f1a'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 0}', 401)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/auth/login", "method": "POST", "request_id": "9d880b0c-3d78-425f-8463-59aa9233971f", "level": "warning", "timestamp": "2026-03-11T14:30:06.841938Z"}
+{"status": 401, "elapsed_ms": 8.35, "event": "request_complete", "path": "/auth/login", "method": "POST", "request_id": "9d880b0c-3d78-425f-8463-59aa9233971f", "level": "info", "timestamp": "2026-03-11T14:30:06.841938Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 7.849s ago] (UUID('1e6d3a9d-61fc-4dc8-ae28-dfd5c984b0ea'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 16}', 422)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 7.861s ago] (UUID('623b59c8-d7dc-4822-9a70-d25f1b721f1a'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 401)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+_______________________ test_only_recipient_can_accept ________________________
+tests\test_shortlist.py:138: in test_only_recipient_can_accept
+    headers_a, _ = await _register_and_login(client, "alice6@sl.test")
+tests\test_shortlist.py:34: in _register_and_login
+    token = login.json()["access_token"]
+E   KeyError: 'access_token'
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 20:00:07,230 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:07,230 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 20:00:07,230 INFO sqlalchemy.engine.Engine [cached since 8.262s ago] (UUID('11fd6ee6-fca6-4dac-b142-c67ccb63c71e'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+2026-03-11 20:00:07,230 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('11fd6ee6-fca6-4dac-b142-c67ccb63c71e'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 0}', 422)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/users/", "method": "POST", "request_id": "ece49f28-89b1-4a7b-8fb2-a4863f8512a3", "level": "warning", "timestamp": "2026-03-11T14:30:07.230715Z"}
+{"status": 422, "elapsed_ms": 7.01, "event": "request_complete", "path": "/users/", "method": "POST", "request_id": "ece49f28-89b1-4a7b-8fb2-a4863f8512a3", "level": "info", "timestamp": "2026-03-11T14:30:07.230715Z"}
+2026-03-11 20:00:07,247 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:07,247 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 20:00:07,247 INFO sqlalchemy.engine.Engine [cached since 8.277s ago] (UUID('c568377a-70b4-4f8e-add9-3f52d5ddde6a'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 401)
+2026-03-11 20:00:07,247 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('c568377a-70b4-4f8e-add9-3f52d5ddde6a'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 0}', 401)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/auth/login", "method": "POST", "request_id": "ac527b7f-a4b4-48c2-b8d1-e196df59da5f", "level": "warning", "timestamp": "2026-03-11T14:30:07.247244Z"}
+{"status": 401, "elapsed_ms": 10.72, "event": "request_complete", "path": "/auth/login", "method": "POST", "request_id": "ac527b7f-a4b4-48c2-b8d1-e196df59da5f", "level": "info", "timestamp": "2026-03-11T14:30:07.247244Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 8.262s ago] (UUID('11fd6ee6-fca6-4dac-b142-c67ccb63c71e'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 8.277s ago] (UUID('c568377a-70b4-4f8e-add9-3f52d5ddde6a'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 401)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+___________________________ test_withdraw_shortlist ___________________________
+tests\test_shortlist.py:160: in test_withdraw_shortlist
+    headers_a, _ = await _register_and_login(client, "alice7@sl.test")
+tests\test_shortlist.py:34: in _register_and_login
+    token = login.json()["access_token"]
+E   KeyError: 'access_token'
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 20:00:07,484 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:07,484 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 20:00:07,484 INFO sqlalchemy.engine.Engine [cached since 8.508s ago] (UUID('6189ac8e-2901-4076-a1e5-eddf006205cf'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 31}', 422)
+2026-03-11 20:00:07,484 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('6189ac8e-2901-4076-a1e5-eddf006205cf'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 31}', 422)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/users/", "method": "POST", "request_id": "a4c6cf2f-68e6-4e2a-94ec-e8e2d373483c", "level": "warning", "timestamp": "2026-03-11T14:30:07.484142Z"}
+{"status": 422, "elapsed_ms": 14.04, "event": "request_complete", "path": "/users/", "method": "POST", "request_id": "a4c6cf2f-68e6-4e2a-94ec-e8e2d373483c", "level": "info", "timestamp": "2026-03-11T14:30:07.484142Z"}
+2026-03-11 20:00:07,497 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:07,497 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 20:00:07,497 INFO sqlalchemy.engine.Engine [cached since 8.526s ago] (UUID('15a8b148-378f-4984-8cff-3e18b2c60490'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 14}', 401)
+2026-03-11 20:00:07,497 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('15a8b148-378f-4984-8cff-3e18b2c60490'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 14}', 401)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/auth/login", "method": "POST", "request_id": "d5fb4b7d-f8ff-4c49-8da6-889cb853afe3", "level": "warning", "timestamp": "2026-03-11T14:30:07.497313Z"}
+{"status": 401, "elapsed_ms": 15.14, "event": "request_complete", "path": "/auth/login", "method": "POST", "request_id": "d5fb4b7d-f8ff-4c49-8da6-889cb853afe3", "level": "info", "timestamp": "2026-03-11T14:30:07.497313Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 8.508s ago] (UUID('6189ac8e-2901-4076-a1e5-eddf006205cf'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 31}', 422)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 8.526s ago] (UUID('15a8b148-378f-4984-8cff-3e18b2c60490'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 14}', 401)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+______________________ test_create_tenant_as_super_admin ______________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+________________ test_create_tenant_as_regular_admin_forbidden ________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+______________________ test_create_tenant_duplicate_slug ______________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+______________________________ test_list_tenants ______________________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+___________________________ test_update_tenant_plan ___________________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+___________________________ test_deactivate_tenant ____________________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+_________________________ test_invalid_slug_rejected __________________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+______________________ test_member_registration_success _______________________
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:840: in _start_transaction
+    await self._transaction.start()
+.venv\Lib\site-packages\asyncpg\transaction.py:146: in start
+    await self._connection.execute(query)
+.venv\Lib\site-packages\asyncpg\connection.py:350: in execute
+    result = await self._protocol.query(query, timeout)
+asyncpg\protocol\protocol.pyx:359: in query
+    ???
+asyncpg\protocol\protocol.pyx:744: in asyncpg.protocol.protocol.BaseProtocol._check_state
+    ???
+E   asyncpg.exceptions._base.InterfaceError: cannot perform operation: another operation is in progress
+
+The above exception was the direct cause of the following exception:
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:572: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _prepare_and_execute
+    await adapt_connection._start_transaction()
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:842: in _start_transaction
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:789: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.InterfaceError: <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress
+
+The above exception was the direct cause of the following exception:
+tests\test_users.py:38: in test_member_registration_success
+    response = await client.post(
+.venv\Lib\site-packages\httpx\_client.py:1892: in post
+    return await self.request(
+.venv\Lib\site-packages\httpx\_client.py:1574: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+.venv\Lib\site-packages\httpx\_client.py:1661: in send
+    response = await self._send_handling_auth(
+.venv\Lib\site-packages\httpx\_client.py:1689: in _send_handling_auth
+    response = await self._send_handling_redirects(
+.venv\Lib\site-packages\httpx\_client.py:1726: in _send_handling_redirects
+    response = await self._send_single_request(request)
+.venv\Lib\site-packages\httpx\_client.py:1763: in _send_single_request
+    response = await transport.handle_async_request(request)
+.venv\Lib\site-packages\httpx\_transports\asgi.py:164: in handle_async_request
+    await self.app(scope, receive, send)
+.venv\Lib\site-packages\fastapi\applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+.venv\Lib\site-packages\starlette\applications.py:123: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv\Lib\site-packages\starlette\middleware\errors.py:186: in __call__
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv\Lib\site-packages\starlette\middleware\base.py:189: in __call__
+    with collapse_excgroups():
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:93: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:191: in __call__
+    response = await self.dispatch_func(request, call_next)
+app\main.py:130: in request_context_middleware
+    response = await call_next(request)
+.venv\Lib\site-packages\starlette\middleware\base.py:165: in call_next
+    raise app_exc
+.venv\Lib\site-packages\starlette\middleware\base.py:151: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv\Lib\site-packages\starlette\middleware\base.py:189: in __call__
+    with collapse_excgroups():
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:93: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:191: in __call__
+    response = await self.dispatch_func(request, call_next)
+app\middleware\audit.py:46: in dispatch
+    response: Response = await call_next(request)
+.venv\Lib\site-packages\starlette\middleware\base.py:165: in call_next
+    raise app_exc
+.venv\Lib\site-packages\starlette\middleware\base.py:151: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv\Lib\site-packages\starlette\middleware\base.py:189: in __call__
+    with collapse_excgroups():
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:93: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:191: in __call__
+    response = await self.dispatch_func(request, call_next)
+app\middleware\tenant.py:63: in dispatch
+    tenant = await self._resolve_tenant(request)
+app\middleware\tenant.py:82: in _resolve_tenant
+    return await self._fetch_by_id(tid)
+app\middleware\tenant.py:95: in _fetch_by_id
+    result = await session.execute(
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:461: in execute
+    result = await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2351: in execute
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2236: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:293: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:572: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _prepare_and_execute
+    await adapt_connection._start_transaction()
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:842: in _start_transaction
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:789: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.InterfaceError: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress
+E   [SQL: SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at 
+E   FROM tenants 
+E   WHERE tenants.id = $1::UUID AND tenants.is_active = true]
+E   [parameters: (UUID('3b3666bd-3813-4b0e-8756-a58db48ba5ed'),)]
+E   (Background on this error at: https://sqlalche.me/e/20/rvf5)
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 20:00:09,363 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:09,380 INFO sqlalchemy.engine.Engine SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at 
+FROM tenants 
+WHERE tenants.id = $1::UUID AND tenants.is_active = true
+2026-03-11 20:00:09,382 INFO sqlalchemy.engine.Engine [generated in 0.00066s] (UUID('3b3666bd-3813-4b0e-8756-a58db48ba5ed'),)
+2026-03-11 20:00:09,382 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at \nFROM tenants \nWHERE tenants.id = $1::UUID AND tenants.is_active = true]\n[parameters: (UUID('3b3666bd-3813-4b0e-8756-a58db48ba5ed'),)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 840, in _start_transaction\n    await self._transaction.start()\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\asyncpg\\transaction.py\", line 146, in start\n    await self._connection.execute(query)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\asyncpg\\connection.py\", line 350, in execute\n    result = await self._protocol.query(query, timeout)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"asyncpg\\protocol\\protocol.pyx\", line 359, in query\n  File \"asyncpg\\protocol\\protocol.pyx\", line 744, in asyncpg.protocol.protocol.BaseProtocol._check_state\nasyncpg.exceptions._base.InterfaceError: cannot perform operation: another operation is in progress\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1967, in _exec_single_context\n    self.dialect.do_execute(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\default.py\", line 924, in do_execute\n    cursor.execute(statement, parameters)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 572, in execute\n    self._adapt_connection.await_(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 131, in await_only\n    return current.driver.switch(awaitable)  # type: ignore[no-any-return]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 196, in greenlet_spawn\n    value = await result\n            ^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 508, in _prepare_and_execute\n    await adapt_connection._start_transaction()\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 842, in _start_transaction\n    self._handle_exception(error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 789, in _handle_exception\n    raise translated_error from error\nsqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.InterfaceError: <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\errors.py\", line 164, in __call__\n    await self.app(scope, receive, _send)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 189, in __call__\n    with collapse_excgroups():\n  File \"C:\\Users\\kgpra\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py\", line 158, in __exit__\n    self.gen.throw(value)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\_utils.py\", line 93, in collapse_excgroups\n    raise exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 191, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\main.py\", line 130, in request_context_middleware\n    response = await call_next(request)\n               ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 165, in call_next\n    raise app_exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 151, in coro\n    await self.app(scope, receive_or_disconnect, send_no_error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 189, in __call__\n    with collapse_excgroups():\n  File \"C:\\Users\\kgpra\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py\", line 158, in __exit__\n    self.gen.throw(value)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\_utils.py\", line 93, in collapse_excgroups\n    raise exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 191, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\audit.py\", line 46, in dispatch\n    response: Response = await call_next(request)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 165, in call_next\n    raise app_exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 151, in coro\n    await self.app(scope, receive_or_disconnect, send_no_error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 189, in __call__\n    with collapse_excgroups():\n  File \"C:\\Users\\kgpra\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py\", line 158, in __exit__\n    self.gen.throw(value)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\_utils.py\", line 93, in collapse_excgroups\n    raise exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 191, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\tenant.py\", line 63, in dispatch\n    tenant = await self._resolve_tenant(request)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\tenant.py\", line 82, in _resolve_tenant\n    return await self._fetch_by_id(tid)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\tenant.py\", line 95, in _fetch_by_id\n    result = await session.execute(\n             ^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\ext\\asyncio\\session.py\", line 461, in execute\n    result = await greenlet_spawn(\n             ^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 201, in greenlet_spawn\n    result = context.throw(*sys.exc_info())\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\orm\\session.py\", line 2351, in execute\n    return self._execute_internal(\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\orm\\session.py\", line 2236, in _execute_internal\n    result: Result[Any] = compile_state_cls.orm_execute_statement(\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\orm\\context.py\", line 293, in orm_execute_statement\n    result = conn.execute(\n             ^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1418, in execute\n    return meth(\n           ^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\sql\\elements.py\", line 515, in _execute_on_connection\n    return connection._execute_clauseelement(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1640, in _execute_clauseelement\n    ret = self._execute_context(\n          ^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1846, in _execute_context\n    return self._exec_single_context(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1986, in _exec_single_context\n    self._handle_dbapi_exception(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 2353, in _handle_dbapi_exception\n    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1967, in _exec_single_context\n    self.dialect.do_execute(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\default.py\", line 924, in do_execute\n    cursor.execute(statement, parameters)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 572, in execute\n    self._adapt_connection.await_(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 131, in await_only\n    return current.driver.switch(awaitable)  # type: ignore[no-any-return]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 196, in greenlet_spawn\n    value = await result\n            ^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 508, in _prepare_and_execute\n    await adapt_connection._start_transaction()\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 842, in _start_transaction\n    self._handle_exception(error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 789, in _handle_exception\n    raise translated_error from error\nsqlalchemy.exc.InterfaceError: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at \nFROM tenants \nWHERE tenants.id = $1::UUID AND tenants.is_active = true]\n[parameters: (UUID('3b3666bd-3813-4b0e-8756-a58db48ba5ed'),)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)\n", "exc_info": true, "event": "unhandled_error", "path": "/users/", "method": "POST", "request_id": "0eaf2c04-3b16-4728-9ddd-1ba2270f8ee3", "level": "error", "timestamp": "2026-03-11T14:30:09.575362Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at 
+FROM tenants 
+WHERE tenants.id = $1::UUID AND tenants.is_active = true
+INFO     sqlalchemy.engine.Engine:base.py:1846 [generated in 0.00066s] (UUID('3b3666bd-3813-4b0e-8756-a58db48ba5ed'),)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+___________________ test_member_registration_weak_password ____________________
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:840: in _start_transaction
+    await self._transaction.start()
+.venv\Lib\site-packages\asyncpg\transaction.py:146: in start
+    await self._connection.execute(query)
+.venv\Lib\site-packages\asyncpg\connection.py:350: in execute
+    result = await self._protocol.query(query, timeout)
+asyncpg\protocol\protocol.pyx:359: in query
+    ???
+asyncpg\protocol\protocol.pyx:744: in asyncpg.protocol.protocol.BaseProtocol._check_state
+    ???
+E   asyncpg.exceptions._base.InterfaceError: cannot perform operation: another operation is in progress
+
+The above exception was the direct cause of the following exception:
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:572: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _prepare_and_execute
+    await adapt_connection._start_transaction()
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:842: in _start_transaction
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:789: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.InterfaceError: <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress
+
+The above exception was the direct cause of the following exception:
+tests\test_users.py:60: in test_member_registration_weak_password
+    response = await client.post(
+.venv\Lib\site-packages\httpx\_client.py:1892: in post
+    return await self.request(
+.venv\Lib\site-packages\httpx\_client.py:1574: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+.venv\Lib\site-packages\httpx\_client.py:1661: in send
+    response = await self._send_handling_auth(
+.venv\Lib\site-packages\httpx\_client.py:1689: in _send_handling_auth
+    response = await self._send_handling_redirects(
+.venv\Lib\site-packages\httpx\_client.py:1726: in _send_handling_redirects
+    response = await self._send_single_request(request)
+.venv\Lib\site-packages\httpx\_client.py:1763: in _send_single_request
+    response = await transport.handle_async_request(request)
+.venv\Lib\site-packages\httpx\_transports\asgi.py:164: in handle_async_request
+    await self.app(scope, receive, send)
+.venv\Lib\site-packages\fastapi\applications.py:1054: in __call__
+    await super().__call__(scope, receive, send)
+.venv\Lib\site-packages\starlette\applications.py:123: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv\Lib\site-packages\starlette\middleware\errors.py:186: in __call__
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv\Lib\site-packages\starlette\middleware\base.py:189: in __call__
+    with collapse_excgroups():
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:93: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:191: in __call__
+    response = await self.dispatch_func(request, call_next)
+app\main.py:130: in request_context_middleware
+    response = await call_next(request)
+.venv\Lib\site-packages\starlette\middleware\base.py:165: in call_next
+    raise app_exc
+.venv\Lib\site-packages\starlette\middleware\base.py:151: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv\Lib\site-packages\starlette\middleware\base.py:189: in __call__
+    with collapse_excgroups():
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:93: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:191: in __call__
+    response = await self.dispatch_func(request, call_next)
+app\middleware\audit.py:46: in dispatch
+    response: Response = await call_next(request)
+.venv\Lib\site-packages\starlette\middleware\base.py:165: in call_next
+    raise app_exc
+.venv\Lib\site-packages\starlette\middleware\base.py:151: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv\Lib\site-packages\starlette\middleware\base.py:189: in __call__
+    with collapse_excgroups():
+..\..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:158: in __exit__
+    self.gen.throw(value)
+.venv\Lib\site-packages\starlette\_utils.py:93: in collapse_excgroups
+    raise exc
+.venv\Lib\site-packages\starlette\middleware\base.py:191: in __call__
+    response = await self.dispatch_func(request, call_next)
+app\middleware\tenant.py:63: in dispatch
+    tenant = await self._resolve_tenant(request)
+app\middleware\tenant.py:82: in _resolve_tenant
+    return await self._fetch_by_id(tid)
+app\middleware\tenant.py:95: in _fetch_by_id
+    result = await session.execute(
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:461: in execute
+    result = await greenlet_spawn(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:201: in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2351: in execute
+    return self._execute_internal(
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:2236: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+.venv\Lib\site-packages\sqlalchemy\orm\context.py:293: in orm_execute_statement
+    result = conn.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:572: in execute
+    self._adapt_connection.await_(
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:508: in _prepare_and_execute
+    await adapt_connection._start_transaction()
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:842: in _start_transaction
+    self._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:789: in _handle_exception
+    raise translated_error from error
+E   sqlalchemy.exc.InterfaceError: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress
+E   [SQL: SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at 
+E   FROM tenants 
+E   WHERE tenants.id = $1::UUID AND tenants.is_active = true]
+E   [parameters: (UUID('c19941bb-da46-4418-9073-9e846d771312'),)]
+E   (Background on this error at: https://sqlalche.me/e/20/rvf5)
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 20:00:11,484 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 20:00:11,484 INFO sqlalchemy.engine.Engine SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at 
+FROM tenants 
+WHERE tenants.id = $1::UUID AND tenants.is_active = true
+2026-03-11 20:00:11,484 INFO sqlalchemy.engine.Engine [cached since 2.104s ago] (UUID('c19941bb-da46-4418-9073-9e846d771312'),)
+2026-03-11 20:00:11,484 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at \nFROM tenants \nWHERE tenants.id = $1::UUID AND tenants.is_active = true]\n[parameters: (UUID('c19941bb-da46-4418-9073-9e846d771312'),)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 840, in _start_transaction\n    await self._transaction.start()\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\asyncpg\\transaction.py\", line 146, in start\n    await self._connection.execute(query)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\asyncpg\\connection.py\", line 350, in execute\n    result = await self._protocol.query(query, timeout)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"asyncpg\\protocol\\protocol.pyx\", line 359, in query\n  File \"asyncpg\\protocol\\protocol.pyx\", line 744, in asyncpg.protocol.protocol.BaseProtocol._check_state\nasyncpg.exceptions._base.InterfaceError: cannot perform operation: another operation is in progress\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1967, in _exec_single_context\n    self.dialect.do_execute(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\default.py\", line 924, in do_execute\n    cursor.execute(statement, parameters)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 572, in execute\n    self._adapt_connection.await_(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 131, in await_only\n    return current.driver.switch(awaitable)  # type: ignore[no-any-return]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 196, in greenlet_spawn\n    value = await result\n            ^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 508, in _prepare_and_execute\n    await adapt_connection._start_transaction()\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 842, in _start_transaction\n    self._handle_exception(error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 789, in _handle_exception\n    raise translated_error from error\nsqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.InterfaceError: <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\errors.py\", line 164, in __call__\n    await self.app(scope, receive, _send)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 189, in __call__\n    with collapse_excgroups():\n  File \"C:\\Users\\kgpra\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py\", line 158, in __exit__\n    self.gen.throw(value)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\_utils.py\", line 93, in collapse_excgroups\n    raise exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 191, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\main.py\", line 130, in request_context_middleware\n    response = await call_next(request)\n               ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 165, in call_next\n    raise app_exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 151, in coro\n    await self.app(scope, receive_or_disconnect, send_no_error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 189, in __call__\n    with collapse_excgroups():\n  File \"C:\\Users\\kgpra\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py\", line 158, in __exit__\n    self.gen.throw(value)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\_utils.py\", line 93, in collapse_excgroups\n    raise exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 191, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\audit.py\", line 46, in dispatch\n    response: Response = await call_next(request)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 165, in call_next\n    raise app_exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 151, in coro\n    await self.app(scope, receive_or_disconnect, send_no_error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 189, in __call__\n    with collapse_excgroups():\n  File \"C:\\Users\\kgpra\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py\", line 158, in __exit__\n    self.gen.throw(value)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\_utils.py\", line 93, in collapse_excgroups\n    raise exc\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\starlette\\middleware\\base.py\", line 191, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\tenant.py\", line 63, in dispatch\n    tenant = await self._resolve_tenant(request)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\tenant.py\", line 82, in _resolve_tenant\n    return await self._fetch_by_id(tid)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\app\\middleware\\tenant.py\", line 95, in _fetch_by_id\n    result = await session.execute(\n             ^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\ext\\asyncio\\session.py\", line 461, in execute\n    result = await greenlet_spawn(\n             ^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 201, in greenlet_spawn\n    result = context.throw(*sys.exc_info())\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\orm\\session.py\", line 2351, in execute\n    return self._execute_internal(\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\orm\\session.py\", line 2236, in _execute_internal\n    result: Result[Any] = compile_state_cls.orm_execute_statement(\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\orm\\context.py\", line 293, in orm_execute_statement\n    result = conn.execute(\n             ^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1418, in execute\n    return meth(\n           ^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\sql\\elements.py\", line 515, in _execute_on_connection\n    return connection._execute_clauseelement(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1640, in _execute_clauseelement\n    ret = self._execute_context(\n          ^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1846, in _execute_context\n    return self._exec_single_context(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1986, in _exec_single_context\n    self._handle_dbapi_exception(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 2353, in _handle_dbapi_exception\n    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\base.py\", line 1967, in _exec_single_context\n    self.dialect.do_execute(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\engine\\default.py\", line 924, in do_execute\n    cursor.execute(statement, parameters)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 572, in execute\n    self._adapt_connection.await_(\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 131, in await_only\n    return current.driver.switch(awaitable)  # type: ignore[no-any-return]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\util\\_concurrency_py3k.py\", line 196, in greenlet_spawn\n    value = await result\n            ^^^^^^^^^^^^\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 508, in _prepare_and_execute\n    await adapt_connection._start_transaction()\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 842, in _start_transaction\n    self._handle_exception(error)\n  File \"C:\\Users\\kgpra\\OneDrive\\Documents\\Varanbook2.0\\varanbook\\.venv\\Lib\\site-packages\\sqlalchemy\\dialects\\postgresql\\asyncpg.py\", line 789, in _handle_exception\n    raise translated_error from error\nsqlalchemy.exc.InterfaceError: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at \nFROM tenants \nWHERE tenants.id = $1::UUID AND tenants.is_active = true]\n[parameters: (UUID('c19941bb-da46-4418-9073-9e846d771312'),)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)\n", "exc_info": true, "event": "unhandled_error", "path": "/users/", "method": "POST", "request_id": "5364c76e-ea5f-43e1-8ca1-550a2d924fb4", "level": "error", "timestamp": "2026-03-11T14:30:11.484143Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 SELECT tenants.id, tenants.name, tenants.slug, tenants.domain, tenants.contact_person, tenants.contact_email, tenants.contact_number, tenants.whatsapp_number, tenants.address, tenants.pin, tenants.upi_id, tenants.castes, tenants.plan, tenants.max_users, tenants.max_admins, tenants.can_override_plan_prices, tenants.logo_key, tenants.is_active, tenants.trial_ends_at, tenants.created_at, tenants.updated_at 
+FROM tenants 
+WHERE tenants.id = $1::UUID AND tenants.is_active = true
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 2.104s ago] (UUID('c19941bb-da46-4418-9073-9e846d771312'),)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+__________________ test_member_registration_duplicate_email ___________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+_____________________________ test_login_success ______________________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+__________________________ test_login_wrong_password __________________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+____________________ test_admin_onboarding_by_super_admin _____________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+______________ test_admin_cannot_onboard_admin_for_other_tenant _______________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+_________________________________ test_get_me _________________________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+=========================== short test summary info ===========================
+FAILED tests/test_auth.py::test_login_success - ValueError: password cannot b...
+FAILED tests/test_auth.py::test_login_wrong_password - ValueError: password c...
+FAILED tests/test_auth.py::test_refresh_token_rotation - ValueError: password...
+FAILED tests/test_auth.py::test_logout_revokes_refresh_token - ValueError: pa...
+FAILED tests/test_auth.py::test_change_password - ValueError: password cannot...
+FAILED tests/test_auth.py::test_change_password_wrong_current - ValueError: p...
+FAILED tests/test_profiles.py::test_create_profile_success - Failed: Fixture ...
+FAILED tests/test_profiles.py::test_create_profile_underage_rejected - Failed...
+FAILED tests/test_profiles.py::test_create_duplicate_profile_rejected - Faile...
+FAILED tests/test_profiles.py::test_member_can_get_own_profile - Failed: Fixt...
+FAILED tests/test_profiles.py::test_member_cannot_get_other_member_profile - ...
+FAILED tests/test_profiles.py::test_admin_can_get_any_profile_in_tenant - Fai...
+FAILED tests/test_profiles.py::test_update_profile_field - Failed: Fixture "m...
+FAILED tests/test_profiles.py::test_invalid_blood_group_rejected - Failed: Fi...
+FAILED tests/test_profiles.py::test_privacy_flags_hide_sections_from_stranger
+FAILED tests/test_profiles.py::test_accepted_connection_returns_connection_status
+FAILED tests/test_profiles.py::test_pending_shortlist_does_not_grant_connection_status
+FAILED tests/test_profiles.py::test_accepted_connection_allows_access_regardless_of_profile_status
+FAILED tests/test_shortlist.py::test_shortlist_create - KeyError: 'access_token'
+FAILED tests/test_shortlist.py::test_shortlist_duplicate_rejected - KeyError:...
+FAILED tests/test_shortlist.py::test_shortlist_cannot_shortlist_self - KeyErr...
+FAILED tests/test_shortlist.py::test_list_sent_and_received - KeyError: 'acce...
+FAILED tests/test_shortlist.py::test_accept_shortlist - KeyError: 'access_token'
+FAILED tests/test_shortlist.py::test_only_recipient_can_accept - KeyError: 'a...
+FAILED tests/test_shortlist.py::test_withdraw_shortlist - KeyError: 'access_t...
+FAILED tests/test_tenant.py::test_create_tenant_as_super_admin - Failed: Fixt...
+FAILED tests/test_tenant.py::test_create_tenant_as_regular_admin_forbidden - ...
+FAILED tests/test_tenant.py::test_create_tenant_duplicate_slug - Failed: Fixt...
+FAILED tests/test_tenant.py::test_list_tenants - Failed: Fixture "make_user" ...
+FAILED tests/test_tenant.py::test_update_tenant_plan - Failed: Fixture "make_...
+FAILED tests/test_tenant.py::test_deactivate_tenant - Failed: Fixture "make_u...
+FAILED tests/test_tenant.py::test_invalid_slug_rejected - Failed: Fixture "ma...
+FAILED tests/test_users.py::test_member_registration_success - sqlalchemy.exc...
+FAILED tests/test_users.py::test_member_registration_weak_password - sqlalche...
+FAILED tests/test_users.py::test_member_registration_duplicate_email - Failed...
+FAILED tests/test_users.py::test_login_success - Failed: Fixture "make_user" ...
+FAILED tests/test_users.py::test_login_wrong_password - Failed: Fixture "make...
+FAILED tests/test_users.py::test_admin_onboarding_by_super_admin - Failed: Fi...
+FAILED tests/test_users.py::test_admin_cannot_onboard_admin_for_other_tenant
+FAILED tests/test_users.py::test_get_me - Failed: Fixture "make_user" called ...
+40 failed, 4 passed in 19.06s
+^C

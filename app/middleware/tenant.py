@@ -71,24 +71,28 @@ class TenantMiddleware(BaseHTTPMiddleware):
         return await call_next(request)
 
     async def _resolve_tenant(self, request: Request) -> Tenant | None:
-        """Try header first, then subdomain slug."""
-        # 1. Header: X-Tenant-ID (UUID)
-        tenant_id_header = request.headers.get(settings.TENANT_ID_HEADER)
-        if tenant_id_header:
-            try:
-                tid = uuid.UUID(tenant_id_header)
-            except ValueError:
-                return None
-            return await self._fetch_by_id(tid)
+        """Try header first, then subdomain slug. Returns None on any error."""
+        try:
+            # 1. Header: X-Tenant-ID (UUID)
+            tenant_id_header = request.headers.get(settings.TENANT_ID_HEADER)
+            if tenant_id_header:
+                try:
+                    tid = uuid.UUID(tenant_id_header)
+                except ValueError:
+                    return None
+                return await self._fetch_by_id(tid)
 
-        # 2. Subdomain: <slug>.varanbook.in
-        host = request.headers.get("host", "")
-        parts = host.split(".")
-        if len(parts) >= 3:  # slug.domain.tld
-            slug = parts[0]
-            return await self._fetch_by_slug(slug)
+            # 2. Subdomain: <slug>.varanbook.in
+            host = request.headers.get("host", "")
+            parts = host.split(".")
+            if len(parts) >= 3:  # slug.domain.tld
+                slug = parts[0]
+                return await self._fetch_by_slug(slug)
 
-        return None
+            return None
+        except Exception as exc:
+            log.warning("tenant_resolve_error", path=request.url.path, error=str(exc))
+            return None
 
     async def _fetch_by_id(self, tenant_id: uuid.UUID) -> Tenant | None:
         async with AsyncSessionLocal() as session:

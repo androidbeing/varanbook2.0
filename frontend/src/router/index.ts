@@ -92,6 +92,17 @@ const router = createRouter({
           meta: { adminOnly: true },
         },
         {
+          path: 'admin/membership',
+          name: 'admin-membership',
+          component: () => import('@/views/AdminMembershipView.vue'),
+          meta: { adminOnly: true },
+        },
+        {
+          path: 'membership',
+          name: 'membership',
+          component: () => import('@/views/MembershipPlansView.vue'),
+        },
+        {
           path: 'change-password',
           name: 'change-password',
           component: () => import('@/views/ChangePasswordView.vue'),

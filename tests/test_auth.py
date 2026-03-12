@@ -15,8 +15,8 @@ from httpx import AsyncClient
 
 # ── Login ──────────────────────────────────────────────────────────────────────
 @pytest.mark.asyncio
-async def test_login_success(client: AsyncClient, make_user):
-    user = await make_user(email="auth@test.com", password="Test@1234")
+async def test_login_success(client: AsyncClient, make_auth_user):
+    user = await make_auth_user(email="auth@test.com", password="Test@1234")
     resp = await client.post(
         "/auth/login",
         json={"email": "auth@test.com", "password": "Test@1234"},
@@ -29,8 +29,8 @@ async def test_login_success(client: AsyncClient, make_user):
 
 
 @pytest.mark.asyncio
-async def test_login_wrong_password(client: AsyncClient, make_user):
-    await make_user(email="auth2@test.com", password="Test@1234")
+async def test_login_wrong_password(client: AsyncClient, make_auth_user):
+    await make_auth_user(email="auth2@test.com", password="Test@1234")
     resp = await client.post(
         "/auth/login",
         json={"email": "auth2@test.com", "password": "WrongPassword!"},
@@ -49,8 +49,8 @@ async def test_login_unknown_user(client: AsyncClient):
 
 # ── Refresh ────────────────────────────────────────────────────────────────────
 @pytest.mark.asyncio
-async def test_refresh_token_rotation(client: AsyncClient, make_user):
-    await make_user(email="refresh@test.com", password="Test@1234")
+async def test_refresh_token_rotation(client: AsyncClient, make_auth_user):
+    await make_auth_user(email="refresh@test.com", password="Test@1234")
     login = await client.post(
         "/auth/login", json={"email": "refresh@test.com", "password": "Test@1234"}
     )
@@ -69,8 +69,8 @@ async def test_refresh_token_rotation(client: AsyncClient, make_user):
 
 # ── Logout ─────────────────────────────────────────────────────────────────────
 @pytest.mark.asyncio
-async def test_logout_revokes_refresh_token(client: AsyncClient, make_user):
-    await make_user(email="logout@test.com", password="Test@1234")
+async def test_logout_revokes_refresh_token(client: AsyncClient, make_auth_user):
+    await make_auth_user(email="logout@test.com", password="Test@1234")
     login = await client.post(
         "/auth/login", json={"email": "logout@test.com", "password": "Test@1234"}
     )
@@ -104,8 +104,8 @@ async def test_reset_password_invalid_token(client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_change_password(client: AsyncClient, make_user, auth_headers):
-    await make_user(email="chpwd@test.com", password="OldPass@1234")
+async def test_change_password(client: AsyncClient, make_auth_user, auth_headers):
+    await make_auth_user(email="chpwd@test.com", password="OldPass@1234")
     headers = await auth_headers("chpwd@test.com", "OldPass@1234")
     resp = await client.post(
         "/auth/change-password",
@@ -128,8 +128,8 @@ async def test_change_password(client: AsyncClient, make_user, auth_headers):
 
 
 @pytest.mark.asyncio
-async def test_change_password_wrong_current(client: AsyncClient, make_user, auth_headers):
-    await make_user(email="chpwd2@test.com", password="OldPass@1234")
+async def test_change_password_wrong_current(client: AsyncClient, make_auth_user, auth_headers):
+    await make_auth_user(email="chpwd2@test.com", password="OldPass@1234")
     headers = await auth_headers("chpwd2@test.com", "OldPass@1234")
     resp = await client.post(
         "/auth/change-password",

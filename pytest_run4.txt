@@ -1,0 +1,64 @@
+...F.....F...F.F.FFFFFFFFFFFF.FFFFFFFF..F...                             [100%]
+================================== FAILURES ===================================
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\aiosqlite\core.py:63: sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) UNIQUE constraint failed: refresh_tokens.token_hash
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\test_profiles.py:58: AssertionError: assert 'active' == 'draft'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\test_profiles.py:132: assert 200 == 403
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\test_profiles.py:175: KeyError: 'education'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py:3590: sqlalchemy.exc.StatementError: (builtins.AttributeError) 'str' object has no attribute 'hex'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py:3590: sqlalchemy.exc.StatementError: (builtins.AttributeError) 'str' object has no attribute 'hex'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py:3590: sqlalchemy.exc.StatementError: (builtins.AttributeError) 'str' object has no attribute 'hex'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py:3590: sqlalchemy.exc.StatementError: (builtins.AttributeError) 'str' object has no attribute 'hex'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\test_shortlist.py:34: KeyError: 'access_token'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\test_shortlist.py:34: KeyError: 'access_token'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\test_shortlist.py:34: KeyError: 'access_token'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\test_shortlist.py:34: KeyError: 'access_token'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\test_shortlist.py:34: KeyError: 'access_token'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\test_shortlist.py:34: KeyError: 'access_token'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\test_shortlist.py:34: KeyError: 'access_token'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\conftest.py:133: AttributeError: 'NoneType' object has no attribute 'id'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\conftest.py:133: AttributeError: 'NoneType' object has no attribute 'id'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\conftest.py:133: AttributeError: 'NoneType' object has no attribute 'id'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\conftest.py:133: AttributeError: 'NoneType' object has no attribute 'id'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\conftest.py:133: AttributeError: 'NoneType' object has no attribute 'id'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\conftest.py:133: AttributeError: 'NoneType' object has no attribute 'id'
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:789: sqlalchemy.exc.InterfaceError: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:789: sqlalchemy.exc.InterfaceError: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py:789: sqlalchemy.exc.InterfaceError: (sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress
+C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\tests\conftest.py:133: AttributeError: 'NoneType' object has no attribute 'id'
+============================== warnings summary ===============================
+tests/test_auth.py: 4 warnings
+tests/test_profiles.py: 19 warnings
+tests/test_tenant.py: 1 warning
+tests/test_users.py: 2 warnings
+  C:\Users\kgpra\OneDrive\Documents\Varanbook2.0\varanbook\.venv\Lib\site-packages\jose\jwt.py:311: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = timegm(datetime.utcnow().utctimetuple())
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_auth.py::test_refresh_token_rotation - sqlalchemy.exc.Integ...
+FAILED tests/test_profiles.py::test_create_profile_success - AssertionError: ...
+FAILED tests/test_profiles.py::test_member_cannot_get_other_member_profile - ...
+FAILED tests/test_profiles.py::test_update_profile_field - KeyError: 'education'
+FAILED tests/test_profiles.py::test_privacy_flags_hide_sections_from_stranger
+FAILED tests/test_profiles.py::test_accepted_connection_returns_connection_status
+FAILED tests/test_profiles.py::test_pending_shortlist_does_not_grant_connection_status
+FAILED tests/test_profiles.py::test_accepted_connection_allows_access_regardless_of_profile_status
+FAILED tests/test_shortlist.py::test_shortlist_create - KeyError: 'access_token'
+FAILED tests/test_shortlist.py::test_shortlist_duplicate_rejected - KeyError:...
+FAILED tests/test_shortlist.py::test_shortlist_cannot_shortlist_self - KeyErr...
+FAILED tests/test_shortlist.py::test_list_sent_and_received - KeyError: 'acce...
+FAILED tests/test_shortlist.py::test_accept_shortlist - KeyError: 'access_token'
+FAILED tests/test_shortlist.py::test_only_recipient_can_accept - KeyError: 'a...
+FAILED tests/test_shortlist.py::test_withdraw_shortlist - KeyError: 'access_t...
+FAILED tests/test_tenant.py::test_create_tenant_as_super_admin - AttributeErr...
+FAILED tests/test_tenant.py::test_create_tenant_duplicate_slug - AttributeErr...
+FAILED tests/test_tenant.py::test_list_tenants - AttributeError: 'NoneType' o...
+FAILED tests/test_tenant.py::test_update_tenant_plan - AttributeError: 'NoneT...
+FAILED tests/test_tenant.py::test_deactivate_tenant - AttributeError: 'NoneTy...
+FAILED tests/test_tenant.py::test_invalid_slug_rejected - AttributeError: 'No...
+FAILED tests/test_users.py::test_member_registration_success - sqlalchemy.exc...
+FAILED tests/test_users.py::test_member_registration_weak_password - sqlalche...
+FAILED tests/test_users.py::test_member_registration_duplicate_email - sqlalc...
+FAILED tests/test_users.py::test_admin_onboarding_by_super_admin - AttributeE...
+25 failed, 19 passed, 26 warnings in 41.27s
+^C

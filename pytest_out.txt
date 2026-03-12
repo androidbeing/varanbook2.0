@@ -1,0 +1,2635 @@
+FF.FF..FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF.                             [100%]
+================================== FAILURES ===================================
+_____________________________ test_login_success ______________________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_auth.py:19: in test_login_success
+    user = await make_user(email="auth@test.com", password="Test@1234")
+tests\conftest.py:170: in _inner
+    tenant = await make_tenant(db)
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('c6543a1fc51b426c86a1e5ba3327a9b7', 'Test Matrimonial Centre', 'test-590535', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+__________________________ test_login_wrong_password __________________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_auth.py:33: in test_login_wrong_password
+    await make_user(email="auth2@test.com", password="Test@1234")
+tests\conftest.py:170: in _inner
+    tenant = await make_tenant(db)
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('59f16565b447492b8095d0f733b32ad8', 'Test Matrimonial Centre', 'test-4f86fc', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+_________________________ test_refresh_token_rotation _________________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_auth.py:53: in test_refresh_token_rotation
+    await make_user(email="refresh@test.com", password="Test@1234")
+tests\conftest.py:170: in _inner
+    tenant = await make_tenant(db)
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('b4e868e213de436ab4f7ff146b8a35a3', 'Test Matrimonial Centre', 'test-e6d319', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+______________________ test_logout_revokes_refresh_token ______________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_auth.py:73: in test_logout_revokes_refresh_token
+    await make_user(email="logout@test.com", password="Test@1234")
+tests\conftest.py:170: in _inner
+    tenant = await make_tenant(db)
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('5260791d7ec2450783a868496dbd377c', 'Test Matrimonial Centre', 'test-872395', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+____________________________ test_change_password _____________________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_auth.py:108: in test_change_password
+    await make_user(email="chpwd@test.com", password="OldPass@1234")
+tests\conftest.py:170: in _inner
+    tenant = await make_tenant(db)
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('028d2297799a476a8811cdee6722f5ba', 'Test Matrimonial Centre', 'test-63a13e', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+_____________________ test_change_password_wrong_current ______________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_auth.py:132: in test_change_password_wrong_current
+    await make_user(email="chpwd2@test.com", password="OldPass@1234")
+tests\conftest.py:170: in _inner
+    tenant = await make_tenant(db)
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('7113e4bf6b274339b53c66a5e14d5d54', 'Test Matrimonial Centre', 'test-7d9729', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+_________________________ test_create_profile_success _________________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:47: in test_create_profile_success
+    tenant = await make_tenant(db, slug="prof-create")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('ffd8cedb0d89429c9735309f4fa48ac4', 'Test Matrimonial Centre', 'prof-create', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+____________________ test_create_profile_underage_rejected ____________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:64: in test_create_profile_underage_rejected
+    tenant = await make_tenant(db, slug="prof-underage")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('dfdb7d17a40e490c90e36a72b02aa994', 'Test Matrimonial Centre', 'prof-underage', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+___________________ test_create_duplicate_profile_rejected ____________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:79: in test_create_duplicate_profile_rejected
+    tenant = await make_tenant(db, slug="prof-dup")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('b7330b827b014cecb8e167377f204987', 'Test Matrimonial Centre', 'prof-dup', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+_______________________ test_member_can_get_own_profile _______________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:96: in test_member_can_get_own_profile
+    tenant = await make_tenant(db, slug="prof-own")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('90a9421d7b9c40d785c843909159eeb7', 'Test Matrimonial Centre', 'prof-own', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+_________________ test_member_cannot_get_other_member_profile _________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:118: in test_member_cannot_get_other_member_profile
+    tenant = await make_tenant(db, slug="prof-cross")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('af86d3c2421d43c1b7748f9c12eace92', 'Test Matrimonial Centre', 'prof-cross', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+__________________ test_admin_can_get_any_profile_in_tenant ___________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:140: in test_admin_can_get_any_profile_in_tenant
+    tenant = await make_tenant(db, slug="prof-admin-read")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('8d4d2255482c4210a397a1f0bde3082b', 'Test Matrimonial Centre', 'prof-admin-read', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+__________________________ test_update_profile_field __________________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:160: in test_update_profile_field
+    tenant = await make_tenant(db, slug="prof-upd")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('a3ec8644fdcf49f4882e4efd2cd724da', 'Test Matrimonial Centre', 'prof-upd', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+______________________ test_invalid_blood_group_rejected ______________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:182: in test_invalid_blood_group_rejected
+    tenant = await make_tenant(db, slug="prof-blood")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('a0cd7c9134f94903b1b127ab9bec6398', 'Test Matrimonial Centre', 'prof-blood', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+_______________ test_privacy_flags_hide_sections_from_stranger ________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:224: in test_privacy_flags_hide_sections_from_stranger
+    _, _, profile_b_id, _ = await _setup_member(
+tests\test_profiles.py:203: in _setup_member
+    tenant = await make_tenant(db, slug=f"priv{slug_suffix}-{email[:6]}")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('5641d491171a404c96cdd24aab5d8a4e', 'Test Matrimonial Centre', 'privb1-priv_b', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+_____________ test_accepted_connection_returns_connection_status ______________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:265: in test_accepted_connection_returns_connection_status
+    _, headers_a, profile_a_id, _ = await _setup_member(
+tests\test_profiles.py:203: in _setup_member
+    tenant = await make_tenant(db, slug=f"priv{slug_suffix}-{email[:6]}")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('243eddc063934cae9319450694e93d6f', 'Test Matrimonial Centre', 'privacc-acc_a@', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+___________ test_pending_shortlist_does_not_grant_connection_status ___________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:320: in test_pending_shortlist_does_not_grant_connection_status
+    _, headers_a, _, _ = await _setup_member(
+tests\test_profiles.py:203: in _setup_member
+    tenant = await make_tenant(db, slug=f"priv{slug_suffix}-{email[:6]}")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('643402949aab40db87b6ea1ccceedc40', 'Test Matrimonial Centre', 'privpend-pend_a', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+_____ test_accepted_connection_allows_access_regardless_of_profile_status _____
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_profiles.py:369: in test_accepted_connection_allows_access_regardless_of_profile_status
+    _, headers_a, _, _ = await _setup_member(
+tests\test_profiles.py:203: in _setup_member
+    tenant = await make_tenant(db, slug=f"priv{slug_suffix}-{email[:6]}")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('32de724b3f7b411098ef4530272100e2', 'Test Matrimonial Centre', 'privdraft-draft_', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+____________________________ test_shortlist_create ____________________________
+tests\test_shortlist.py:52: in test_shortlist_create
+    headers_a, _ = await _register_and_login(client, "alice@sl.test")
+tests\test_shortlist.py:34: in _register_and_login
+    token = login.json()["access_token"]
+E   KeyError: 'access_token'
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 19:50:34,407 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 19:50:34,408 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 19:50:34,408 INFO sqlalchemy.engine.Engine [cached since 34.83s ago] (UUID('b123a23d-d9f2-4ec1-9b9e-a7f218035d22'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+2026-03-11 19:50:34,409 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('b123a23d-d9f2-4ec1-9b9e-a7f218035d22'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 0}', 422)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/users/", "request_id": "3a63046d-06b9-44bb-96ad-9102a4ee7049", "method": "POST", "level": "warning", "timestamp": "2026-03-11T14:20:34.412170Z"}
+{"status": 422, "elapsed_ms": 15.8, "event": "request_complete", "path": "/users/", "request_id": "3a63046d-06b9-44bb-96ad-9102a4ee7049", "method": "POST", "level": "info", "timestamp": "2026-03-11T14:20:34.413322Z"}
+2026-03-11 19:50:34,433 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 19:50:34,434 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 19:50:34,434 INFO sqlalchemy.engine.Engine [cached since 34.86s ago] (UUID('80afac96-bc84-4c36-8a0f-155aeb8adbcc'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 14}', 401)
+2026-03-11 19:50:34,436 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('80afac96-bc84-4c36-8a0f-155aeb8adbcc'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 14}', 401)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/auth/login", "request_id": "d4d1ee22-c66a-4e0f-9c58-b4a646fc84b4", "method": "POST", "level": "warning", "timestamp": "2026-03-11T14:20:34.437798Z"}
+{"status": 401, "elapsed_ms": 19.54, "event": "request_complete", "path": "/auth/login", "request_id": "d4d1ee22-c66a-4e0f-9c58-b4a646fc84b4", "method": "POST", "level": "info", "timestamp": "2026-03-11T14:20:34.438786Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 34.83s ago] (UUID('b123a23d-d9f2-4ec1-9b9e-a7f218035d22'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 34.86s ago] (UUID('80afac96-bc84-4c36-8a0f-155aeb8adbcc'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 14}', 401)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+______________________ test_shortlist_duplicate_rejected ______________________
+tests\test_shortlist.py:68: in test_shortlist_duplicate_rejected
+    headers_a, _ = await _register_and_login(client, "alice2@sl.test")
+tests\test_shortlist.py:34: in _register_and_login
+    token = login.json()["access_token"]
+E   KeyError: 'access_token'
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 19:50:34,811 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 19:50:34,812 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 19:50:34,813 INFO sqlalchemy.engine.Engine [cached since 35.24s ago] (UUID('f3313ceb-d1ef-4e0f-9635-a860ce388893'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+2026-03-11 19:50:34,814 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('f3313ceb-d1ef-4e0f-9635-a860ce388893'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 0}', 422)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/users/", "request_id": "59270a30-39b4-4e7d-8cae-aca93243bcbf", "method": "POST", "level": "warning", "timestamp": "2026-03-11T14:20:34.816682Z"}
+{"status": 422, "elapsed_ms": 16.97, "event": "request_complete", "path": "/users/", "request_id": "59270a30-39b4-4e7d-8cae-aca93243bcbf", "method": "POST", "level": "info", "timestamp": "2026-03-11T14:20:34.817682Z"}
+2026-03-11 19:50:34,843 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 19:50:34,844 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 19:50:34,845 INFO sqlalchemy.engine.Engine [cached since 35.27s ago] (UUID('8120b36a-7ba2-47d0-9f4e-0d9a619b514f'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 16}', 401)
+2026-03-11 19:50:34,846 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('8120b36a-7ba2-47d0-9f4e-0d9a619b514f'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 16}', 401)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/auth/login", "request_id": "3706f148-7d9f-4841-b238-693b7c937661", "method": "POST", "level": "warning", "timestamp": "2026-03-11T14:20:34.847687Z"}
+{"status": 401, "elapsed_ms": 19.56, "event": "request_complete", "path": "/auth/login", "request_id": "3706f148-7d9f-4841-b238-693b7c937661", "method": "POST", "level": "info", "timestamp": "2026-03-11T14:20:34.847687Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 35.24s ago] (UUID('f3313ceb-d1ef-4e0f-9635-a860ce388893'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 35.27s ago] (UUID('8120b36a-7ba2-47d0-9f4e-0d9a619b514f'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 16}', 401)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+____________________ test_shortlist_cannot_shortlist_self _____________________
+tests\test_shortlist.py:86: in test_shortlist_cannot_shortlist_self
+    headers_a, profile_a_id = await _register_and_login(client, "alice3@sl.test")
+tests\test_shortlist.py:34: in _register_and_login
+    token = login.json()["access_token"]
+E   KeyError: 'access_token'
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 19:50:35,191 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 19:50:35,192 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 19:50:35,193 INFO sqlalchemy.engine.Engine [cached since 35.62s ago] (UUID('8937e9a2-10a2-4f82-b13f-eee4e36fc62c'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 15}', 422)
+2026-03-11 19:50:35,193 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('8937e9a2-10a2-4f82-b13f-eee4e36fc62c'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 15}', 422)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/users/", "request_id": "d19df951-4ecb-4497-9229-d21f2a071a7e", "method": "POST", "level": "warning", "timestamp": "2026-03-11T14:20:35.195485Z"}
+{"status": 422, "elapsed_ms": 20.05, "event": "request_complete", "path": "/users/", "request_id": "d19df951-4ecb-4497-9229-d21f2a071a7e", "method": "POST", "level": "info", "timestamp": "2026-03-11T14:20:35.197486Z"}
+2026-03-11 19:50:35,223 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 19:50:35,225 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 19:50:35,225 INFO sqlalchemy.engine.Engine [cached since 35.65s ago] (UUID('ad70c2fd-2836-4b71-9956-b08c31852b16'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 14}', 401)
+2026-03-11 19:50:35,226 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('ad70c2fd-2836-4b71-9956-b08c31852b16'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 14}', 401)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/auth/login", "request_id": "810886d0-0a1d-4145-8e8a-d22ad2e77062", "method": "POST", "level": "warning", "timestamp": "2026-03-11T14:20:35.228490Z"}
+{"status": 401, "elapsed_ms": 24.1, "event": "request_complete", "path": "/auth/login", "request_id": "810886d0-0a1d-4145-8e8a-d22ad2e77062", "method": "POST", "level": "info", "timestamp": "2026-03-11T14:20:35.229492Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 35.62s ago] (UUID('8937e9a2-10a2-4f82-b13f-eee4e36fc62c'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 15}', 422)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 35.65s ago] (UUID('ad70c2fd-2836-4b71-9956-b08c31852b16'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 14}', 401)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+_________________________ test_list_sent_and_received _________________________
+tests\test_shortlist.py:97: in test_list_sent_and_received
+    headers_a, _ = await _register_and_login(client, "alice4@sl.test")
+tests\test_shortlist.py:34: in _register_and_login
+    token = login.json()["access_token"]
+E   KeyError: 'access_token'
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 19:50:35,667 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 19:50:35,668 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 19:50:35,668 INFO sqlalchemy.engine.Engine [cached since 36.09s ago] (UUID('57d85b7d-2fbd-4c9d-a4a4-c2ad68d20402'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 16}', 422)
+2026-03-11 19:50:35,669 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('57d85b7d-2fbd-4c9d-a4a4-c2ad68d20402'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 16}', 422)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/users/", "request_id": "37da9139-8c7f-4fb8-91ed-5d2d3d879b1c", "method": "POST", "level": "warning", "timestamp": "2026-03-11T14:20:35.670582Z"}
+{"status": 422, "elapsed_ms": 16.09, "event": "request_complete", "path": "/users/", "request_id": "37da9139-8c7f-4fb8-91ed-5d2d3d879b1c", "method": "POST", "level": "info", "timestamp": "2026-03-11T14:20:35.671584Z"}
+2026-03-11 19:50:35,692 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 19:50:35,693 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 19:50:35,693 INFO sqlalchemy.engine.Engine [cached since 36.12s ago] (UUID('1fc2b6d2-4322-41e3-8d10-a9bf27ead9e1'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 15}', 401)
+2026-03-11 19:50:35,694 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('1fc2b6d2-4322-41e3-8d10-a9bf27ead9e1'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 15}', 401)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/auth/login", "request_id": "621bfed9-a76e-4cb4-a175-81bae93fb059", "method": "POST", "level": "warning", "timestamp": "2026-03-11T14:20:35.696149Z"}
+{"status": 401, "elapsed_ms": 18.28, "event": "request_complete", "path": "/auth/login", "request_id": "621bfed9-a76e-4cb4-a175-81bae93fb059", "method": "POST", "level": "info", "timestamp": "2026-03-11T14:20:35.697148Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 36.09s ago] (UUID('57d85b7d-2fbd-4c9d-a4a4-c2ad68d20402'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 16}', 422)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 36.12s ago] (UUID('1fc2b6d2-4322-41e3-8d10-a9bf27ead9e1'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 15}', 401)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+____________________________ test_accept_shortlist ____________________________
+tests\test_shortlist.py:117: in test_accept_shortlist
+    headers_a, _ = await _register_and_login(client, "alice5@sl.test")
+tests\test_shortlist.py:34: in _register_and_login
+    token = login.json()["access_token"]
+E   KeyError: 'access_token'
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 19:50:36,288 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 19:50:36,289 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 19:50:36,289 INFO sqlalchemy.engine.Engine [cached since 36.71s ago] (UUID('fd49dc3d-0007-44b1-8506-9a83520268bc'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 16}', 422)
+2026-03-11 19:50:36,290 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('fd49dc3d-0007-44b1-8506-9a83520268bc'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 16}', 422)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/users/", "request_id": "797503bd-4306-480e-b93d-19f6fca4b7e4", "method": "POST", "level": "warning", "timestamp": "2026-03-11T14:20:36.291187Z"}
+{"status": 422, "elapsed_ms": 21.22, "event": "request_complete", "path": "/users/", "request_id": "797503bd-4306-480e-b93d-19f6fca4b7e4", "method": "POST", "level": "info", "timestamp": "2026-03-11T14:20:36.291187Z"}
+2026-03-11 19:50:36,313 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 19:50:36,314 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 19:50:36,314 INFO sqlalchemy.engine.Engine [cached since 36.74s ago] (UUID('ac50460c-3909-4be3-b87a-bace00e05a5f'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 401)
+2026-03-11 19:50:36,315 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('ac50460c-3909-4be3-b87a-bace00e05a5f'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 0}', 401)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/auth/login", "request_id": "51610fd3-57af-407a-a644-c9a4311550a0", "method": "POST", "level": "warning", "timestamp": "2026-03-11T14:20:36.316186Z"}
+{"status": 401, "elapsed_ms": 18.86, "event": "request_complete", "path": "/auth/login", "request_id": "51610fd3-57af-407a-a644-c9a4311550a0", "method": "POST", "level": "info", "timestamp": "2026-03-11T14:20:36.316186Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 36.71s ago] (UUID('fd49dc3d-0007-44b1-8506-9a83520268bc'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 16}', 422)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 36.74s ago] (UUID('ac50460c-3909-4be3-b87a-bace00e05a5f'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 401)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+_______________________ test_only_recipient_can_accept ________________________
+tests\test_shortlist.py:138: in test_only_recipient_can_accept
+    headers_a, _ = await _register_and_login(client, "alice6@sl.test")
+tests\test_shortlist.py:34: in _register_and_login
+    token = login.json()["access_token"]
+E   KeyError: 'access_token'
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 19:50:36,893 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 19:50:36,896 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 19:50:36,896 INFO sqlalchemy.engine.Engine [cached since 37.32s ago] (UUID('7239fdde-e940-4cb8-b7e1-d4ef38643e20'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 15}', 422)
+2026-03-11 19:50:36,897 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('7239fdde-e940-4cb8-b7e1-d4ef38643e20'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 15}', 422)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/users/", "request_id": "a86b090e-ba4f-42a8-910e-49828fa944f0", "method": "POST", "level": "warning", "timestamp": "2026-03-11T14:20:36.899680Z"}
+{"status": 422, "elapsed_ms": 18.5, "event": "request_complete", "path": "/users/", "request_id": "a86b090e-ba4f-42a8-910e-49828fa944f0", "method": "POST", "level": "info", "timestamp": "2026-03-11T14:20:36.900679Z"}
+2026-03-11 19:50:36,920 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 19:50:36,921 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 19:50:36,922 INFO sqlalchemy.engine.Engine [cached since 37.35s ago] (UUID('6141217a-5ece-4634-8ebf-5aeefcd1709a'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 16}', 401)
+2026-03-11 19:50:36,923 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('6141217a-5ece-4634-8ebf-5aeefcd1709a'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 16}', 401)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/auth/login", "request_id": "58ec3078-e52d-4772-839e-80bb3d80dca4", "method": "POST", "level": "warning", "timestamp": "2026-03-11T14:20:36.925529Z"}
+{"status": 401, "elapsed_ms": 21.19, "event": "request_complete", "path": "/auth/login", "request_id": "58ec3078-e52d-4772-839e-80bb3d80dca4", "method": "POST", "level": "info", "timestamp": "2026-03-11T14:20:36.926529Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 37.32s ago] (UUID('7239fdde-e940-4cb8-b7e1-d4ef38643e20'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 15}', 422)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 37.35s ago] (UUID('6141217a-5ece-4634-8ebf-5aeefcd1709a'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 16}', 401)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+___________________________ test_withdraw_shortlist ___________________________
+tests\test_shortlist.py:160: in test_withdraw_shortlist
+    headers_a, _ = await _register_and_login(client, "alice7@sl.test")
+tests\test_shortlist.py:34: in _register_and_login
+    token = login.json()["access_token"]
+E   KeyError: 'access_token'
+---------------------------- Captured stdout call -----------------------------
+2026-03-11 19:50:37,421 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 19:50:37,422 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 19:50:37,422 INFO sqlalchemy.engine.Engine [cached since 37.85s ago] (UUID('94a6e1b9-1a9c-4770-b388-c9e12e5451f0'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+2026-03-11 19:50:37,423 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('94a6e1b9-1a9c-4770-b388-c9e12e5451f0'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 0}', 422)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/users/", "request_id": "18d11dcf-b2fc-49ee-8a8f-775ef68a931e", "method": "POST", "level": "warning", "timestamp": "2026-03-11T14:20:37.424945Z"}
+{"status": 422, "elapsed_ms": 14.49, "event": "request_complete", "path": "/users/", "request_id": "18d11dcf-b2fc-49ee-8a8f-775ef68a931e", "method": "POST", "level": "info", "timestamp": "2026-03-11T14:20:37.425944Z"}
+2026-03-11 19:50:37,442 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-03-11 19:50:37,444 INFO sqlalchemy.engine.Engine INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+2026-03-11 19:50:37,444 INFO sqlalchemy.engine.Engine [cached since 37.87s ago] (UUID('9702de29-c46c-4288-8e09-88a748d2f61a'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 15}', 401)
+2026-03-11 19:50:37,445 INFO sqlalchemy.engine.Engine ROLLBACK
+{"error": "(sqlalchemy.dialects.postgresql.asyncpg.InterfaceError) <class 'asyncpg.exceptions._base.InterfaceError'>: cannot perform operation: another operation is in progress\n[SQL: INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at]\n[parameters: (UUID('9702de29-c46c-4288-8e09-88a748d2f61a'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{\"duration_ms\": 15}', 401)]\n(Background on this error at: https://sqlalche.me/e/20/rvf5)", "event": "audit_write_failed", "path": "/auth/login", "request_id": "d3c308dd-c05f-4556-a270-4895d5317ef8", "method": "POST", "level": "warning", "timestamp": "2026-03-11T14:20:37.447940Z"}
+{"status": 401, "elapsed_ms": 17.06, "event": "request_complete", "path": "/auth/login", "request_id": "d3c308dd-c05f-4556-a270-4895d5317ef8", "method": "POST", "level": "info", "timestamp": "2026-03-11T14:20:37.448944Z"}
+------------------------------ Captured log call ------------------------------
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 37.85s ago] (UUID('94a6e1b9-1a9c-4770-b388-c9e12e5451f0'), None, None, 'post:/users/', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 0}', 422)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+INFO     sqlalchemy.engine.Engine:base.py:2699 BEGIN (implicit)
+INFO     sqlalchemy.engine.Engine:base.py:1846 INSERT INTO audit_logs (id, tenant_id, user_id, action, resource_type, resource_id, ip_address, user_agent, payload, status_code) VALUES ($1::UUID, $2::UUID, $3::UUID, $4::VARCHAR, $5::VARCHAR, $6::UUID, $7::VARCHAR, $8::VARCHAR, $9::JSON, $10::INTEGER) RETURNING audit_logs.created_at
+INFO     sqlalchemy.engine.Engine:base.py:1846 [cached since 37.87s ago] (UUID('9702de29-c46c-4288-8e09-88a748d2f61a'), None, None, 'post:/auth/login', None, None, '127.0.0.1', 'python-httpx/0.27.0', '{"duration_ms": 15}', 401)
+INFO     sqlalchemy.engine.Engine:base.py:2702 ROLLBACK
+______________________ test_create_tenant_as_super_admin ______________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+________________ test_create_tenant_as_regular_admin_forbidden ________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_tenant.py:68: in test_create_tenant_as_regular_admin_forbidden
+    tenant = await make_tenant(db)
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('e0fad72ab77943439d12bd2de24a671c', 'Test Matrimonial Centre', 'test-3beaa0', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+______________________ test_create_tenant_duplicate_slug ______________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+______________________________ test_list_tenants ______________________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+___________________________ test_update_tenant_plan ___________________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+___________________________ test_deactivate_tenant ____________________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+_________________________ test_invalid_slug_rejected __________________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+______________________ test_member_registration_success _______________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_users.py:36: in test_member_registration_success
+    tenant = await make_tenant(db, slug="reg-tenant")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('79cff727cc984950aa1b9b9a8880b27b', 'Test Matrimonial Centre', 'reg-tenant', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+___________________ test_member_registration_weak_password ____________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_users.py:58: in test_member_registration_weak_password
+    tenant = await make_tenant(db, slug="weak-pwd-tenant")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('0fa355ba28444fd8aa555fc63b779ffb', 'Test Matrimonial Centre', 'weak-pwd-tenant', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+__________________ test_member_registration_duplicate_email ___________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_users.py:75: in test_member_registration_duplicate_email
+    tenant = await make_tenant(db, slug="dup-email-tenant")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('768110db78394bd19e090645a7d4c8ff', 'Test Matrimonial Centre', 'dup-email-tenant', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+_____________________________ test_login_success ______________________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_users.py:94: in test_login_success
+    tenant = await make_tenant(db, slug="login-tenant")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('d9eedb63922b4a35a319ebf3b1bd57b7', 'Test Matrimonial Centre', 'login-tenant', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+__________________________ test_login_wrong_password __________________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_users.py:111: in test_login_wrong_password
+    tenant = await make_tenant(db, slug="badpwd-tenant")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('164fe1142caf44128807b395a9c9463b', 'Test Matrimonial Centre', 'badpwd-tenant', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+____________________ test_admin_onboarding_by_super_admin _____________________
+Fixture "make_user" called directly. Fixtures are not meant to be called directly,
+but are created automatically when test functions request them as parameters.
+See https://docs.pytest.org/en/stable/explanation/fixtures.html for more information about fixtures, and
+https://docs.pytest.org/en/stable/deprecations.html#calling-fixtures-directly about how to update your code.
+______________ test_admin_cannot_onboard_admin_for_other_tenant _______________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_users.py:148: in test_admin_cannot_onboard_admin_for_other_tenant
+    tenant_a = await make_tenant(db, slug="tenant-a-ob")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('60fcd9a7e10d41d2997336d90bce871a', 'Test Matrimonial Centre', 'tenant-a-ob', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+_________________________________ test_get_me _________________________________
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlite3.IntegrityError: NOT NULL constraint failed: tenants.contact_person
+
+The above exception was the direct cause of the following exception:
+tests\test_users.py:169: in test_get_me
+    tenant = await make_tenant(db, slug="get-me-tenant")
+tests\conftest.py:116: in make_tenant
+    await db.flush()
+.venv\Lib\site-packages\sqlalchemy\ext\asyncio\session.py:800: in flush
+    await greenlet_spawn(self.sync_session.flush, objects=objects)
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:203: in greenlet_spawn
+    result = context.switch(value)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4341: in flush
+    self._flush(objects)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4476: in _flush
+    with util.safe_reraise():
+.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv\Lib\site-packages\sqlalchemy\orm\session.py:4437: in _flush
+    flush_context.execute()
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:466: in execute
+    rec.execute(self)
+.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py:642: in execute
+    util.preloaded.orm_persistence.save_obj(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:93: in save_obj
+    _emit_insert_statements(
+.venv\Lib\site-packages\sqlalchemy\orm\persistence.py:1233: in _emit_insert_statements
+    result = connection.execute(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1418: in execute
+    return meth(
+.venv\Lib\site-packages\sqlalchemy\sql\elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1846: in _execute_context
+    return self._exec_single_context(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv\Lib\site-packages\sqlalchemy\engine\base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+.venv\Lib\site-packages\sqlalchemy\engine\default.py:924: in do_execute
+    cursor.execute(statement, parameters)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:146: in execute
+    self._adapt_connection._handle_exception(error)
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:298: in _handle_exception
+    raise error
+.venv\Lib\site-packages\sqlalchemy\dialects\sqlite\aiosqlite.py:128: in execute
+    self.await_(_cursor.execute(operation, parameters))
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:131: in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py:196: in greenlet_spawn
+    value = await result
+.venv\Lib\site-packages\aiosqlite\cursor.py:40: in execute
+    await self._execute(self._cursor.execute, sql, parameters)
+.venv\Lib\site-packages\aiosqlite\cursor.py:32: in _execute
+    return await self._conn._execute(fn, *args, **kwargs)
+.venv\Lib\site-packages\aiosqlite\core.py:160: in _execute
+    return await future
+.venv\Lib\site-packages\aiosqlite\core.py:63: in _connection_worker_thread
+    result = function()
+E   sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) NOT NULL constraint failed: tenants.contact_person
+E   [SQL: INSERT INTO tenants (id, name, slug, domain, contact_person, contact_email, contact_number, whatsapp_number, address, pin, upi_id, "plan", max_users, max_admins, can_override_plan_prices, logo_key, is_active, trial_ends_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING created_at, updated_at]
+E   [parameters: ('c3073e0c077f47408d1b8f5aa87e7e69', 'Test Matrimonial Centre', 'get-me-tenant', None, None, 'admin@test.example.com', None, None, None, None, None, 'starter', 500, 5, 0, None, 1, None)]
+E   (Background on this error at: https://sqlalche.me/e/20/gkpj)
+
+---------- coverage: platform win32, python 3.12.5-final-0 -----------
+Name                                Stmts   Miss  Cover   Missing
+-----------------------------------------------------------------
+app\__init__.py                         0      0   100%
+app\auth\__init__.py                    0      0   100%
+app\auth\dependencies.py               35     16    54%   48-72, 82-87
+app\auth\jwt.py                        27      9    67%   41, 50-61, 70-81, 91-96
+app\config.py                          40      1    98%   69
+app\database.py                        33     17    48%   60-68, 82-95
+app\main.py                            85     19    78%   59-73, 139-154, 174, 184
+app\middleware\__init__.py              0      0   100%
+app\middleware\audit.py                44      4    91%   70, 72, 111-122
+app\middleware\rate_limit.py            6      0   100%
+app\middleware\tenant.py               49     14    71%   67, 78-82, 88-89, 94-100, 103-109
+app\models\__init__.py                 10      0   100%
+app\models\audit_log.py                19      0   100%
+app\models\file_record.py              26      0   100%
+app\models\membership_plan.py          58      3    95%   95, 148, 221
+app\models\partner_preference.py       30      0   100%
+app\models\password_reset.py           16      0   100%
+app\models\profile.py                 144      1    99%   263
+app\models\refresh_token.py            17      0   100%
+app\models\shortlist.py                24      0   100%
+app\models\tenant.py                   32      1    97%   111
+app\models\user.py                     32      1    97%   112
+app\routers\__init__.py                 0      0   100%
+app\routers\files.py                   92     57    38%   72-86, 107-128, 149-166, 183-184, 202-207, 226-230, 245-267
+app\routers\membership_plans.py       145    109    25%   57-58, 79-84, 99-103, 118-136, 150-161, 181-224, 246-284, 311-323, 339-369, 389-443, 457-476
+app\routers\notifications.py           39     23    41%   43-70, 94-124
+app\routers\partner_preference.py      41     24    41%   34-41, 56-73, 86-94
+app\routers\profiles.py               139    110    21%   26-31, 45-57, 77-99, 125-172, 184-191, 205-225, 238-279, 293-307, 321-326
+app\routers\shortlist.py              142    106    25%   36-41, 51-57, 72-102, 112-120, 130-138, 153-197, 211-227, 240-251, 265-288, 303-329, 339-355, 364-373
+app\routers\tenant.py                  62     40    35%   42-53, 69-102, 115-118, 132-142, 155-159
+app\routers\users.py                  223    164    26%   70, 74, 99-127, 142-186, 198-205, 218-235, 252-263, 272-275, 292-312, 326-352, 376-405, 435-505, 537-558, 568, 577-581
+app\schemas\__init__.py                 0      0   100%
+app\schemas\membership_plan.py         77      0   100%
+app\schemas\partner_preference.py      26      0   100%
+app\schemas\profile.py                171     26    85%   47-49, 55-57, 63-75, 129-141, 165
+app\schemas\shortlist.py               58      0   100%
+app\schemas\tenant.py                  88      9    90%   25-27, 35-40, 71, 76, 106
+app\schemas\user.py                   116      9    92%   25, 27, 29, 31, 33, 35, 61, 88, 176
+app\services\__init__.py                0      0   100%
+app\services\email.py                  54     54     0%   15-142
+app\services\notification.py           27     16    41%   63-87, 99-127
+app\services\s3.py                     38     22    42%   63-65, 84-109, 127-139, 143-149
+-----------------------------------------------------------------
+TOTAL                                2265    855    62%
+Coverage HTML written to dir htmlcov
+
+FAIL Required test coverage of 75% not reached. Total coverage: 62.25%
+=========================== short test summary info ===========================
+FAILED tests/test_auth.py::test_login_success - sqlalchemy.exc.IntegrityError...
+FAILED tests/test_auth.py::test_login_wrong_password - sqlalchemy.exc.Integri...
+FAILED tests/test_auth.py::test_refresh_token_rotation - sqlalchemy.exc.Integ...
+FAILED tests/test_auth.py::test_logout_revokes_refresh_token - sqlalchemy.exc...
+FAILED tests/test_auth.py::test_change_password - sqlalchemy.exc.IntegrityErr...
+FAILED tests/test_auth.py::test_change_password_wrong_current - sqlalchemy.ex...
+FAILED tests/test_profiles.py::test_create_profile_success - sqlalchemy.exc.I...
+FAILED tests/test_profiles.py::test_create_profile_underage_rejected - sqlalc...
+FAILED tests/test_profiles.py::test_create_duplicate_profile_rejected - sqlal...
+FAILED tests/test_profiles.py::test_member_can_get_own_profile - sqlalchemy.e...
+FAILED tests/test_profiles.py::test_member_cannot_get_other_member_profile - ...
+FAILED tests/test_profiles.py::test_admin_can_get_any_profile_in_tenant - sql...
+FAILED tests/test_profiles.py::test_update_profile_field - sqlalchemy.exc.Int...
+FAILED tests/test_profiles.py::test_invalid_blood_group_rejected - sqlalchemy...
+FAILED tests/test_profiles.py::test_privacy_flags_hide_sections_from_stranger
+FAILED tests/test_profiles.py::test_accepted_connection_returns_connection_status
+FAILED tests/test_profiles.py::test_pending_shortlist_does_not_grant_connection_status
+FAILED tests/test_profiles.py::test_accepted_connection_allows_access_regardless_of_profile_status
+FAILED tests/test_shortlist.py::test_shortlist_create - KeyError: 'access_token'
+FAILED tests/test_shortlist.py::test_shortlist_duplicate_rejected - KeyError:...
+FAILED tests/test_shortlist.py::test_shortlist_cannot_shortlist_self - KeyErr...
+FAILED tests/test_shortlist.py::test_list_sent_and_received - KeyError: 'acce...
+FAILED tests/test_shortlist.py::test_accept_shortlist - KeyError: 'access_token'
+FAILED tests/test_shortlist.py::test_only_recipient_can_accept - KeyError: 'a...
+FAILED tests/test_shortlist.py::test_withdraw_shortlist - KeyError: 'access_t...
+FAILED tests/test_tenant.py::test_create_tenant_as_super_admin - Failed: Fixt...
+FAILED tests/test_tenant.py::test_create_tenant_as_regular_admin_forbidden - ...
+FAILED tests/test_tenant.py::test_create_tenant_duplicate_slug - Failed: Fixt...
+FAILED tests/test_tenant.py::test_list_tenants - Failed: Fixture "make_user" ...
+FAILED tests/test_tenant.py::test_update_tenant_plan - Failed: Fixture "make_...
+FAILED tests/test_tenant.py::test_deactivate_tenant - Failed: Fixture "make_u...
+FAILED tests/test_tenant.py::test_invalid_slug_rejected - Failed: Fixture "ma...
+FAILED tests/test_users.py::test_member_registration_success - sqlalchemy.exc...
+FAILED tests/test_users.py::test_member_registration_weak_password - sqlalche...
+FAILED tests/test_users.py::test_member_registration_duplicate_email - sqlalc...
+FAILED tests/test_users.py::test_login_success - sqlalchemy.exc.IntegrityErro...
+FAILED tests/test_users.py::test_login_wrong_password - sqlalchemy.exc.Integr...
+FAILED tests/test_users.py::test_admin_onboarding_by_super_admin - Failed: Fi...
+FAILED tests/test_users.py::test_admin_cannot_onboard_admin_for_other_tenant
+FAILED tests/test_users.py::test_get_me - sqlalchemy.exc.IntegrityError: (sql...
+40 failed, 4 passed in 65.13s (0:01:05)
+^C

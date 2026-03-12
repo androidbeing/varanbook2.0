@@ -73,6 +73,12 @@ class Tenant(Base):
     )
     max_users: Mapped[int] = mapped_column(default=500)
     max_admins: Mapped[int] = mapped_column(default=5)
+    # When True, the tenant admin may override the base price of any plan template.
+    # Only SuperAdmin can toggle this flag.
+    can_override_plan_prices: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False,
+        comment="Grants tenant admin the ability to set custom membership plan prices",
+    )
 
     # ── Logo / branding ─────────────────────────────────────────────────────
     # S3 object key for the tenant's logo
