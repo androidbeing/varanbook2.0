@@ -162,6 +162,38 @@
                     prepend-inner-icon="mdi-account-group-outline"
                   />
                 </v-col>
+                <v-col cols="12" sm="6">
+                  <v-select
+                    v-model="form.complexion"
+                    label="Complexion"
+                    :items="complexionOptions"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-palette"
+                    clearable
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-select
+                    v-model="form.blood_group"
+                    label="Blood Group"
+                    :items="bloodGroupOptions"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-water"
+                    clearable
+                  />
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="form.disabilities"
+                    label="Disabilities"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-wheelchair-accessibility"
+                    placeholder="None or describe if any"
+                  />
+                </v-col>
               </v-row>
               <v-btn
                 color="primary"
@@ -209,6 +241,16 @@
                     variant="outlined"
                     density="comfortable"
                     prepend-inner-icon="mdi-clock-outline"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="form.birth_place"
+                    label="Birth Place"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-map-marker"
+                    maxlength="200"
                   />
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -890,6 +932,9 @@ const form = ref<Partial<Profile>>({
   gender: null,
   height_cm: 165,
   weight_kg: 60,
+  complexion: null,
+  blood_group: null,
+  disabilities: '',
   marital_status: 'never_married',
   mother_tongue: null,
   religion: null,
@@ -897,6 +942,7 @@ const form = ref<Partial<Profile>>({
   sub_caste: '',
   date_of_birth: null,
   time_of_birth: null,
+  birth_place: '',
   rashi: null,
   star: null,
   dhosam: null,
@@ -1117,6 +1163,9 @@ async function savePersonal() {
       gender: form.value.gender,
       height_cm: form.value.height_cm,
       weight_kg: form.value.weight_kg,
+      complexion: form.value.complexion,
+      blood_group: form.value.blood_group,
+      disabilities: form.value.disabilities || null,
       marital_status: form.value.marital_status,
       mother_tongue: form.value.mother_tongue,
       religion: form.value.religion,
@@ -1143,6 +1192,7 @@ async function saveBirth() {
     await upsertMe({
       date_of_birth: form.value.date_of_birth,
       time_of_birth: form.value.time_of_birth,
+      birth_place: form.value.birth_place,
       rashi: form.value.rashi,
       star: form.value.star,
       dhosam: form.value.dhosam,
@@ -1420,5 +1470,24 @@ const incomeOptions = [
   { title: '10 – 20 Lakh / year', value: '10_to_20l' },
   { title: '20 – 50 Lakh / year', value: '20_to_50l' },
   { title: 'Above 50 Lakh / year', value: 'above_50l' },
+]
+
+const complexionOptions = [
+  { title: 'Very Fair', value: 'very_fair' },
+  { title: 'Fair', value: 'fair' },
+  { title: 'Wheatish', value: 'wheatish' },
+  { title: 'Wheatish Brown', value: 'wheatish_brown' },
+  { title: 'Dark', value: 'dark' },
+]
+
+const bloodGroupOptions = [
+  { title: 'A+', value: 'A+' },
+  { title: 'A-', value: 'A-' },
+  { title: 'B+', value: 'B+' },
+  { title: 'B-', value: 'B-' },
+  { title: 'AB+', value: 'AB+' },
+  { title: 'AB-', value: 'AB-' },
+  { title: 'O+', value: 'O+' },
+  { title: 'O-', value: 'O-' },
 ]
 </script>

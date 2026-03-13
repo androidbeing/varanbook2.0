@@ -511,7 +511,7 @@ const birthRows = computed((): DetailRow[] => {
     { label: 'Rashi (Zodiac)',   value: fmtLabel(p.rashi) },
     { label: 'Star (Nakshatra)', value: fmtLabel(p.star) },
     { label: 'Dhosam',           value: fmtLabel(p.dhosam) },
-    { label: 'Manglik', value: p.manglik === null || p.manglik === undefined ? null : p.manglik ? 'Yes' : 'No' },
+    { label: 'Manglik', value: p.dhosam ? (p.dhosam === 'chevvai' ? 'Yes' : 'No') : null },
   ]
 })
 

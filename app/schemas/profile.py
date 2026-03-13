@@ -177,6 +177,7 @@ class ProfileRead(BaseModel):
     complexion: str | None
     blood_group: str | None
     marital_status: MaritalStatus
+    disabilities: str | None
     mobile: str | None
     whatsapp: str | None
     native_place: str | None
@@ -222,6 +223,12 @@ class ProfileRead(BaseModel):
     connection_status: str | None = None
 
     model_config = {"from_attributes": True}
+
+    @model_validator(mode="after")
+    def derive_manglik_from_dhosam(self) -> "ProfileRead":
+        if self.dhosam is not None:
+            self.manglik = self.dhosam == Dhosam.CHEVVAI
+        return self
 
 
 class FileUploadRequest(BaseModel):
