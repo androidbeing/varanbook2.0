@@ -213,6 +213,9 @@ export interface Tenant {
   whatsapp_number: string | null
   pin: string | null
   upi_id: string | null
+  upi_name: string | null
+  upi_qr_key: string | null
+  payment_whatsapp: string | null
   castes: string[] | null
   active_members_count: number
   created_at: string
@@ -250,6 +253,8 @@ export interface TenantUpdate {
   whatsapp_number?: string | null
   pin?: string
   upi_id?: string | null
+  upi_name?: string | null
+  payment_whatsapp?: string | null
   castes?: string[]
 }
 
@@ -258,6 +263,15 @@ export interface TenantList {
   total: number
   page: number
   page_size: number
+}
+
+// ── Tenant Payment Info ──────────────────────────────────────────────────────
+export interface TenantPaymentInfo {
+  upi_id: string | null
+  upi_name: string | null
+  upi_qr_key: string | null
+  payment_whatsapp: string | null
+  tenant_name: string | null
 }
 
 // ── API Error ────────────────────────────────────────────────────────────────

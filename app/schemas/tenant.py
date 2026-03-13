@@ -63,6 +63,8 @@ class TenantCreate(BaseModel):
     whatsapp_number: str | None = Field(None, examples=["+919876543210"])
     pin: str = Field(..., pattern=r"^\d{6}$", examples=["600001"])
     upi_id: str | None = Field(None, pattern=r"^[\w.\-]+@[\w.\-]+$", examples=["sharma@upi"])
+    upi_name: str | None = Field(None, max_length=200, examples=["Sharma Vivah Kendra"])
+    payment_whatsapp: str | None = Field(None, examples=["+919876543210"])
     castes: list[str] = Field(default_factory=list, examples=[["Brahmin", "Iyer"]])
 
     # Optional: bootstrap the first admin user for this tenant in one step
@@ -77,7 +79,7 @@ class TenantCreate(BaseModel):
     def slug_must_be_valid(cls, v: str) -> str:
         return _validate_slug(v.lower())
 
-    @field_validator("contact_number", "whatsapp_number")
+    @field_validator("contact_number", "whatsapp_number", "payment_whatsapp")
     @classmethod
     def phone_must_be_e164(cls, v: str | None) -> str | None:
         return _validate_e164(v)
@@ -105,9 +107,11 @@ class TenantUpdate(BaseModel):
     whatsapp_number: str | None = None
     pin: str | None = Field(None, pattern=r"^\d{6}$")
     upi_id: str | None = Field(None, pattern=r"^[\w.\-]+@[\w.\-]+$")
+    upi_name: str | None = Field(None, max_length=200)
+    payment_whatsapp: str | None = None
     castes: list[str] | None = None
 
-    @field_validator("contact_number", "whatsapp_number")
+    @field_validator("contact_number", "whatsapp_number", "payment_whatsapp")
     @classmethod
     def phone_must_be_e164(cls, v: str | None) -> str | None:
         return _validate_e164(v)
@@ -131,6 +135,9 @@ class TenantRead(BaseModel):
     whatsapp_number: str | None
     pin: str | None
     upi_id: str | None
+    upi_name: str | None = None
+    upi_qr_key: str | None = None
+    payment_whatsapp: str | None = None
     castes: list[str] | None
     logo_key: str | None = None
     can_override_plan_prices: bool = False
@@ -150,3 +157,15 @@ class TenantList(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class TenantPaymentInfoRead(BaseModel):
+    """Payment information shown to members for making payments."""
+
+    upi_id: str | None = None
+    upi_name: str | None = None
+    upi_qr_key: str | None = None
+    payment_whatsapp: str | None = None
+    tenant_name: str | None = None
+
+    model_config = {"from_attributes": True}

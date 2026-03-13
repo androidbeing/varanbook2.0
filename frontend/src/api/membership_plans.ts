@@ -1,5 +1,5 @@
 import client from './client'
-import type { TenantPlan, Subscription, PaginatedResponse } from '@/types'
+import type { TenantPlan, Subscription, PaginatedResponse, TenantPaymentInfo } from '@/types'
 
 export interface SubscriptionsQuery {
   status?: string
@@ -42,5 +42,19 @@ export const membershipApi = {
   /** Admin: cancel an existing subscription. */
   cancelSubscription(id: string): Promise<Subscription> {
     return client.patch(`/subscriptions/${id}`, { status: 'cancelled' }).then((r) => r.data)
+  },
+
+  /** Get the tenant's payment information (UPI, WhatsApp). */
+  getPaymentInfo(): Promise<TenantPaymentInfo> {
+    return client.get('/tenant/payment-info').then((r) => r.data)
+  },
+
+  /** Admin: update the tenant's payment information. */
+  updatePaymentInfo(data: {
+    upi_id?: string | null
+    upi_name?: string | null
+    payment_whatsapp?: string | null
+  }): Promise<TenantPaymentInfo> {
+    return client.put('/tenant/payment-info', data).then((r) => r.data)
   },
 }

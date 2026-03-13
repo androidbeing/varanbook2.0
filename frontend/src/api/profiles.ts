@@ -88,7 +88,7 @@ export const filesApi = {
   presignAvatar(data: {
     file_name: string
     content_type: string
-    purpose?: 'avatar' | 'tenant_logo'
+    purpose?: 'avatar' | 'tenant_logo' | 'upi_qr'
   }): Promise<{ upload_url: string; object_key: string }> {
     return client.post('/files/avatar/presign', { purpose: 'avatar', ...data }).then((r) => r.data)
   },
@@ -101,6 +101,11 @@ export const filesApi = {
   /** Register the uploaded logo key on the current tenant. */
   registerTenantLogo(object_key: string): Promise<void> {
     return client.patch('/files/tenant/logo', null, { params: { object_key } }).then(() => undefined)
+  },
+
+  /** Register the uploaded UPI QR key on the current tenant. */
+  registerTenantUpiQr(object_key: string): Promise<void> {
+    return client.patch('/files/tenant/upi-qr', null, { params: { object_key } }).then(() => undefined)
   },
 
   /** Delete a photo from a profile (removes from S3 and deregisters the key). */

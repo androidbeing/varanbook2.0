@@ -204,6 +204,107 @@
         </v-card>
       </v-col>
 
+      <!-- ── Payment Information ──────────────────────────────────────────── -->
+      <v-col cols="12">
+        <v-card rounded="xl" class="mb-4">
+          <v-card-title class="pa-5 pb-2 text-subtitle-1 font-weight-semibold">
+            <v-icon class="mr-2" size="20">mdi-cash-fast</v-icon>Payment Information
+          </v-card-title>
+          <v-card-text class="pa-5 pt-0">
+            <p class="text-body-2 text-medium-emphasis mb-4">
+              These details will be shown to members on their Membership screen so they can make payments.
+            </p>
+            <v-form ref="paymentForm" v-model="paymentValid" @submit.prevent="savePaymentInfo">
+              <v-row>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="paymentFields.upi_name"
+                    label="UPI Account Name"
+                    variant="outlined"
+                    density="compact"
+                    class="mb-3"
+                    prepend-inner-icon="mdi-account-cash"
+                    placeholder="e.g. Sharma Vivah Kendra"
+                    hint="Name displayed on UPI for verification"
+                    persistent-hint
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="paymentFields.upi_id"
+                    label="UPI ID"
+                    variant="outlined"
+                    density="compact"
+                    class="mb-3"
+                    prepend-inner-icon="mdi-at"
+                    placeholder="e.g. vivahkendra@upi"
+                    :rules="[optionalUpi]"
+                    hint="Your UPI address for receiving payments"
+                    persistent-hint
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="paymentFields.payment_whatsapp"
+                    label="WhatsApp Number (for payment confirmation)"
+                    variant="outlined"
+                    density="compact"
+                    class="mb-3"
+                    prepend-inner-icon="mdi-whatsapp"
+                    placeholder="+919876543210"
+                    :rules="[optionalPhone]"
+                    hint="Members will send payment screenshots to this number"
+                    persistent-hint
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <div class="d-flex align-center ga-4 flex-wrap">
+                    <v-avatar size="80" rounded="lg" color="grey-lighten-3" style="border:2px dashed #bbb">
+                      <v-img v-if="upiQrUrl" :src="upiQrUrl" cover />
+                      <v-icon v-else size="36" color="grey-darken-1">mdi-qrcode</v-icon>
+                    </v-avatar>
+                    <div>
+                      <p class="text-body-2 mb-2 text-medium-emphasis">
+                        Upload your UPI QR code image.<br />
+                        Supported: JPG, PNG, WebP
+                      </p>
+                      <v-btn
+                        color="primary"
+                        variant="tonal"
+                        prepend-icon="mdi-qrcode-scan"
+                        :loading="uploadingQr"
+                        @click="qrInput?.click()"
+                        size="small"
+                      >
+                        {{ upiQrUrl ? 'Replace QR Code' : 'Upload QR Code' }}
+                      </v-btn>
+                      <input
+                        ref="qrInput"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        style="display:none"
+                        @change="uploadUpiQr"
+                      />
+                    </div>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-btn
+                type="submit"
+                color="primary"
+                variant="elevated"
+                :loading="savingPayment"
+                :disabled="!paymentValid"
+                class="mt-2"
+                block
+              >
+                Save Payment Details
+              </v-btn>
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
       <!-- ── Read-only Info ───────────────────────────────────────────────── -->
       <v-col cols="12">
         <v-card rounded="xl">
@@ -248,6 +349,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import client from '@/api/client'
 import { filesApi } from '@/api/profiles'
+import { membershipApi } from '@/api/membership_plans'
 
 const auth = useAuthStore()
 
@@ -349,10 +451,72 @@ const profileValid = ref(false)
 const savingProfile = ref(false)
 const profileFields = ref({ full_name: '', phone: '' })
 
+// ── Payment Info ──────────────────────────────────────────────────────────────
+const paymentForm = ref()
+const paymentValid = ref(true)
+const savingPayment = ref(false)
+const qrInput = ref<HTMLInputElement | null>(null)
+const upiQrUrl = ref<string | null>(null)
+const uploadingQr = ref(false)
+const paymentFields = ref({ upi_name: '', upi_id: '', payment_whatsapp: '' })
+
+async function loadPaymentInfo() {
+  try {
+    const info = await membershipApi.getPaymentInfo()
+    paymentFields.value.upi_name = info.upi_name ?? ''
+    paymentFields.value.upi_id = info.upi_id ?? ''
+    paymentFields.value.payment_whatsapp = info.payment_whatsapp ?? ''
+    upiQrUrl.value = await resolvePresignedUrl(info.upi_qr_key)
+  } catch {
+    // Payment info may not exist yet
+  }
+}
+
+async function savePaymentInfo() {
+  savingPayment.value = true
+  try {
+    await membershipApi.updatePaymentInfo({
+      upi_name: paymentFields.value.upi_name || null,
+      upi_id: paymentFields.value.upi_id || null,
+      payment_whatsapp: paymentFields.value.payment_whatsapp || null,
+    })
+    showSnack('Payment details saved successfully!')
+  } catch (e: any) {
+    const detail = e?.response?.data?.detail
+    showSnack(typeof detail === 'string' ? detail : 'Failed to save payment details', 'error')
+  } finally {
+    savingPayment.value = false
+  }
+}
+
+async function uploadUpiQr(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  uploadingQr.value = true
+  try {
+    const { upload_url, object_key } = await filesApi.presignAvatar({
+      file_name: file.name,
+      content_type: file.type,
+      purpose: 'upi_qr',
+    })
+    await filesApi.putToS3(upload_url, file)
+    await filesApi.registerTenantUpiQr(object_key)
+    upiQrUrl.value = await resolvePresignedUrl(object_key)
+    showSnack('UPI QR code uploaded!')
+  } catch (err: any) {
+    const detail = err?.response?.data?.detail ?? err?.message ?? 'QR upload failed'
+    showSnack(typeof detail === 'string' ? detail : 'QR upload failed.', 'error')
+  } finally {
+    uploadingQr.value = false
+    if (qrInput.value) qrInput.value.value = ''
+  }
+}
+
 onMounted(() => {
   profileFields.value.full_name = auth.user?.full_name ?? ''
   profileFields.value.phone = (auth.user as any)?.phone ?? ''
   refreshAvatarUrl()
+  loadPaymentInfo()
 })
 
 // ── Password form ─────────────────────────────────────────────────────────────
@@ -375,6 +539,8 @@ const required = (v: string) => !!v || 'Required'
 const minLen = (n: number) => (v: string) => v.length >= n || `Min ${n} characters`
 const optionalPhone = (v: string) =>
   !v || /^\+[1-9]\d{6,14}$/.test(v) || 'E.164 format required, e.g. +919876543210'
+const optionalUpi = (v: string) =>
+  !v || /^[\w.\-]+@[\w.\-]+$/.test(v) || 'Invalid UPI ID format, e.g. name@upi'
 const passwordRule = (v: string) => {
   if (!v || v.length < 8) return 'Min 8 characters'
   if (!/[A-Z]/.test(v)) return 'Need at least one uppercase letter'

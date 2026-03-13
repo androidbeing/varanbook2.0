@@ -84,6 +84,75 @@
       </v-col>
     </v-row>
 
+    <!-- ── Payment Information ────────────────────────────────────────────── -->
+    <v-row v-if="paymentInfo && hasPaymentInfo" class="mb-4">
+      <v-col cols="12">
+        <h2 class="text-h6 font-weight-semibold mb-3">Payment Information</h2>
+        <v-card rounded="xl" variant="outlined">
+          <v-card-text class="pa-5">
+            <v-row align="center">
+              <!-- QR Code -->
+              <v-col v-if="qrUrl" cols="12" sm="4" md="3" class="text-center">
+                <v-img :src="qrUrl" max-width="200" class="mx-auto rounded-lg" />
+                <p class="text-caption text-medium-emphasis mt-2 mb-0">Scan to pay via UPI</p>
+              </v-col>
+
+              <!-- UPI Details -->
+              <v-col cols="12" :sm="qrUrl ? 8 : 12" :md="qrUrl ? 5 : 8">
+                <div class="mb-3" v-if="paymentInfo.upi_name">
+                  <div class="text-caption text-medium-emphasis mb-1">UPI Account Name</div>
+                  <div class="text-body-1 font-weight-semibold">{{ paymentInfo.upi_name }}</div>
+                </div>
+                <div class="mb-3" v-if="paymentInfo.upi_id">
+                  <div class="text-caption text-medium-emphasis mb-1">UPI ID</div>
+                  <div class="d-flex align-center ga-2">
+                    <v-chip color="primary" variant="tonal" size="default" class="font-weight-medium">
+                      {{ paymentInfo.upi_id }}
+                    </v-chip>
+                    <v-btn
+                      icon
+                      size="x-small"
+                      variant="text"
+                      @click="copyUpiId"
+                    >
+                      <v-icon size="16">mdi-content-copy</v-icon>
+                      <v-tooltip activator="parent" location="top">Copy UPI ID</v-tooltip>
+                    </v-btn>
+                  </div>
+                </div>
+                <div v-if="paymentInfo.tenant_name" class="mb-3">
+                  <div class="text-caption text-medium-emphasis mb-1">Pay To</div>
+                  <div class="text-body-2">{{ paymentInfo.tenant_name }}</div>
+                </div>
+              </v-col>
+
+              <!-- WhatsApp CTA -->
+              <v-col v-if="paymentInfo.payment_whatsapp" cols="12" :sm="qrUrl ? 12 : 12" :md="qrUrl ? 4 : 4">
+                <v-card color="green-lighten-5" rounded="lg" variant="flat">
+                  <v-card-text class="pa-4 text-center">
+                    <v-icon color="green" size="32" class="mb-2">mdi-whatsapp</v-icon>
+                    <p class="text-body-2 mb-3">
+                      After making payment, send a screenshot via WhatsApp for confirmation.
+                    </p>
+                    <v-btn
+                      color="green"
+                      variant="elevated"
+                      prepend-icon="mdi-whatsapp"
+                      :href="whatsappLink"
+                      target="_blank"
+                      block
+                    >
+                      Send Payment Screenshot
+                    </v-btn>
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
     <!-- ── Available Plans ────────────────────────────────────────────────── -->
     <v-row class="mb-2">
       <v-col cols="12">
@@ -199,15 +268,56 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useMembershipStore } from '@/stores/membership_plan'
-import type { TenantPlan } from '@/types'
+import { membershipApi } from '@/api/membership_plans'
+import { filesApi } from '@/api/profiles'
+import type { TenantPlan, TenantPaymentInfo } from '@/types'
 
 const store = useMembershipStore()
+
+// ── Payment Info ──────────────────────────────────────────────────────────────
+const paymentInfo = ref<TenantPaymentInfo | null>(null)
+const qrUrl = ref<string | null>(null)
+
+const hasPaymentInfo = computed(() => {
+  if (!paymentInfo.value) return false
+  return !!(paymentInfo.value.upi_id || paymentInfo.value.upi_name || paymentInfo.value.upi_qr_key || paymentInfo.value.payment_whatsapp)
+})
+
+const whatsappLink = computed(() => {
+  if (!paymentInfo.value?.payment_whatsapp) return '#'
+  const phone = paymentInfo.value.payment_whatsapp.replace('+', '')
+  const text = encodeURIComponent('Hi, I have made a payment for my membership plan. Please find the screenshot attached.')
+  return `https://wa.me/${phone}?text=${text}`
+})
+
+function copyUpiId() {
+  if (paymentInfo.value?.upi_id) {
+    navigator.clipboard.writeText(paymentInfo.value.upi_id)
+  }
+}
+
+async function loadPaymentInfo() {
+  try {
+    paymentInfo.value = await membershipApi.getPaymentInfo()
+    if (paymentInfo.value?.upi_qr_key) {
+      try {
+        const { url } = await filesApi.presignGet(paymentInfo.value.upi_qr_key)
+        qrUrl.value = url
+      } catch {
+        // QR image may not be accessible
+      }
+    }
+  } catch {
+    // Payment info may not be configured
+  }
+}
 
 onMounted(() => {
   store.fetchPlans()
   store.fetchMySubscription()
+  loadPaymentInfo()
 })
 
 function formatDate(iso: string): string {

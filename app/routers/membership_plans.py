@@ -42,6 +42,7 @@ from app.schemas.membership_plan import (
     TenantPlanOverrideUpsert,
     TenantPlanRead,
 )
+from app.schemas.tenant import TenantPaymentInfoRead, TenantUpdate
 
 # ── Routers ───────────────────────────────────────────────────────────────────
 # SuperAdmin-scoped endpoints live on a separate prefix so they don't clash
@@ -293,6 +294,76 @@ async def override_plan_price(
         features=template.features,
         is_active=template.is_active,
         sort_order=template.sort_order,
+    )
+
+
+# ── Tenant Payment Info ──────────────────────────────────────────────────────
+
+@router.get(
+    "/tenant/payment-info",
+    response_model=TenantPaymentInfoRead,
+    summary="Get the tenant's payment information (UPI details, WhatsApp)",
+)
+async def get_tenant_payment_info(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(get_current_user)],
+) -> TenantPaymentInfoRead:
+    """
+    Returns the tenant's payment details (UPI name, UPI ID, QR key, WhatsApp).
+    Available to any authenticated user so members can view payment info.
+    """
+    if not current_user.tenant_id:
+        raise HTTPException(status_code=400, detail="No tenant context.")
+
+    tenant = await db.get(Tenant, current_user.tenant_id)
+    if not tenant:
+        raise HTTPException(status_code=404, detail="Tenant not found.")
+
+    return TenantPaymentInfoRead(
+        upi_id=tenant.upi_id,
+        upi_name=tenant.upi_name,
+        upi_qr_key=tenant.upi_qr_key,
+        payment_whatsapp=tenant.payment_whatsapp,
+        tenant_name=tenant.name,
+    )
+
+
+@router.put(
+    "/tenant/payment-info",
+    response_model=TenantPaymentInfoRead,
+    summary="Update the tenant's payment information (Admin only)",
+)
+async def update_tenant_payment_info(
+    payload: TenantUpdate,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_admin)],
+) -> TenantPaymentInfoRead:
+    """
+    Allows an admin to update their tenant's payment information.
+    Only updates payment-related fields: upi_id, upi_name, payment_whatsapp.
+    """
+    if not current_user.tenant_id:
+        raise HTTPException(status_code=400, detail="No tenant context.")
+
+    tenant = await db.get(Tenant, current_user.tenant_id)
+    if not tenant:
+        raise HTTPException(status_code=404, detail="Tenant not found.")
+
+    # Only apply payment-related fields from the payload
+    payment_fields = {"upi_id", "upi_name", "payment_whatsapp"}
+    for field, value in payload.model_dump(exclude_unset=True).items():
+        if field in payment_fields:
+            setattr(tenant, field, value)
+
+    await db.flush()
+    await db.refresh(tenant)
+
+    return TenantPaymentInfoRead(
+        upi_id=tenant.upi_id,
+        upi_name=tenant.upi_name,
+        upi_qr_key=tenant.upi_qr_key,
+        payment_whatsapp=tenant.payment_whatsapp,
+        tenant_name=tenant.name,
     )
 
 

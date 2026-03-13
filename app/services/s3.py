@@ -42,7 +42,7 @@ _s3_client = boto3.client(
 class S3Service:
     """Handles S3 pre-signed URL generation and object key management."""
 
-    ALLOWED_PURPOSES = {"profile_photo", "horoscope", "avatar", "tenant_logo"}
+    ALLOWED_PURPOSES = {"profile_photo", "horoscope", "avatar", "tenant_logo", "upi_qr"}
     ALLOWED_CONTENT_TYPES = {
         "image/jpeg", "image/png", "image/webp", "image/heic",
         "application/pdf",

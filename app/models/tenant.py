@@ -59,6 +59,18 @@ class Tenant(Base):
     pin: Mapped[str | None] = mapped_column(String(6), nullable=True)
     # UPI ID e.g. vivahkendra@upi  – pattern validated at schema layer
     upi_id: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    # Name on the UPI account (displayed to members making payments)
+    upi_name: Mapped[str | None] = mapped_column(
+        String(200), nullable=True, comment="Name associated with UPI ID"
+    )
+    # S3 object key for UPI QR-code image
+    upi_qr_key: Mapped[str | None] = mapped_column(
+        String(512), nullable=True, comment="S3 object key for UPI payment QR code"
+    )
+    # Dedicated WhatsApp number for payment confirmations
+    payment_whatsapp: Mapped[str | None] = mapped_column(
+        String(20), nullable=True, comment="WhatsApp number for receiving payment screenshots"
+    )
     # Communities/castes this centre serves
     castes: Mapped[list[str] | None] = mapped_column(
         ARRAY(String), nullable=True,

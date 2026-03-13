@@ -48,7 +48,7 @@ class PresignedGetResponse(BaseModel):
 class AvatarPresignRequest(BaseModel):
     file_name: str
     content_type: str
-    purpose: Literal["avatar", "tenant_logo"] = "avatar"
+    purpose: Literal["avatar", "tenant_logo", "upi_qr"] = "avatar"
 
 
 @router.post(
@@ -145,11 +145,12 @@ async def get_avatar_presigned_url(
 
     - purpose = "avatar"       → for member or admin profile picture
     - purpose = "tenant_logo"  → for tenant branding logo (admin+ only)
+    - purpose = "upi_qr"       → for tenant UPI QR code image (admin+ only)
     """
     tenant: Tenant | None = request.state.tenant
 
-    if payload.purpose == "tenant_logo" and not tenant:
-        raise HTTPException(status_code=400, detail="Tenant context required for tenant_logo.")
+    if payload.purpose in ("tenant_logo", "upi_qr") and not tenant:
+        raise HTTPException(status_code=400, detail="Tenant context required.")
 
     tenant_id = str(tenant.id) if tenant else str(current_user.id)
 
@@ -204,6 +205,29 @@ async def register_tenant_logo(
         raise HTTPException(status_code=400, detail="Tenant context required.")
 
     tenant.logo_key = object_key
+    await db.flush()
+
+
+@router.patch(
+    "/tenant/upi-qr",
+    summary="Register an uploaded UPI QR S3 object key on the current tenant",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def register_tenant_upi_qr(
+    object_key: str,
+    request: Request,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_admin)],
+) -> None:
+    """
+    After a successful S3 PUT, persist the UPI QR object_key on the tenant.
+    Requires admin role. Replaces any previously stored UPI QR.
+    """
+    tenant: Tenant | None = request.state.tenant
+    if not tenant:
+        raise HTTPException(status_code=400, detail="Tenant context required.")
+
+    tenant.upi_qr_key = object_key
     await db.flush()
 
 
