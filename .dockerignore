@@ -1,10 +1,12 @@
 # Python
 .venv/
-__pycache__/
+**/__pycache__
+**/__pycache__/
 *.pyc
 *.pyo
 *.pyd
 .pytest_cache/
+**/.pytest_cache
 *.egg-info/
 dist/
 build/
@@ -12,9 +14,7 @@ build/
 .ruff_cache/
 
 # Frontend build artifacts & deps
-frontend/node_modules/
-frontend/dist/
-frontend/.vite/
+frontend/
 
 # Terraform & infra
 terraform/
@@ -27,12 +27,27 @@ tests/
 .git/
 .gitignore
 
+# IDE / editor
+.vscode/
+
+# Environment files (may be symlinks on Windows)
+.env
+
+# Coverage & reports
+htmlcov/
+*.xml
+*.coverage
+.coverage
+
 # Misc
 *.log
+*.txt
+!requirements.txt
 .DS_Store
-alembic_out.txt
 docker-compose.yml
 Dockerfile.lambda
 lambda_handler.py
 README.md
 cors.json
+get-pip.py
+deploy_log.txt

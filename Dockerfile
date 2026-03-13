@@ -33,8 +33,10 @@ RUN groupadd -r appgroup && useradd -r -g appgroup appuser
 # Copy venv from builder
 COPY --from=builder /opt/venv /opt/venv
 
-# Copy application source
-COPY --chown=appuser:appgroup . .
+# Copy application source (specific dirs only – avoids Windows reparse-point issues)
+COPY --chown=appuser:appgroup app/ ./app/
+COPY --chown=appuser:appgroup alembic/ ./alembic/
+COPY --chown=appuser:appgroup alembic.ini ./alembic.ini
 
 # Add venv to PATH
 ENV PATH="/opt/venv/bin:$PATH"
