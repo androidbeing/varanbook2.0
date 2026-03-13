@@ -90,7 +90,7 @@ class EmailService:
         <p>This link expires in <strong>1 hour</strong>.</p>
         <p>If you did not request this, ignore this email.</p>
         """
-        await _send(to_email, "Password Reset – Matrimonial Manager", html)
+        await _send(to_email, "Password Reset – Varanbook", html)
 
     # ── Profile shortlisted ────────────────────────────────────────────────────
     @staticmethod
@@ -120,10 +120,10 @@ class EmailService:
     @staticmethod
     async def send_welcome(to_email: str, full_name: str) -> None:
         html = f"""
-        <p>Hello <strong>{full_name}</strong>, welcome to Matrimonial Manager!</p>
+        <p>Hello <strong>{full_name}</strong>, welcome to Varanbook!</p>
         <p>Log in to complete your profile and find your match.</p>
         """
-        await _send(to_email, "Welcome to Matrimonial Manager", html)
+        await _send(to_email, "Welcome to Varanbook", html)
 
     # ── Member invite (admin-initiated onboarding) ─────────────────────────────
     @staticmethod

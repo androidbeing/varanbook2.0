@@ -53,7 +53,7 @@
           :prepend-icon="item.icon"
           :title="item.title"
           :to="item.to"
-          :active="route.path === item.to || (item.to !== '/' && route.path.startsWith(item.to + '/'))"
+          :active="route.path === item.to || route.path.startsWith(item.to + '/')"
           active-color="primary"
           rounded="lg"
         />
@@ -112,14 +112,14 @@ async function handleLogout() {
 const navItems = computed(() => {
   if (auth.isSuperAdmin) {
     return [
-      { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
+      { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/dashboard' },
       { title: 'Tenants', icon: 'mdi-office-building-cog', to: '/admin/tenants' },
       { title: 'Change Password', icon: 'mdi-lock-reset', to: '/change-password' },
     ]
   }
   if (auth.isAdmin) {
     return [
-      { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
+      { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/dashboard' },
       { title: 'Browse Profiles', icon: 'mdi-account-group', to: '/profiles' },
       { title: 'Memberships', icon: 'mdi-card-account-details-star', to: '/admin/membership' },
       { title: 'Onboard Members', icon: 'mdi-account-plus', to: '/admin/onboard-members' },
@@ -129,7 +129,7 @@ const navItems = computed(() => {
   }
   // Member
   return [
-    { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
+    { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/dashboard' },
     { title: 'Browse Profiles', icon: 'mdi-account-group', to: '/profiles' },
     { title: 'Membership', icon: 'mdi-card-account-details', to: '/membership' },
     { title: 'My Interests', icon: 'mdi-heart-multiple-outline', to: '/my-interests' },

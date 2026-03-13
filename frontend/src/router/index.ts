@@ -5,6 +5,12 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/',
+      name: 'landing',
+      component: () => import('@/views/LandingView.vue'),
+      meta: { public: true },
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/views/LoginView.vue'),
@@ -34,7 +40,7 @@ const router = createRouter({
       meta: { requiresAuth: true },
       children: [
         {
-          path: '',
+          path: 'dashboard',
           name: 'dashboard',
           component: () => import('@/views/DashboardView.vue'),
         },
@@ -121,11 +127,15 @@ const router = createRouter({
 // Navigation guard
 router.beforeEach((to) => {
   const auth = useAuthStore()
-  if (to.meta.requiresAuth && !auth.isAuthenticated) {
-    return { name: 'login', query: { redirect: to.fullPath } }
-  }
-  if (to.name === 'login' && auth.isAuthenticated) {
+
+  // Authenticated users visiting landing or login → go to dashboard
+  if ((to.name === 'landing' || to.name === 'login') && auth.isAuthenticated) {
     return { name: 'dashboard' }
+  }
+
+  // Protected routes require auth → redirect to landing
+  if (to.meta.requiresAuth && !auth.isAuthenticated) {
+    return { name: 'landing' }
   }
 })
 

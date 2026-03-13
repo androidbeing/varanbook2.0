@@ -90,6 +90,8 @@ $SMTP_PASS     = if ($tfVarsRaw -match 'smtp_password\s*=\s*"([^"]+)"') { $Match
 $SMTP_FROM     = if ($tfVarsRaw -match 'smtp_from\s*=\s*"([^"]+)"')     { $Matches[1] } else { "noreply@varanbook.in" }
 $PROJECT       = if ($tfVarsRaw -match 'project_name\s*=\s*"([^"]+)"')  { $Matches[1] } else { "varanbook" }
 $ENV           = if ($tfVarsRaw -match 'environment\s*=\s*"([^"]+)"')   { $Matches[1] } else { "production" }
+$S3_ACCESS_KEY = if ($tfVarsRaw -match 's3_access_key_id\s*=\s*"([^"]+)"') { $Matches[1] } else { "" }
+$S3_SECRET_KEY = if ($tfVarsRaw -match 's3_secret_access_key\s*=\s*"([^"]+)"') { $Matches[1] } else { "" }
 
 $SERVICE_NAME = "$PROJECT-api-$ENV"
 
@@ -159,6 +161,8 @@ if (-not $SkipBackend) {
         DATABASE_POOL_SIZE    = "10"
         DATABASE_MAX_OVERFLOW = "20"
         AWS_REGION            = $AWS_REGION
+        AWS_ACCESS_KEY_ID     = $S3_ACCESS_KEY
+        AWS_SECRET_ACCESS_KEY = $S3_SECRET_KEY
         S3_BUCKET_NAME        = $TF_MEDIA_BUCKET
         ALLOWED_ORIGINS       = "[`"$TF_FRONTEND_URL`",`"http://localhost:5173`"]"
         APP_FRONTEND_URL      = $TF_FRONTEND_URL

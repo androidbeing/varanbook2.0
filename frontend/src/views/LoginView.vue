@@ -6,7 +6,9 @@
           <v-col cols="12" sm="8" md="5" lg="4">
             <!-- Logo/Branding -->
             <div class="text-center mb-8">
-              <h1 class="text-h4 font-weight-bold text-primary mt-2">Varanbook</h1>
+              <router-link to="/" class="text-decoration-none">
+                <h1 class="text-h4 font-weight-bold text-primary mt-2">Varanbook</h1>
+              </router-link>
               <p class="text-body-2 text-medium-emphasis">Find your perfect match</p>
             </div>
 
@@ -120,7 +122,7 @@ async function handleLogin() {
   try {
     await auth.login({ email: email.value, password: password.value })
     if (auth.isAuthenticated) {
-      const redirect = (route.query.redirect as string) || '/'
+      const redirect = (route.query.redirect as string) || '/dashboard'
       router.push(redirect)
     }
   } catch (e: unknown) {
