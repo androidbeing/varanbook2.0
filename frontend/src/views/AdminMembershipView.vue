@@ -27,6 +27,52 @@
       </v-col>
     </v-row>
 
+    <!-- ── Payment Info Preview ─────────────────────────────────────────── -->
+    <v-row v-if="paymentInfo && hasPaymentInfo" class="mb-4">
+      <v-col cols="12">
+        <v-card rounded="xl" variant="outlined">
+          <v-card-title class="pa-5 pb-2 text-subtitle-1 font-weight-semibold">
+            <v-icon class="mr-2" size="20">mdi-cash-fast</v-icon>Payment Info (visible to members)
+          </v-card-title>
+          <v-card-text class="pa-5 pt-2">
+            <v-row align="center">
+              <!-- QR Code -->
+              <v-col v-if="qrUrl" cols="12" sm="4" md="3" class="text-center">
+                <v-img :src="qrUrl" max-width="180" class="mx-auto rounded-lg" />
+                <p class="text-caption text-medium-emphasis mt-2 mb-0">UPI QR Code</p>
+              </v-col>
+
+              <!-- UPI Details -->
+              <v-col cols="12" :sm="qrUrl ? 8 : 12" :md="qrUrl ? 5 : 8">
+                <div class="mb-3" v-if="paymentInfo.upi_name">
+                  <div class="text-caption text-medium-emphasis mb-1">UPI Account Name</div>
+                  <div class="text-body-1 font-weight-semibold">{{ paymentInfo.upi_name }}</div>
+                </div>
+                <div class="mb-3" v-if="paymentInfo.upi_id">
+                  <div class="text-caption text-medium-emphasis mb-1">UPI ID</div>
+                  <v-chip color="primary" variant="tonal" size="default" class="font-weight-medium">
+                    {{ paymentInfo.upi_id }}
+                  </v-chip>
+                </div>
+                <div v-if="paymentInfo.tenant_name" class="mb-3">
+                  <div class="text-caption text-medium-emphasis mb-1">Pay To</div>
+                  <div class="text-body-2">{{ paymentInfo.tenant_name }}</div>
+                </div>
+              </v-col>
+
+              <!-- WhatsApp -->
+              <v-col v-if="paymentInfo.payment_whatsapp" cols="12" :md="qrUrl ? 4 : 4">
+                <div class="d-flex align-center ga-2">
+                  <v-icon color="green" size="20">mdi-whatsapp</v-icon>
+                  <span class="text-body-2">{{ paymentInfo.payment_whatsapp }}</span>
+                </div>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
     <!-- ── Filters ────────────────────────────────────────────────────────── -->
     <v-row class="mb-4" align="center">
       <v-col cols="12" sm="4" md="3">
@@ -248,8 +294,9 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { membershipApi } from '@/api/membership_plans'
 import { useMembershipStore } from '@/stores/membership_plan'
+import { filesApi } from '@/api/profiles'
 import client from '@/api/client'
-import type { Subscription } from '@/types'
+import type { Subscription, TenantPaymentInfo } from '@/types'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface SubscriptionRow extends Subscription {
@@ -443,9 +490,30 @@ function chipColor(status: string): string {
 
 const required = (v: string) => !!v || 'Required'
 
-// ── Init ──────────────────────────────────────────────────────────────────────
+// ── Payment Info Preview ──────────────────────────────────────────────────
+const paymentInfo = ref<TenantPaymentInfo | null>(null)
+const qrUrl = ref<string | null>(null)
+
+const hasPaymentInfo = computed(() => {
+  if (!paymentInfo.value) return false
+  return !!(paymentInfo.value.upi_id || paymentInfo.value.upi_name || paymentInfo.value.upi_qr_key || paymentInfo.value.payment_whatsapp)
+})
+
+async function loadPaymentInfo() {
+  try {
+    paymentInfo.value = await membershipApi.getPaymentInfo()
+    if (paymentInfo.value?.upi_qr_key) {
+      try {
+        const { url } = await filesApi.presignGet(paymentInfo.value.upi_qr_key)
+        qrUrl.value = url
+      } catch { /* QR image may not be accessible */ }
+    }
+  } catch { /* Payment info may not be configured */ }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
 onMounted(async () => {
-  await Promise.all([store.fetchPlans(), fetchMembers()])
+  await Promise.all([store.fetchPlans(), fetchMembers(), loadPaymentInfo()])
   await loadSubscriptions()
 })
 </script>
