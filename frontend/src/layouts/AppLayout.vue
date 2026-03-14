@@ -124,7 +124,6 @@ const navItems = computed(() => {
       { title: 'Memberships', icon: 'mdi-card-account-details-star', to: '/admin/membership' },
       { title: 'Onboard Members', icon: 'mdi-account-plus', to: '/admin/onboard-members' },
       { title: 'My Account', icon: 'mdi-account-cog', to: '/admin/profile' },
-      { title: 'Change Password', icon: 'mdi-lock-reset', to: '/change-password' },
     ]
   }
   // Member

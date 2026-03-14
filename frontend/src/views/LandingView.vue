@@ -127,7 +127,7 @@
                   block
                 >
                   <v-icon start color="green">mdi-whatsapp</v-icon>
-                  WhatsApp: +91 99449 26396
+                  +919944926396
                 </v-btn>
               </v-col>
               <v-col cols="12" sm="auto">
