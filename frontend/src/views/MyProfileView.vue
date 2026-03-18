@@ -7,10 +7,10 @@
     </div>
 
     <v-row v-else>
-      <!-- ── Sidebar ────────────────────────────────────────────────────── -->
+      <!-- -- Sidebar ------------------------------------------------------ -->
       <v-col cols="12" md="3">
         <v-card rounded="xl" class="text-center pa-4 mb-4" elevation="2">
-          <!-- Clickable avatar – uploads profile picture -->
+          <!-- Clickable avatar � uploads profile picture -->
           <v-tooltip text="Change profile picture" location="bottom">
             <template #activator="{ props: tp }">
               <v-avatar
@@ -35,9 +35,9 @@
           />
           <div v-if="uploadingMemberAvatar" class="text-caption text-medium-emphasis mb-2">
             <v-progress-circular indeterminate size="12" width="2" color="primary" class="mr-1" />
-            Uploading…
+            Uploading�
           </div>
-          <p class="text-subtitle-1 font-weight-bold mb-1">{{ fullName || '—' }}</p>
+          <p class="text-subtitle-1 font-weight-bold mb-1">{{ fullName || '�' }}</p>
           <v-chip
             :color="profileData?.status === 'active' ? 'success' : 'warning'"
             size="small"
@@ -52,7 +52,7 @@
         </v-card>
       </v-col>
 
-      <!-- ── Expansion Panels ──────────────────────────────────────────── -->
+      <!-- -- Expansion Panels -------------------------------------------- -->
       <v-col cols="12" md="9">
         <v-expansion-panels v-model="openPanels" multiple variant="accordion">
 
@@ -69,7 +69,7 @@
                     v-model="fullName"
                     label="Full Name"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-account"
                   />
                 </v-col>
@@ -79,10 +79,10 @@
                     label="Gender"
                     :items="genderOptions"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-gender-male-female"
                     :readonly="!!profileData?.gender"
-                    :hint="profileData?.gender ? 'Set during registration — cannot be changed' : ''"
+                    :hint="profileData?.gender ? 'Set during registration � cannot be changed' : ''"
                     :persistent-hint="!!profileData?.gender"
                   />
                 </v-col>
@@ -120,7 +120,7 @@
                     label="Marital Status"
                     :items="maritalOptions"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-ring"
                   />
                 </v-col>
@@ -130,7 +130,7 @@
                     label="Mother Tongue"
                     :items="motherTongueOptions"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-translate"
                   />
                 </v-col>
@@ -140,7 +140,7 @@
                     label="Religion"
                     :items="religionOptions"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-temple-hindu"
                   />
                 </v-col>
@@ -149,7 +149,7 @@
                     v-model="form.caste"
                     label="Caste"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-account-group"
                   />
                 </v-col>
@@ -158,7 +158,7 @@
                     v-model="form.sub_caste"
                     label="Sub-Caste"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-account-group-outline"
                   />
                 </v-col>
@@ -168,7 +168,7 @@
                     label="Complexion"
                     :items="complexionOptions"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-palette"
                     clearable
                   />
@@ -179,7 +179,7 @@
                     label="Blood Group"
                     :items="bloodGroupOptions"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-water"
                     clearable
                   />
@@ -189,7 +189,7 @@
                     v-model="form.disabilities"
                     label="Disabilities"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-wheelchair-accessibility"
                     placeholder="None or describe if any"
                   />
@@ -224,7 +224,7 @@
                     v-model="form.father_name"
                     label="Father's Name"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-account-tie"
                   />
                 </v-col>
@@ -233,7 +233,7 @@
                     v-model="form.father_occupation"
                     label="Father's Occupation"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-briefcase-outline"
                   />
                 </v-col>
@@ -242,7 +242,7 @@
                     v-model="form.mother_name"
                     label="Mother's Name"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-account-heart"
                   />
                 </v-col>
@@ -251,7 +251,7 @@
                     v-model="form.mother_occupation"
                     label="Mother's Occupation"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-briefcase-outline"
                   />
                 </v-col>
@@ -261,7 +261,7 @@
                     label="Siblings Details (e.g. 2 brothers, 1 sister married)"
                     rows="2"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-account-multiple"
                   />
                 </v-col>
@@ -296,7 +296,7 @@
                     label="Date of Birth"
                     type="date"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-calendar"
                     :max="maxDob"
                     :rules="[dobRule]"
@@ -310,7 +310,7 @@
                     label="Time of Birth"
                     type="time"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-clock-outline"
                   />
                 </v-col>
@@ -321,7 +321,7 @@
                     :loading="birthPlaceLoading"
                     label="Birth Place"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-map-marker"
                     no-filter
                     clearable
@@ -336,7 +336,7 @@
                     label="Rasi (Zodiac Sign)"
                     :items="rashiOptions"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-zodiac-aries"
                     clearable
                   />
@@ -347,7 +347,7 @@
                     label="Star (Nakshatra)"
                     :items="starOptions"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-star-four-points"
                     clearable
                   />
@@ -358,7 +358,7 @@
                     label="Dhosam"
                     :items="dhosamOptions"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-alert-circle-outline"
                     clearable
                   />
@@ -371,7 +371,7 @@
                     item-title="title"
                     item-value="value"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-file-document-outline"
                     :hint="form.horoscope_key ? 'Horoscope already uploaded' : 'Choose how to add your horoscope'"
                     persistent-hint
@@ -391,38 +391,14 @@
                     View Uploaded Horoscope
                   </v-btn>
                 </v-col>
-                <!-- Upload flow -->
-                <v-col v-if="horoscopeAction === 'upload'" cols="12" sm="6">
-                  <v-file-input
-                    v-model="horoscopeFile"
-                    label="Choose file (PDF or Image)"
-                    accept=".pdf,image/*"
-                    variant="outlined"
-                    density="comfortable"
-                    prepend-icon=""
-                    prepend-inner-icon="mdi-file-upload-outline"
-                    @update:modelValue="uploadHoroscope"
-                  />
-                </v-col>
-                <!-- Generate flow -->
-                <v-col v-else-if="horoscopeAction === 'generate'" cols="12" sm="6" class="d-flex align-center">
-                  <v-btn
-                    color="deep-purple"
-                    variant="outlined"
-                    :loading="generatingHoroscope"
-                    prepend-icon="mdi-creation"
-                    size="large"
-                    @click="confirmGenerateHoroscope"
-                  >
-                    Generate Now
-                  </v-btn>
-                  <v-tooltip location="top">
-                    <template #activator="{ props: tp }">
-                      <v-icon v-bind="tp" size="20" class="ml-2" color="grey">mdi-information-outline</v-icon>
-                    </template>
-                    Requires Date of Birth, Time of Birth, Birth Place, and Family Details.
-                  </v-tooltip>
-                </v-col>
+                <!-- Hidden file input for horoscope upload -->
+                <input
+                  ref="horoscopeInput"
+                  type="file"
+                  accept=".pdf,image/*"
+                  style="display:none"
+                  @change="onHoroscopeFileChosen"
+                />
               </v-row>
               <v-btn
                 color="indigo"
@@ -454,7 +430,7 @@
                     label="Qualification"
                     :items="qualificationOptions"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-school"
                     clearable
                   />
@@ -464,7 +440,7 @@
                     v-model="form.profession"
                     label="Profession"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-account-hard-hat"
                   />
                 </v-col>
@@ -473,7 +449,7 @@
                     v-model="form.working_at"
                     label="Working At (Employer / Organisation)"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-office-building"
                   />
                 </v-col>
@@ -483,7 +459,7 @@
                     label="Income Range"
                     :items="incomeOptions"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-currency-inr"
                     clearable
                   />
@@ -518,10 +494,10 @@
                     v-model="form.mobile"
                     label="Mobile Number"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-cellphone"
                     :readonly="!!authUser?.phone"
-                    :hint="authUser?.phone ? 'Set during registration — cannot be changed' : '10-digit (7558112327) or with code (+917558112327)'"
+                    :hint="authUser?.phone ? 'Set during registration � cannot be changed' : '10-digit (7558112327) or with code (+917558112327)'"
                     persistent-hint
                   />
                 </v-col>
@@ -530,7 +506,7 @@
                     v-model="form.whatsapp"
                     label="WhatsApp Number"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-whatsapp"
                     hint="10-digit (7558112327) or with code (+917558112327)"
                     persistent-hint
@@ -541,7 +517,7 @@
                     v-model="form.native_place"
                     label="Native Place"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-map-marker-outline"
                   />
                 </v-col>
@@ -550,7 +526,7 @@
                     v-model="form.current_location"
                     label="Current Location"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-map-marker"
                   />
                 </v-col>
@@ -559,7 +535,7 @@
                     v-model="form.city"
                     label="City"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-city"
                   />
                 </v-col>
@@ -568,7 +544,7 @@
                     v-model="form.state"
                     label="State"
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-map"
                   />
                 </v-col>
@@ -772,7 +748,7 @@
                 <!-- Age Range -->
                 <v-col cols="12" sm="6">
                   <div class="text-caption text-medium-emphasis mb-1">
-                    Age Range: {{ ageRange[0] }} – {{ ageRange[1] }} years
+                    Age Range: {{ ageRange[0] }} � {{ ageRange[1] }} years
                   </div>
                   <v-range-slider
                     v-model="ageRange"
@@ -787,7 +763,7 @@
                 <!-- Height Range -->
                 <v-col cols="12" sm="6">
                   <div class="text-caption text-medium-emphasis mb-1">
-                    Height Range: {{ heightRange[0] }} – {{ heightRange[1] }} cm
+                    Height Range: {{ heightRange[0] }} � {{ heightRange[1] }} cm
                   </div>
                   <v-range-slider
                     v-model="heightRange"
@@ -802,7 +778,7 @@
                 <!-- Weight Range -->
                 <v-col cols="12" sm="6">
                   <div class="text-caption text-medium-emphasis mb-1">
-                    Weight Range: {{ weightRange[0] }} – {{ weightRange[1] }} kg
+                    Weight Range: {{ weightRange[0] }} � {{ weightRange[1] }} kg
                   </div>
                   <v-range-slider
                     v-model="weightRange"
@@ -824,7 +800,7 @@
                     chips
                     closable-chips
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-school"
                   />
                 </v-col>
@@ -838,7 +814,7 @@
                     chips
                     closable-chips
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-currency-inr"
                   />
                 </v-col>
@@ -851,7 +827,7 @@
                     chips
                     closable-chips
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-map-marker"
                     hint="Type a city/district and press Enter"
                     persistent-hint
@@ -866,7 +842,7 @@
                     chips
                     closable-chips
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-map-marker-outline"
                     hint="Type a place and press Enter"
                     persistent-hint
@@ -882,7 +858,7 @@
                     chips
                     closable-chips
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-alert-circle-outline"
                   />
                 </v-col>
@@ -896,7 +872,7 @@
                     chips
                     closable-chips
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-zodiac-aries"
                   />
                 </v-col>
@@ -910,7 +886,7 @@
                     chips
                     closable-chips
                     variant="outlined"
-                    density="comfortable"
+                    density="compact"
                     prepend-inner-icon="mdi-star-four-points"
                   />
                 </v-col>
@@ -948,52 +924,52 @@
           <p class="text-body-2 text-medium-emphasis mb-3">
             Please verify the details below before generating. Missing fields are highlighted.
           </p>
-          <v-table density="comfortable">
+          <v-table density="compact">
             <tbody>
               <tr>
                 <td class="font-weight-medium" style="width:40%">Full Name</td>
                 <td :class="fullName ? '' : 'text-error font-weight-bold'">
-                  {{ fullName || '⚠ Missing — fill Personal Details' }}
+                  {{ fullName || '? Missing � fill Personal Details' }}
                 </td>
               </tr>
               <tr>
                 <td class="font-weight-medium">Father's Name</td>
                 <td :class="form.father_name ? '' : 'text-warning'">
-                  {{ form.father_name || '(empty — optional)' }}
+                  {{ form.father_name || '(empty � optional)' }}
                 </td>
               </tr>
               <tr>
                 <td class="font-weight-medium">Mother's Name</td>
                 <td :class="form.mother_name ? '' : 'text-warning'">
-                  {{ form.mother_name || '(empty — optional)' }}
+                  {{ form.mother_name || '(empty � optional)' }}
                 </td>
               </tr>
               <tr>
                 <td class="font-weight-medium">Date of Birth</td>
                 <td :class="form.date_of_birth ? '' : 'text-error font-weight-bold'">
-                  {{ form.date_of_birth || '⚠ Missing — required' }}
+                  {{ form.date_of_birth || '? Missing � required' }}
                 </td>
               </tr>
               <tr>
                 <td class="font-weight-medium">Time of Birth</td>
                 <td :class="form.time_of_birth ? '' : 'text-error font-weight-bold'">
-                  {{ form.time_of_birth || '⚠ Missing — required' }}
+                  {{ form.time_of_birth || '? Missing � required' }}
                 </td>
               </tr>
               <tr>
                 <td class="font-weight-medium">Birth Place</td>
                 <td :class="form.birth_place ? '' : 'text-error font-weight-bold'">
-                  {{ form.birth_place || '⚠ Missing — required' }}
+                  {{ form.birth_place || '? Missing � required' }}
                 </td>
               </tr>
               <tr>
                 <td class="font-weight-medium">Coordinates</td>
                 <td :class="birthPlaceCoords ? '' : 'text-error font-weight-bold'">
                   <template v-if="birthPlaceCoords">
-                    {{ birthPlaceCoords.lat.toFixed(4) }}°, {{ birthPlaceCoords.lng.toFixed(4) }}°
+                    {{ birthPlaceCoords.lat.toFixed(4) }}�, {{ birthPlaceCoords.lng.toFixed(4) }}�
                   </template>
                   <template v-else>
-                    ⚠ Select birth place from dropdown
+                    ? Select birth place from dropdown
                   </template>
                 </td>
               </tr>
@@ -1002,7 +978,7 @@
         </v-card-text>
         <v-divider />
         <v-card-actions class="pa-4">
-          <v-btn variant="text" @click="horoscopeConfirmDialog = false">Cancel</v-btn>
+          <v-btn variant="text" @click="horoscopeConfirmDialog = false; horoscopeAction = null">Cancel</v-btn>
           <v-spacer />
           <v-btn
             color="deep-purple"
@@ -1021,7 +997,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted, reactive } from 'vue'
+import { ref, computed, watch, nextTick, onMounted, reactive } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { profilesApi, preferencesApi, usersApi, filesApi } from '@/api/profiles'
 import { useAuthStore } from '@/stores/auth'
@@ -1031,7 +1007,7 @@ const authStore = useAuthStore()
 const authUser = computed(() => authStore.user)
 const qc = useQueryClient()
 
-// ── Profile query ────────────────────────────────────────────────────────────
+// -- Profile query ------------------------------------------------------------
 // Scope the query key by user ID so two different users logged in
 // sequentially never share each other's cached profile data.
 const { data: profileData, isPending } = useQuery({
@@ -1041,12 +1017,13 @@ const { data: profileData, isPending } = useQuery({
   staleTime: 60_000,   // keep cache fresh for 60 s to survive navigation
 })
 
-// ── State ────────────────────────────────────────────────────────────────────
+// -- State --------------------------------------------------------------------
 const fullName = ref('')
 const openPanels = ref([0])
 const avatarInput = ref<HTMLInputElement | null>(null)
 const photoInput = ref<HTMLInputElement | null>(null)
 const horoscopeFile = ref<File | null>(null)
+const horoscopeInput = ref<HTMLInputElement | null>(null)
 const horoscopeUrl = ref<string | null>(null)
 const generatingHoroscope = ref(false)
 const horoscopeConfirmDialog = ref(false)
@@ -1056,7 +1033,25 @@ const horoscopeActionItems = [
   { title: 'Generate Horoscope Online', value: 'generate' },
 ]
 
-// ── Birth Place autocomplete (Nominatim) ─────────────────────────────────────
+watch(horoscopeAction, (val) => {
+  if (val === 'upload') {
+    nextTick(() => horoscopeInput.value?.click())
+  } else if (val === 'generate') {
+    horoscopeConfirmDialog.value = true
+  }
+})
+
+function onHoroscopeFileChosen(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0] ?? null
+  if (!file) { horoscopeAction.value = null; return }
+  horoscopeFile.value = file
+  uploadHoroscope()
+  horoscopeAction.value = null
+  // reset so same file can be chosen again
+  if (horoscopeInput.value) horoscopeInput.value.value = ''
+}
+
+// -- Birth Place autocomplete (Nominatim) -------------------------------------
 interface NominatimPlace { display_name: string; lat: string; lon: string }
 const birthPlaceSearch = ref('')
 const birthPlaceItems = ref<string[]>([])
@@ -1083,7 +1078,7 @@ async function searchBirthPlaces(q: string) {
     nominatimCache.length = 0
     nominatimCache.push(...data)
     birthPlaceItems.value = data.map((d) => d.display_name)
-  } catch { /* network error – ignore */ } finally {
+  } catch { /* network error � ignore */ } finally {
     birthPlaceLoading.value = false
   }
 }
@@ -1111,23 +1106,23 @@ async function geocodeBirthPlace(place: string) {
     if (data.length) {
       birthPlaceCoords.value = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) }
     }
-  } catch { /* network error – ignore */ }
+  } catch { /* network error � ignore */ }
 }
 const sec = ref({ personal: false, birth: false, professional: false, family: false, contact: false, privacy: false, prefs: false })
 const snack = ref({ show: false, color: 'success', message: '' })
 
-// ── Avatar state ─────────────────────────────────────────────────────────────
+// -- Avatar state -------------------------------------------------------------
 const memberAvatarUrl = ref<string | null>(null)
 const uploadingMemberAvatar = ref(false)
 
-// ── Photo thumbnail URLs ──────────────────────────────────────────────────────
-// Map from S3 object_key → presigned GET URL for display
+// -- Photo thumbnail URLs ------------------------------------------------------
+// Map from S3 object_key ? presigned GET URL for display
 const photoUrls = reactive<Record<string, string>>({})
 
-// ── Photo deletion state ──────────────────────────────────────────────────────
+// -- Photo deletion state ------------------------------------------------------
 const deletingPhoto = ref<string | null>(null)
 
-// ── Profile form ─────────────────────────────────────────────────────────────
+// -- Profile form -------------------------------------------------------------
 const form = ref<Partial<Profile>>({
   gender: null,
   height_cm: 165,
@@ -1172,7 +1167,7 @@ const form = ref<Partial<Profile>>({
   horoscope_visible: false,
 })
 
-// ── Partner preferences form ──────────────────────────────────────────────────
+// -- Partner preferences form --------------------------------------------------
 const prefForm = ref<Partial<PartnerPreference>>({
   age_min: 22,
   age_max: 35,
@@ -1190,7 +1185,7 @@ const prefForm = ref<Partial<PartnerPreference>>({
   star: [],
 })
 
-// ── Date of Birth max constraint (member must be ≥ 18 years old) ─────────────
+// -- Date of Birth max constraint (member must be = 18 years old) -------------
 const maxDob = computed(() => {
   const d = new Date()
   d.setFullYear(d.getFullYear() - 18)
@@ -1203,7 +1198,7 @@ function dobRule(v: string | null | undefined): true | string {
   return true
 }
 
-// ── Range slider computed helpers ─────────────────────────────────────────────
+// -- Range slider computed helpers ---------------------------------------------
 const ageRange = computed({
   get: (): [number, number] => [prefForm.value.age_min ?? 22, prefForm.value.age_max ?? 35],
   set: (v: [number, number]) => { prefForm.value.age_min = v[0]; prefForm.value.age_max = v[1] },
@@ -1217,7 +1212,7 @@ const weightRange = computed({
   set: (v: [number, number]) => { prefForm.value.weight_min_kg = v[0]; prefForm.value.weight_max_kg = v[1] },
 })
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// -- Helpers -------------------------------------------------------------------
 function populateFormFromProfile(p: Profile | null | undefined) {
   if (!p) return
   const keys = Object.keys(form.value) as (keyof Profile)[]
@@ -1237,7 +1232,7 @@ async function populatePrefForm(p: Profile | null | undefined) {
     const pref = await preferencesApi.get(p.id)
     Object.assign(prefForm.value, pref)
   } catch {
-    // 404 = no preferences set yet – ignore
+    // 404 = no preferences set yet � ignore
   }
 }
 
@@ -1249,7 +1244,7 @@ async function loadPhotoUrls(keys: string[]) {
       const { url } = await filesApi.presignGet(key)
       photoUrls[key] = url
     } catch {
-      // S3 not configured / key invalid – leave empty so spinner shows
+      // S3 not configured / key invalid � leave empty so spinner shows
     }
   }
 }
@@ -1308,7 +1303,7 @@ async function removePhoto(key: string) {
   }
 }
 
-// ── Watchers ─────────────────────────────────────────────────────────────────
+// -- Watchers -----------------------------------------------------------------
 watch(profileData, async (p) => {
   populateFormFromProfile(p)
   if (p?.photo_keys?.length) loadPhotoUrls(p.photo_keys)
@@ -1345,7 +1340,7 @@ onMounted(() => {
   }
 })
 
-// ── Utilities ─────────────────────────────────────────────────────────────────
+// -- Utilities -----------------------------------------------------------------
 function notify(message: string, color = 'success') {
   snack.value = { show: true, color, message }
 }
@@ -1365,7 +1360,7 @@ async function upsertMe(data: Partial<Profile>): Promise<void> {
   }
 }
 
-// ── Save handlers ─────────────────────────────────────────────────────────────
+// -- Save handlers -------------------------------------------------------------
 async function savePersonal() {
   sec.value.personal = true
   try {
@@ -1612,16 +1607,13 @@ async function generateHoroscope() {
   } finally {
     generatingHoroscope.value = false
     horoscopeConfirmDialog.value = false
+    horoscopeAction.value = null
   }
 }
 
 const canGenerateHoroscope = computed(() =>
   !!form.value.date_of_birth && !!form.value.time_of_birth && !!form.value.birth_place && !!birthPlaceCoords.value
 )
-
-function confirmGenerateHoroscope() {
-  horoscopeConfirmDialog.value = true
-}
 
 async function uploadPhotos(e: Event) {
   if (!profileData.value) return
@@ -1644,7 +1636,7 @@ async function uploadPhotos(e: Event) {
       try {
         const { url } = await filesApi.presignGet(object_key)
         photoUrls[object_key] = url
-      } catch { /* S3 not configured – thumbnail will show spinner */ }
+      } catch { /* S3 not configured � thumbnail will show spinner */ }
       uploaded++
     } catch {
       notify('Photo upload failed. Cloud storage may not be configured.', 'warning')
@@ -1657,7 +1649,7 @@ async function uploadPhotos(e: Event) {
   }
 }
 
-// ── Dropdown options ──────────────────────────────────────────────────────────
+// -- Dropdown options ----------------------------------------------------------
 const genderOptions = [
   { title: 'Male', value: 'male' },
   { title: 'Female', value: 'female' },
@@ -1748,10 +1740,10 @@ const qualificationOptions = [
 
 const incomeOptions = [
   { title: 'Below 2 Lakh / year', value: 'below_2l' },
-  { title: '2 – 5 Lakh / year', value: '2_to_5l' },
-  { title: '5 – 10 Lakh / year', value: '5_to_10l' },
-  { title: '10 – 20 Lakh / year', value: '10_to_20l' },
-  { title: '20 – 50 Lakh / year', value: '20_to_50l' },
+  { title: '2 � 5 Lakh / year', value: '2_to_5l' },
+  { title: '5 � 10 Lakh / year', value: '5_to_10l' },
+  { title: '10 � 20 Lakh / year', value: '10_to_20l' },
+  { title: '20 � 50 Lakh / year', value: '20_to_50l' },
   { title: 'Above 50 Lakh / year', value: 'above_50l' },
 ]
 
