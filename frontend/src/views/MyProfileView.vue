@@ -207,178 +207,7 @@
             </v-expansion-panel-text>
           </v-expansion-panel>
 
-          <!-- 2. Birth Details -->
-          <v-expansion-panel rounded="xl" class="mb-2">
-            <v-expansion-panel-title>
-              <v-icon class="mr-2" color="indigo">mdi-calendar-star</v-icon>
-              <span class="font-weight-semibold">Birth Details</span>
-              <v-spacer />
-              <v-icon size="16" :color="form.birth_visible ? 'success' : 'warning'" class="mr-2">
-                {{ form.birth_visible ? 'mdi-lock-open-variant' : 'mdi-lock' }}
-              </v-icon>
-            </v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <v-row class="mt-1">
-                <v-col cols="12" sm="6">
-                  <v-text-field
-                    v-model="form.date_of_birth"
-                    label="Date of Birth"
-                    type="date"
-                    variant="outlined"
-                    density="comfortable"
-                    prepend-inner-icon="mdi-calendar"
-                    :max="maxDob"
-                    :rules="[dobRule]"
-                    hint="Must be at least 18 years old"
-                    persistent-hint
-                  />
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-text-field
-                    v-model="form.time_of_birth"
-                    label="Time of Birth"
-                    type="time"
-                    variant="outlined"
-                    density="comfortable"
-                    prepend-inner-icon="mdi-clock-outline"
-                  />
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-text-field
-                    v-model="form.birth_place"
-                    label="Birth Place"
-                    variant="outlined"
-                    density="comfortable"
-                    prepend-inner-icon="mdi-map-marker"
-                    maxlength="200"
-                  />
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-select
-                    v-model="form.rashi"
-                    label="Rasi (Zodiac Sign)"
-                    :items="rashiOptions"
-                    variant="outlined"
-                    density="comfortable"
-                    prepend-inner-icon="mdi-zodiac-aries"
-                    clearable
-                  />
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-select
-                    v-model="form.star"
-                    label="Star (Nakshatra)"
-                    :items="starOptions"
-                    variant="outlined"
-                    density="comfortable"
-                    prepend-inner-icon="mdi-star-four-points"
-                    clearable
-                  />
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-select
-                    v-model="form.dhosam"
-                    label="Dhosam"
-                    :items="dhosamOptions"
-                    variant="outlined"
-                    density="comfortable"
-                    prepend-inner-icon="mdi-alert-circle-outline"
-                    clearable
-                  />
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-file-input
-                    v-model="horoscopeFile"
-                    label="Horoscope (PDF or Image)"
-                    accept=".pdf,image/*"
-                    variant="outlined"
-                    density="comfortable"
-                    prepend-icon=""
-                    prepend-inner-icon="mdi-file-upload-outline"
-                    :hint="form.horoscope_key ? 'Horoscope already uploaded' : 'Upload PDF or image'"
-                    persistent-hint
-                    @update:modelValue="uploadHoroscope"
-                  />
-                </v-col>
-              </v-row>
-              <v-btn
-                color="indigo"
-                :loading="sec.birth"
-                prepend-icon="mdi-content-save"
-                class="mt-2"
-                @click="saveBirth"
-              >
-                Save Birth Details
-              </v-btn>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-
-          <!-- 3. Professional Details -->
-          <v-expansion-panel rounded="xl" class="mb-2">
-            <v-expansion-panel-title>
-              <v-icon class="mr-2" color="teal">mdi-briefcase</v-icon>
-              <span class="font-weight-semibold">Professional Details</span>
-              <v-spacer />
-              <v-icon size="16" :color="form.professional_visible ? 'success' : 'warning'" class="mr-2">
-                {{ form.professional_visible ? 'mdi-lock-open-variant' : 'mdi-lock' }}
-              </v-icon>
-            </v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <v-row class="mt-1">
-                <v-col cols="12" sm="6">
-                  <v-select
-                    v-model="form.qualification"
-                    label="Qualification"
-                    :items="qualificationOptions"
-                    variant="outlined"
-                    density="comfortable"
-                    prepend-inner-icon="mdi-school"
-                    clearable
-                  />
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-text-field
-                    v-model="form.profession"
-                    label="Profession"
-                    variant="outlined"
-                    density="comfortable"
-                    prepend-inner-icon="mdi-account-hard-hat"
-                  />
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-text-field
-                    v-model="form.working_at"
-                    label="Working At (Employer / Organisation)"
-                    variant="outlined"
-                    density="comfortable"
-                    prepend-inner-icon="mdi-office-building"
-                  />
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-select
-                    v-model="form.income_range"
-                    label="Income Range"
-                    :items="incomeOptions"
-                    variant="outlined"
-                    density="comfortable"
-                    prepend-inner-icon="mdi-currency-inr"
-                    clearable
-                  />
-                </v-col>
-              </v-row>
-              <v-btn
-                color="teal"
-                :loading="sec.professional"
-                prepend-icon="mdi-content-save"
-                class="mt-2"
-                @click="saveProfessional"
-              >
-                Save Professional Details
-              </v-btn>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-
-          <!-- 4. Family Details -->
+          <!-- 2. Family Details -->
           <v-expansion-panel rounded="xl" class="mb-2">
             <v-expansion-panel-title>
               <v-icon class="mr-2" color="orange-darken-2">mdi-home-heart</v-icon>
@@ -445,6 +274,212 @@
                 @click="saveFamily"
               >
                 Save Family Details
+              </v-btn>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+
+          <!-- 3. Birth Details -->
+          <v-expansion-panel rounded="xl" class="mb-2">
+            <v-expansion-panel-title>
+              <v-icon class="mr-2" color="indigo">mdi-calendar-star</v-icon>
+              <span class="font-weight-semibold">Birth Details</span>
+              <v-spacer />
+              <v-icon size="16" :color="form.birth_visible ? 'success' : 'warning'" class="mr-2">
+                {{ form.birth_visible ? 'mdi-lock-open-variant' : 'mdi-lock' }}
+              </v-icon>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <v-row class="mt-1">
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="form.date_of_birth"
+                    label="Date of Birth"
+                    type="date"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-calendar"
+                    :max="maxDob"
+                    :rules="[dobRule]"
+                    hint="Must be at least 18 years old"
+                    persistent-hint
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="form.time_of_birth"
+                    label="Time of Birth"
+                    type="time"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-clock-outline"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-autocomplete
+                    v-model="form.birth_place"
+                    :items="birthPlaceItems"
+                    :loading="birthPlaceLoading"
+                    label="Birth Place"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-map-marker"
+                    no-filter
+                    clearable
+                    hide-no-data
+                    @update:search="onBirthPlaceInput"
+                    @update:modelValue="onBirthPlaceSelected"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-select
+                    v-model="form.rashi"
+                    label="Rasi (Zodiac Sign)"
+                    :items="rashiOptions"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-zodiac-aries"
+                    clearable
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-select
+                    v-model="form.star"
+                    label="Star (Nakshatra)"
+                    :items="starOptions"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-star-four-points"
+                    clearable
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-select
+                    v-model="form.dhosam"
+                    label="Dhosam"
+                    :items="dhosamOptions"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-alert-circle-outline"
+                    clearable
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-file-input
+                    v-model="horoscopeFile"
+                    label="Horoscope (PDF or Image)"
+                    accept=".pdf,image/*"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-icon=""
+                    prepend-inner-icon="mdi-file-upload-outline"
+                    :hint="form.horoscope_key ? 'Horoscope already uploaded' : 'Upload PDF or image'"
+                    persistent-hint
+                    @update:modelValue="uploadHoroscope"
+                  />
+                  <a
+                    v-if="form.horoscope_key && horoscopeUrl"
+                    :href="horoscopeUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="d-inline-flex align-center mt-1 text-indigo text-decoration-none"
+                  >
+                    <v-icon size="18" class="mr-1">mdi-eye-outline</v-icon>
+                    View Uploaded Horoscope
+                  </a>
+                </v-col>
+                <v-col cols="12" sm="6" class="d-flex align-start pt-4">
+                  <v-btn
+                    color="deep-purple"
+                    variant="outlined"
+                    :loading="generatingHoroscope"
+                    prepend-icon="mdi-creation"
+                    size="large"
+                    @click="confirmGenerateHoroscope"
+                  >
+                    Generate Horoscope Online
+                  </v-btn>
+                  <v-tooltip location="top">
+                    <template #activator="{ props: tp }">
+                      <v-icon v-bind="tp" size="20" class="ml-2 mt-2" color="grey">mdi-information-outline</v-icon>
+                    </template>
+                    Fill in Date of Birth, Time of Birth, Birth Place, and Family Details (father/mother name) first.
+                    The horoscope PDF will be auto-generated and uploaded.
+                  </v-tooltip>
+                </v-col>
+              </v-row>
+              <v-btn
+                color="indigo"
+                :loading="sec.birth"
+                prepend-icon="mdi-content-save"
+                class="mt-2"
+                @click="saveBirth"
+              >
+                Save Birth Details
+              </v-btn>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+
+          <!-- 4. Professional Details -->
+          <v-expansion-panel rounded="xl" class="mb-2">
+            <v-expansion-panel-title>
+              <v-icon class="mr-2" color="teal">mdi-briefcase</v-icon>
+              <span class="font-weight-semibold">Professional Details</span>
+              <v-spacer />
+              <v-icon size="16" :color="form.professional_visible ? 'success' : 'warning'" class="mr-2">
+                {{ form.professional_visible ? 'mdi-lock-open-variant' : 'mdi-lock' }}
+              </v-icon>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <v-row class="mt-1">
+                <v-col cols="12" sm="6">
+                  <v-select
+                    v-model="form.qualification"
+                    label="Qualification"
+                    :items="qualificationOptions"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-school"
+                    clearable
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="form.profession"
+                    label="Profession"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-account-hard-hat"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="form.working_at"
+                    label="Working At (Employer / Organisation)"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-office-building"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-select
+                    v-model="form.income_range"
+                    label="Income Range"
+                    :items="incomeOptions"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-currency-inr"
+                    clearable
+                  />
+                </v-col>
+              </v-row>
+              <v-btn
+                color="teal"
+                :loading="sec.professional"
+                prepend-icon="mdi-content-save"
+                class="mt-2"
+                @click="saveProfessional"
+              >
+                Save Professional Details
               </v-btn>
             </v-expansion-panel-text>
           </v-expansion-panel>
@@ -883,6 +918,88 @@
     <v-snackbar v-model="snack.show" :color="snack.color" timeout="3000" location="bottom right">
       {{ snack.message }}
     </v-snackbar>
+
+    <!-- Horoscope Generation Confirmation Dialog -->
+    <v-dialog v-model="horoscopeConfirmDialog" max-width="520" persistent>
+      <v-card rounded="xl">
+        <v-card-title class="d-flex align-center pa-4">
+          <v-icon color="deep-purple" class="mr-2">mdi-creation</v-icon>
+          Confirm Horoscope Details
+        </v-card-title>
+        <v-divider />
+        <v-card-text class="pa-4">
+          <p class="text-body-2 text-medium-emphasis mb-3">
+            Please verify the details below before generating. Missing fields are highlighted.
+          </p>
+          <v-table density="comfortable">
+            <tbody>
+              <tr>
+                <td class="font-weight-medium" style="width:40%">Full Name</td>
+                <td :class="fullName ? '' : 'text-error font-weight-bold'">
+                  {{ fullName || '⚠ Missing — fill Personal Details' }}
+                </td>
+              </tr>
+              <tr>
+                <td class="font-weight-medium">Father's Name</td>
+                <td :class="form.father_name ? '' : 'text-warning'">
+                  {{ form.father_name || '(empty — optional)' }}
+                </td>
+              </tr>
+              <tr>
+                <td class="font-weight-medium">Mother's Name</td>
+                <td :class="form.mother_name ? '' : 'text-warning'">
+                  {{ form.mother_name || '(empty — optional)' }}
+                </td>
+              </tr>
+              <tr>
+                <td class="font-weight-medium">Date of Birth</td>
+                <td :class="form.date_of_birth ? '' : 'text-error font-weight-bold'">
+                  {{ form.date_of_birth || '⚠ Missing — required' }}
+                </td>
+              </tr>
+              <tr>
+                <td class="font-weight-medium">Time of Birth</td>
+                <td :class="form.time_of_birth ? '' : 'text-error font-weight-bold'">
+                  {{ form.time_of_birth || '⚠ Missing — required' }}
+                </td>
+              </tr>
+              <tr>
+                <td class="font-weight-medium">Birth Place</td>
+                <td :class="form.birth_place ? '' : 'text-error font-weight-bold'">
+                  {{ form.birth_place || '⚠ Missing — required' }}
+                </td>
+              </tr>
+              <tr>
+                <td class="font-weight-medium">Coordinates</td>
+                <td :class="birthPlaceCoords ? '' : 'text-error font-weight-bold'">
+                  <template v-if="birthPlaceCoords">
+                    {{ birthPlaceCoords.lat.toFixed(4) }}°, {{ birthPlaceCoords.lng.toFixed(4) }}°
+                  </template>
+                  <template v-else>
+                    ⚠ Select birth place from dropdown
+                  </template>
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
+        </v-card-text>
+        <v-divider />
+        <v-card-actions class="pa-4">
+          <v-btn variant="text" @click="horoscopeConfirmDialog = false">Cancel</v-btn>
+          <v-spacer />
+          <v-btn
+            color="deep-purple"
+            variant="elevated"
+            :disabled="!canGenerateHoroscope"
+            :loading="generatingHoroscope"
+            prepend-icon="mdi-creation"
+            @click="generateHoroscope"
+          >
+            Confirm &amp; Generate
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -913,6 +1030,67 @@ const openPanels = ref([0])
 const avatarInput = ref<HTMLInputElement | null>(null)
 const photoInput = ref<HTMLInputElement | null>(null)
 const horoscopeFile = ref<File | null>(null)
+const horoscopeUrl = ref<string | null>(null)
+const generatingHoroscope = ref(false)
+const horoscopeConfirmDialog = ref(false)
+
+// ── Birth Place autocomplete (Nominatim) ─────────────────────────────────────
+interface NominatimPlace { display_name: string; lat: string; lon: string }
+const birthPlaceSearch = ref('')
+const birthPlaceItems = ref<string[]>([])
+const birthPlaceLoading = ref(false)
+const birthPlaceCoords = ref<{ lat: number; lng: number } | null>(null)
+let birthPlaceTimer: ReturnType<typeof setTimeout> | null = null
+
+function onBirthPlaceInput(val: string) {
+  if (birthPlaceTimer) clearTimeout(birthPlaceTimer)
+  if (!val || val.length < 3) { birthPlaceItems.value = []; return }
+  birthPlaceTimer = setTimeout(() => searchBirthPlaces(val), 400)
+}
+
+async function searchBirthPlaces(q: string) {
+  birthPlaceLoading.value = true
+  try {
+    const res = await fetch(
+      'https://nominatim.openstreetmap.org/search?' +
+      new URLSearchParams({ q, format: 'json', limit: '5', addressdetails: '1' }),
+      { headers: { Accept: 'application/json' } },
+    )
+    if (!res.ok) return
+    const data: NominatimPlace[] = await res.json()
+    nominatimCache.length = 0
+    nominatimCache.push(...data)
+    birthPlaceItems.value = data.map((d) => d.display_name)
+  } catch { /* network error – ignore */ } finally {
+    birthPlaceLoading.value = false
+  }
+}
+
+const nominatimCache: NominatimPlace[] = []
+
+function onBirthPlaceSelected(val: string | null) {
+  if (!val) { birthPlaceCoords.value = null; return }
+  const match = nominatimCache.find((d) => d.display_name === val)
+  if (match) {
+    birthPlaceCoords.value = { lat: parseFloat(match.lat), lng: parseFloat(match.lon) }
+  }
+}
+
+/** Geocode a place string via Nominatim and store the coords. */
+async function geocodeBirthPlace(place: string) {
+  try {
+    const res = await fetch(
+      'https://nominatim.openstreetmap.org/search?' +
+      new URLSearchParams({ q: place, format: 'json', limit: '1' }),
+      { headers: { Accept: 'application/json' } },
+    )
+    if (!res.ok) return
+    const data: NominatimPlace[] = await res.json()
+    if (data.length) {
+      birthPlaceCoords.value = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) }
+    }
+  } catch { /* network error – ignore */ }
+}
 const sec = ref({ personal: false, birth: false, professional: false, family: false, contact: false, privacy: false, prefs: false })
 const snack = ref({ show: false, color: 'success', message: '' })
 
@@ -1109,9 +1287,21 @@ async function removePhoto(key: string) {
 }
 
 // ── Watchers ─────────────────────────────────────────────────────────────────
-watch(profileData, (p) => {
+watch(profileData, async (p) => {
   populateFormFromProfile(p)
   if (p?.photo_keys?.length) loadPhotoUrls(p.photo_keys)
+  if (p?.horoscope_key) {
+    try {
+      const { url } = await filesApi.presignGet(p.horoscope_key)
+      horoscopeUrl.value = url
+    } catch { horoscopeUrl.value = null }
+  } else {
+    horoscopeUrl.value = null
+  }
+  // Auto-geocode existing birth place so coordinates are ready
+  if (p?.birth_place && !birthPlaceCoords.value) {
+    geocodeBirthPlace(p.birth_place)
+  }
 }, { immediate: true })
 
 watch(authUser, (u) => {
@@ -1335,9 +1525,80 @@ async function uploadHoroscope() {
     await qc.invalidateQueries({ queryKey: ['my-profile'] })
     await qc.invalidateQueries({ queryKey: ['profile', profileData.value.id] })
     notify('Horoscope uploaded successfully!')
+    try {
+      const { url } = await filesApi.presignGet(object_key)
+      horoscopeUrl.value = url
+    } catch { horoscopeUrl.value = null }
   } catch {
     notify('Horoscope upload failed. Cloud storage may not be configured.', 'warning')
   }
+}
+
+async function generateHoroscope() {
+  if (!profileData.value) return
+  const dob = form.value.date_of_birth!
+  const tob = form.value.time_of_birth!
+  const coords = birthPlaceCoords.value!
+  generatingHoroscope.value = true
+  try {
+    const latitude = coords.lat
+    const longitude = coords.lng
+
+    // Call horoscope generation API
+    const pdfRes = await fetch('https://niyathi.varanbook.in/api/v1/horoscope/pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        birth_data: {
+          full_name: fullName.value || 'Member',
+          father_name: form.value.father_name || '',
+          mother_name: form.value.mother_name || '',
+          latitude,
+          longitude,
+          date_of_birth: dob,
+          time_of_birth: tob.length === 5 ? tob + ':00' : tob,
+        },
+      }),
+    })
+    if (!pdfRes.ok) throw new Error(`Horoscope API failed: ${pdfRes.status}`)
+    const pdfBlob = await pdfRes.blob()
+    const pdfFile = new File([pdfBlob], `horoscope_${dob}.pdf`, { type: 'application/pdf' })
+
+    // Upload to S3 via existing presign flow
+    const { upload_url, object_key } = await profilesApi.presign({
+      file_name: pdfFile.name,
+      content_type: 'application/pdf',
+      upload_purpose: 'horoscope',
+    })
+    const s3Res = await fetch(upload_url, {
+      method: 'PUT',
+      body: pdfFile,
+      headers: { 'Content-Type': 'application/pdf' },
+    })
+    if (!s3Res.ok) throw new Error(`S3 upload failed: ${s3Res.status}`)
+    await profilesApi.registerMedia(profileData.value.id, object_key, 'horoscope')
+    form.value.horoscope_key = object_key
+    await qc.invalidateQueries({ queryKey: ['my-profile'] })
+    await qc.invalidateQueries({ queryKey: ['profile', profileData.value.id] })
+    notify('Horoscope generated and uploaded successfully!')
+    try {
+      const { url } = await filesApi.presignGet(object_key)
+      horoscopeUrl.value = url
+    } catch { horoscopeUrl.value = null }
+  } catch (err) {
+    notify('Failed to generate horoscope. Please try again or upload manually.', 'error')
+  } finally {
+    generatingHoroscope.value = false
+    horoscopeConfirmDialog.value = false
+  }
+}
+
+const canGenerateHoroscope = computed(() =>
+  !!form.value.date_of_birth && !!form.value.time_of_birth && !!form.value.birth_place && !!birthPlaceCoords.value
+)
+
+function confirmGenerateHoroscope() {
+  horoscopeConfirmDialog.value = true
 }
 
 async function uploadPhotos(e: Event) {
