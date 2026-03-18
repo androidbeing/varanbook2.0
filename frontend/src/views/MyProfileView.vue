@@ -364,30 +364,48 @@
                   />
                 </v-col>
                 <v-col cols="12" sm="6">
+                  <v-select
+                    v-model="horoscopeAction"
+                    label="Horoscope"
+                    :items="horoscopeActionItems"
+                    item-title="title"
+                    item-value="value"
+                    variant="outlined"
+                    density="comfortable"
+                    prepend-inner-icon="mdi-file-document-outline"
+                    :hint="form.horoscope_key ? 'Horoscope already uploaded' : 'Choose how to add your horoscope'"
+                    persistent-hint
+                    clearable
+                  />
+                </v-col>
+                <v-col cols="12" sm="6" class="d-flex align-start">
+                  <v-btn
+                    v-if="form.horoscope_key && horoscopeUrl"
+                    :href="horoscopeUrl"
+                    target="_blank"
+                    color="indigo"
+                    variant="outlined"
+                    prepend-icon="mdi-eye-outline"
+                    size="large"
+                  >
+                    View Uploaded Horoscope
+                  </v-btn>
+                </v-col>
+                <!-- Upload flow -->
+                <v-col v-if="horoscopeAction === 'upload'" cols="12" sm="6">
                   <v-file-input
                     v-model="horoscopeFile"
-                    label="Horoscope (PDF or Image)"
+                    label="Choose file (PDF or Image)"
                     accept=".pdf,image/*"
                     variant="outlined"
                     density="comfortable"
                     prepend-icon=""
                     prepend-inner-icon="mdi-file-upload-outline"
-                    :hint="form.horoscope_key ? 'Horoscope already uploaded' : 'Upload PDF or image'"
-                    persistent-hint
                     @update:modelValue="uploadHoroscope"
                   />
-                  <a
-                    v-if="form.horoscope_key && horoscopeUrl"
-                    :href="horoscopeUrl"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="d-inline-flex align-center mt-1 text-indigo text-decoration-none"
-                  >
-                    <v-icon size="18" class="mr-1">mdi-eye-outline</v-icon>
-                    View Uploaded Horoscope
-                  </a>
                 </v-col>
-                <v-col cols="12" sm="6" class="d-flex align-start pt-4">
+                <!-- Generate flow -->
+                <v-col v-else-if="horoscopeAction === 'generate'" cols="12" sm="6" class="d-flex align-center">
                   <v-btn
                     color="deep-purple"
                     variant="outlined"
@@ -396,14 +414,13 @@
                     size="large"
                     @click="confirmGenerateHoroscope"
                   >
-                    Generate Horoscope Online
+                    Generate Now
                   </v-btn>
                   <v-tooltip location="top">
                     <template #activator="{ props: tp }">
-                      <v-icon v-bind="tp" size="20" class="ml-2 mt-2" color="grey">mdi-information-outline</v-icon>
+                      <v-icon v-bind="tp" size="20" class="ml-2" color="grey">mdi-information-outline</v-icon>
                     </template>
-                    Fill in Date of Birth, Time of Birth, Birth Place, and Family Details (father/mother name) first.
-                    The horoscope PDF will be auto-generated and uploaded.
+                    Requires Date of Birth, Time of Birth, Birth Place, and Family Details.
                   </v-tooltip>
                 </v-col>
               </v-row>
@@ -1033,6 +1050,11 @@ const horoscopeFile = ref<File | null>(null)
 const horoscopeUrl = ref<string | null>(null)
 const generatingHoroscope = ref(false)
 const horoscopeConfirmDialog = ref(false)
+const horoscopeAction = ref<'upload' | 'generate' | null>(null)
+const horoscopeActionItems = [
+  { title: 'Upload Horoscope', value: 'upload' },
+  { title: 'Generate Horoscope Online', value: 'generate' },
+]
 
 // ── Birth Place autocomplete (Nominatim) ─────────────────────────────────────
 interface NominatimPlace { display_name: string; lat: string; lon: string }
