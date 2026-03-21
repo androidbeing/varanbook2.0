@@ -2,6 +2,21 @@
   <div>
     <h1 class="text-h5 font-weight-bold mb-6">My Profile</h1>
 
+    <!-- Caste-lock warning banner -->
+    <v-alert
+      v-if="casteLocked && !form.caste && !isPending"
+      type="warning"
+      variant="tonal"
+      class="mb-4"
+      prominent
+    >
+      <template #prepend>
+        <v-icon size="28">mdi-lock-alert</v-icon>
+      </template>
+      Your centre requires a caste to be set. Please select your caste under
+      <strong>Personal Details</strong> to be visible in profile listings.
+    </v-alert>
+
     <div v-if="isPending" class="d-flex justify-center py-12">
       <v-progress-circular indeterminate color="primary" size="48" />
     </div>
@@ -145,12 +160,19 @@
                   />
                 </v-col>
                 <v-col cols="12" sm="6">
-                  <v-text-field
+                  <v-select
                     v-model="form.caste"
                     label="Caste"
+                    :items="tenantCastes"
                     variant="outlined"
                     density="compact"
                     prepend-inner-icon="mdi-account-group"
+                    :clearable="!(casteLocked && !!profileData?.caste)"
+                    :loading="loadingCastes"
+                    :no-data-text="loadingCastes ? 'Loading…' : 'No castes configured by your centre'"
+                    :readonly="casteLocked && !!profileData?.caste"
+                    :hint="casteLocked && !!profileData?.caste ? 'Caste is locked by your centre and cannot be changed' : ''"
+                    :persistent-hint="casteLocked && !!profileData?.caste"
                   />
                 </v-col>
                 <v-col cols="12" sm="6">
@@ -876,6 +898,22 @@
                     prepend-inner-icon="mdi-zodiac-aries"
                   />
                 </v-col>
+                <!-- Castes -->
+                <v-col cols="12" sm="6">
+                  <v-select
+                    v-model="prefForm.castes"
+                    label="Caste (preferred)"
+                    :items="tenantCastes"
+                    multiple
+                    chips
+                    closable-chips
+                    variant="outlined"
+                    density="compact"
+                    prepend-inner-icon="mdi-account-group"
+                    :loading="loadingCastes"
+                    :no-data-text="loadingCastes ? 'Loading…' : 'No castes configured by your centre'"
+                  />
+                </v-col>
                 <!-- Star -->
                 <v-col cols="12">
                   <v-select
@@ -1000,6 +1038,7 @@
 import { ref, computed, watch, nextTick, onMounted, reactive } from 'vue'
 import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { profilesApi, preferencesApi, usersApi, filesApi } from '@/api/profiles'
+import { castesApi } from '@/api/castes'
 import { useAuthStore } from '@/stores/auth'
 import type { Profile, PartnerPreference } from '@/types'
 
@@ -1028,6 +1067,25 @@ const horoscopeUrl = ref<string | null>(null)
 const generatingHoroscope = ref(false)
 const horoscopeConfirmDialog = ref(false)
 const horoscopeAction = ref<'upload' | 'generate' | null>(null)
+
+// -- Tenant caste list (for dropdowns) ----------------------------------------
+const tenantCastes = ref<string[]>([])
+const loadingCastes = ref(false)
+const casteLocked = ref(false)
+
+async function loadTenantCastes() {
+  loadingCastes.value = true
+  try {
+    tenantCastes.value = await castesApi.list()
+    const lockStatus = await castesApi.getLockStatus()
+    casteLocked.value = lockStatus.caste_locked
+  } catch {
+    // Not configured yet – leave empty
+  } finally {
+    loadingCastes.value = false
+  }
+}
+
 const horoscopeActionItems = [
   { title: 'Upload Horoscope', value: 'upload' },
   { title: 'Generate Horoscope Online', value: 'generate' },
@@ -1180,6 +1238,7 @@ const prefForm = ref<Partial<PartnerPreference>>({
   marital_statuses: [],
   current_locations: [],
   native_locations: [],
+  castes: [],
   dhosam: [],
   rashi: [],
   star: [],
@@ -1335,6 +1394,7 @@ onMounted(() => {
   if (authStore.user?.full_name) fullName.value = authStore.user.full_name
   populatePrefForm(profileData.value)
   loadMemberAvatarUrl()
+  loadTenantCastes()
   if (profileData.value?.photo_keys?.length) {
     loadPhotoUrls(profileData.value.photo_keys)
   }

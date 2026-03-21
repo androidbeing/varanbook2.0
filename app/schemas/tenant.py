@@ -66,6 +66,7 @@ class TenantCreate(BaseModel):
     upi_name: str | None = Field(None, max_length=200, examples=["Sharma Vivah Kendra"])
     payment_whatsapp: str | None = Field(None, examples=["+919876543210"])
     castes: list[str] = Field(default_factory=list, examples=[["Brahmin", "Iyer"]])
+    caste_locked: bool = Field(False, description="When True, members only see profiles of their own caste")
 
     # Optional: bootstrap the first admin user for this tenant in one step
     admin_email: EmailStr | None = Field(
@@ -110,6 +111,7 @@ class TenantUpdate(BaseModel):
     upi_name: str | None = Field(None, max_length=200)
     payment_whatsapp: str | None = None
     castes: list[str] | None = None
+    caste_locked: bool | None = None
 
     @field_validator("contact_number", "whatsapp_number", "payment_whatsapp")
     @classmethod
@@ -139,6 +141,7 @@ class TenantRead(BaseModel):
     upi_qr_key: str | None = None
     payment_whatsapp: str | None = None
     castes: list[str] | None
+    caste_locked: bool = False
     logo_key: str | None = None
     can_override_plan_prices: bool = False
     active_members_count: int = 0

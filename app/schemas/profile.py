@@ -21,6 +21,11 @@ from app.models.profile import (
 
 
 # ──────────────────────────────────────────────────────────────────────────────
+class ProfileStatusUpdate(BaseModel):
+    """Admin-only payload to toggle a profile's visibility status."""
+    status: ProfileStatus = Field(..., description="Target status: 'active' or 'suspended'")
+
+
 class ProfileCreate(BaseModel):
     """Initial profile creation payload submitted by a member."""
 

@@ -17,8 +17,9 @@ from app.auth.dependencies import get_current_user, require_admin
 from app.database import get_db
 from app.models.profile import Profile, ProfileStatus
 from app.models.shortlist import Shortlist, ShortlistStatus
+from app.models.tenant import Tenant
 from app.models.user import User, UserRole
-from app.schemas.profile import ProfileCreate, ProfileRead, ProfileUpdate
+from app.schemas.profile import ProfileCreate, ProfileRead, ProfileStatusUpdate, ProfileUpdate
 
 
 def _profile_read(profile: Profile) -> ProfileRead:
@@ -124,6 +125,21 @@ async def list_profiles(
     """
     query = select(Profile).where(Profile.tenant_id == current_user.tenant_id)
 
+    # ── Caste-lock filtering (members only) ──────────────────────────────────
+    caste_locked_empty = False  # True when member has no caste → 0 results
+    if current_user.role == UserRole.MEMBER and current_user.tenant_id:
+        tenant = await db.get(Tenant, current_user.tenant_id)
+        if tenant and tenant.caste_locked:
+            own_profile_caste_result = await db.execute(
+                select(Profile.caste).where(Profile.user_id == current_user.id)
+            )
+            member_caste = own_profile_caste_result.scalar_one_or_none()
+            if not member_caste:
+                # Member has no caste set → return empty results
+                caste_locked_empty = True
+            else:
+                query = query.where(Profile.caste == member_caste)
+
     # Members only see active profiles and not their own
     if current_user.role == UserRole.MEMBER:
         query = query.where(
@@ -156,6 +172,13 @@ async def list_profiles(
         query = query.join(User, Profile.user_id == User.id).where(
             User.full_name.ilike(f"%{search}%")
         )
+
+    # Short-circuit: member has no caste in a caste-locked tenant
+    if caste_locked_empty:
+        return {
+            "items": [], "total": 0, "page": page, "size": size, "pages": 1,
+            "caste_locked": True, "caste_missing": True,
+        }
 
     total_result = await db.execute(select(func.count()).select_from(query.subquery()))
     total = total_result.scalar_one()
@@ -283,8 +306,56 @@ async def get_profile(
     else:
         _assert_profile_access(profile, current_user)
 
+    # ── Caste-lock guard (members only; admins bypass) ───────────────────────
+    if (
+        current_user.role == UserRole.MEMBER
+        and profile.user_id != current_user.id
+        and current_user.tenant_id
+    ):
+        tenant = await db.get(Tenant, current_user.tenant_id)
+        if tenant and tenant.caste_locked:
+            viewer_caste_result = await db.execute(
+                select(Profile.caste).where(Profile.user_id == current_user.id)
+            )
+            viewer_caste = viewer_caste_result.scalar_one_or_none()
+            if not viewer_caste or viewer_caste != profile.caste:
+                raise HTTPException(
+                    status_code=403,
+                    detail="Access restricted. You can only view profiles of your own caste.",
+                )
+
     read = _profile_read(profile)
     return read.model_copy(update={"connection_status": connection_status})
+
+
+@router.patch(
+    "/{profile_id}/status",
+    response_model=ProfileRead,
+    summary="Toggle profile active/suspended (admin only)",
+)
+async def update_profile_status(
+    profile_id: uuid.UUID,
+    payload: ProfileStatusUpdate,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_admin)],
+) -> ProfileRead:
+    """Allow tenant admins to activate, suspend, or mark a member's profile as matched."""
+    if payload.status not in (ProfileStatus.ACTIVE, ProfileStatus.SUSPENDED, ProfileStatus.MATCHED):
+        raise HTTPException(
+            status_code=400,
+            detail="Only 'active', 'suspended', or 'matched' are allowed.",
+        )
+    profile = await db.get(Profile, profile_id)
+    if not profile:
+        raise HTTPException(status_code=404, detail="Profile not found.")
+    if profile.tenant_id != current_user.tenant_id:
+        raise HTTPException(status_code=403, detail="Access denied.")
+    profile.status = payload.status
+    await db.flush()
+    result = await db.execute(
+        select(Profile).where(Profile.id == profile.id).options(selectinload(Profile.user))
+    )
+    return _profile_read(result.scalar_one())
 
 
 @router.patch(

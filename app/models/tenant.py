@@ -76,6 +76,11 @@ class Tenant(Base):
         ARRAY(String), nullable=True,
         comment="Caste communities served by this centre",
     )
+    # When True, members only see profiles matching their own caste
+    caste_locked: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False,
+        comment="When enabled, members only see profiles of their own caste",
+    )
 
     # ── Plan / billing ────────────────────────────────────────────────────────
     plan: Mapped[str] = mapped_column(

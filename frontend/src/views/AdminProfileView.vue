@@ -305,6 +305,87 @@
         </v-card>
       </v-col>
 
+      <!-- ── Caste Master ─────────────────────────────────────────────── -->
+      <v-col cols="12">
+        <v-card rounded="xl" class="mb-4">
+          <v-card-title class="pa-5 pb-2 text-subtitle-1 font-weight-semibold">
+            <v-icon class="mr-2" size="20">mdi-account-group</v-icon>Caste Master
+          </v-card-title>
+          <v-card-text class="pa-5 pt-0">
+            <p class="text-body-2 text-medium-emphasis mb-4">
+              Manage the list of castes available to your members when filling their profile. Members will see these as dropdown options.
+            </p>
+
+            <!-- Add caste form -->
+            <v-form @submit.prevent="addCaste" class="mb-4">
+              <v-row dense align="center">
+                <v-col cols="12" sm="8" md="6">
+                  <v-text-field
+                    v-model="newCaste"
+                    label="New Caste Name"
+                    variant="outlined"
+                    density="compact"
+                    prepend-inner-icon="mdi-plus"
+                    :error-messages="casteError"
+                    hide-details="auto"
+                    @input="casteError = ''"
+                  />
+                </v-col>
+                <v-col cols="auto">
+                  <v-btn
+                    type="submit"
+                    color="primary"
+                    variant="elevated"
+                    :loading="addingCaste"
+                    :disabled="!newCaste.trim()"
+                  >
+                    Add Caste
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-form>
+
+            <!-- Caste list -->
+            <v-progress-linear v-if="loadingCastes" indeterminate color="primary" class="mb-2" />
+            <v-chip-group v-if="tenantCastes.length" column>
+              <v-chip
+                v-for="c in tenantCastes"
+                :key="c"
+                closable
+                color="deep-purple"
+                variant="tonal"
+                @click:close="removeCaste(c)"
+              >
+                {{ c }}
+              </v-chip>
+            </v-chip-group>
+            <p v-else-if="!loadingCastes" class="text-body-2 text-medium-emphasis">
+              No castes added yet. Add castes above so your members can select from them.
+            </p>
+
+            <!-- Caste Lock Toggle -->
+            <v-divider class="my-4" />
+            <v-switch
+              v-model="casteLocked"
+              color="deep-purple"
+              :loading="togglingLock"
+              hide-details
+              @update:model-value="toggleCasteLock"
+            >
+              <template #label>
+                <div>
+                  <span class="font-weight-medium">Lock profiles by caste</span>
+                  <p class="text-caption text-medium-emphasis mb-0">
+                    When enabled, members can only see profiles of their own caste.
+                    Members without a caste set will see no profiles until they update their profile.
+                  </p>
+                </div>
+              </template>
+            </v-switch>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
       <!-- ── Read-only Info ───────────────────────────────────────────────── -->
       <v-col cols="12">
         <v-card rounded="xl">
@@ -350,6 +431,7 @@ import { useAuthStore } from '@/stores/auth'
 import client from '@/api/client'
 import { filesApi } from '@/api/profiles'
 import { membershipApi } from '@/api/membership_plans'
+import { castesApi } from '@/api/castes'
 
 const auth = useAuthStore()
 
@@ -512,11 +594,77 @@ async function uploadUpiQr(e: Event) {
   }
 }
 
+// ── Caste Master ──────────────────────────────────────────────────────────────
+const tenantCastes = ref<string[]>([])
+const loadingCastes = ref(false)
+const addingCaste = ref(false)
+const newCaste = ref('')
+const casteError = ref('')
+const casteLocked = ref(false)
+const togglingLock = ref(false)
+async function loadCastes() {
+  loadingCastes.value = true
+  try {
+    tenantCastes.value = await castesApi.list()
+    const lockStatus = await castesApi.getLockStatus()
+    casteLocked.value = lockStatus.caste_locked
+  } catch {
+    // Castes not configured yet
+  } finally {
+    loadingCastes.value = false
+  }
+}
+
+async function addCaste() {
+  const name = newCaste.value.trim()
+  if (!name) return
+  addingCaste.value = true
+  casteError.value = ''
+  try {
+    tenantCastes.value = await castesApi.add(name)
+    newCaste.value = ''
+    showSnack(`Caste '${name}' added!`)
+  } catch (e: any) {
+    const detail = e?.response?.data?.detail
+    casteError.value = typeof detail === 'string' ? detail : 'Failed to add caste'
+  } finally {
+    addingCaste.value = false
+  }
+}
+
+async function removeCaste(caste: string) {
+  try {
+    tenantCastes.value = await castesApi.remove(caste)
+    showSnack(`Caste '${caste}' removed.`)
+  } catch (e: any) {
+    const detail = e?.response?.data?.detail
+    showSnack(typeof detail === 'string' ? detail : 'Failed to remove caste', 'error')
+  }
+}
+
+async function toggleCasteLock(value: boolean | null) {
+  const locked = value ?? false
+  togglingLock.value = true
+  try {
+    const result = await castesApi.setLockStatus(locked)
+    casteLocked.value = result.caste_locked
+    showSnack(result.caste_locked ? 'Caste lock enabled' : 'Caste lock disabled')
+  } catch (e: any) {
+    // Revert on failure
+    casteLocked.value = !locked
+    const detail = e?.response?.data?.detail
+    showSnack(typeof detail === 'string' ? detail : 'Failed to toggle caste lock', 'error')
+  } finally {
+    togglingLock.value = false
+  }
+}
+
 onMounted(() => {
   profileFields.value.full_name = auth.user?.full_name ?? ''
   profileFields.value.phone = (auth.user as any)?.phone ?? ''
   refreshAvatarUrl()
   loadPaymentInfo()
+  loadCastes()
 })
 
 // ── Password form ─────────────────────────────────────────────────────────────

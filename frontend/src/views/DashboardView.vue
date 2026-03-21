@@ -282,6 +282,56 @@
                     {{ item.is_verified ? 'mdi-check-circle' : 'mdi-clock-outline' }}
                   </v-icon>
                 </template>
+                <template #item.profile_status="{ item }">
+                  <v-chip
+                    v-if="profileMap[item.id]"
+                    :color="profileMap[item.id].status === 'active' ? 'success' : profileMap[item.id].status === 'suspended' ? 'error' : profileMap[item.id].status === 'matched' ? 'pink' : 'warning'"
+                    size="small"
+                  >
+                    {{ profileMap[item.id].status === 'matched' ? 'Married' : profileMap[item.id].status }}
+                  </v-chip>
+                  <span v-else class="text-caption text-medium-emphasis">No profile</span>
+                </template>
+                <template #item.actions="{ item }">
+                  <div v-if="profileMap[item.id]" class="d-flex align-center ga-1">
+                    <v-switch
+                      v-if="profileMap[item.id].status !== 'matched'"
+                      :model-value="profileMap[item.id].status === 'active'"
+                      color="success"
+                      density="compact"
+                      hide-details
+                      :loading="togglingStatus[item.id] ?? false"
+                      @update:model-value="(val: boolean | null) => toggleProfileStatus(item.id, val ?? false)"
+                    />
+                    <v-tooltip text="Mark as Married" location="top">
+                      <template #activator="{ props: tp }">
+                        <v-btn
+                          v-if="profileMap[item.id].status !== 'matched'"
+                          v-bind="tp"
+                          icon="mdi-heart-multiple"
+                          color="pink"
+                          variant="text"
+                          size="small"
+                          :loading="togglingStatus[item.id] ?? false"
+                          @click="markMarried(item.id)"
+                        />
+                      </template>
+                    </v-tooltip>
+                    <v-tooltip text="Delete Profile" location="top">
+                      <template #activator="{ props: tp }">
+                        <v-btn
+                          v-bind="tp"
+                          icon="mdi-delete"
+                          color="error"
+                          variant="text"
+                          size="small"
+                          :loading="togglingStatus[item.id] ?? false"
+                          @click="confirmDeleteProfile(item.id)"
+                        />
+                      </template>
+                    </v-tooltip>
+                  </div>
+                </template>
                 <template #item.created_at="{ item }">
                   {{ new Date(item.created_at).toLocaleDateString('en-IN') }}
                 </template>
@@ -455,6 +505,74 @@
         </v-col>
       </v-row>
     </template>
+
+    <!-- ── Mark Married Confirmation Dialog ────────────────────────────── -->
+    <v-dialog v-model="marriedDialog" max-width="480" persistent>
+      <v-card rounded="xl">
+        <v-card-title class="d-flex align-center pa-4">
+          <v-icon color="pink" class="mr-2">mdi-heart-multiple</v-icon>
+          Mark as Married
+        </v-card-title>
+        <v-divider />
+        <v-card-text class="pa-4">
+          <p class="text-body-2 text-medium-emphasis mb-3">
+            Are you sure you want to mark this member as married?
+          </p>
+          <v-alert type="info" variant="tonal" density="compact" class="mb-0">
+            Their profile will be <strong>hidden</strong> from all other members immediately.
+            You can still delete it later if needed.
+          </v-alert>
+        </v-card-text>
+        <v-divider />
+        <v-card-actions class="pa-4">
+          <v-btn variant="text" @click="marriedDialog = false">Cancel</v-btn>
+          <v-spacer />
+          <v-btn
+            color="pink"
+            variant="elevated"
+            prepend-icon="mdi-heart-multiple"
+            :loading="togglingStatus[pendingActionUserId] ?? false"
+            @click="executeMarkMarried"
+          >
+            Confirm
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- ── Delete Profile Confirmation Dialog ─────────────────────────── -->
+    <v-dialog v-model="deleteDialog" max-width="480" persistent>
+      <v-card rounded="xl">
+        <v-card-title class="d-flex align-center pa-4">
+          <v-icon color="error" class="mr-2">mdi-delete-alert</v-icon>
+          Delete Profile
+        </v-card-title>
+        <v-divider />
+        <v-card-text class="pa-4">
+          <p class="text-body-2 text-medium-emphasis mb-3">
+            Are you sure you want to permanently delete this profile?
+          </p>
+          <v-alert type="error" variant="tonal" density="compact" class="mb-0">
+            This action <strong>cannot be undone</strong>. All profile data, photos,
+            shortlists, and partner preferences will be permanently removed.
+          </v-alert>
+        </v-card-text>
+        <v-divider />
+        <v-card-actions class="pa-4">
+          <v-btn variant="text" @click="deleteDialog = false">Cancel</v-btn>
+          <v-spacer />
+          <v-btn
+            color="error"
+            variant="elevated"
+            prepend-icon="mdi-delete"
+            :loading="togglingStatus[pendingActionUserId] ?? false"
+            @click="executeDeleteProfile"
+          >
+            Delete Permanently
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -528,7 +646,9 @@ const memberHeaders = [
   { title: 'Email', key: 'email' },
   { title: 'Phone', key: 'phone' },
   { title: 'Verified', key: 'is_verified', sortable: true },
-  { title: 'Status', key: 'is_active', sortable: true },
+  { title: 'Account', key: 'is_active', sortable: true },
+  { title: 'Profile', key: 'profile_status', sortable: false },
+  { title: 'Active', key: 'actions', sortable: false },
   { title: 'Joined', key: 'created_at', sortable: true },
 ]
 
@@ -542,10 +662,93 @@ async function loadMembers() {
   try {
     const res = await client.get('/users/members', { params: { page: 1, size: 200 } }).then((r) => r.data)
     members.value = res.items ?? res
+    // Load profiles to get each member's profile status
+    await loadProfileMap()
   } catch {
     members.value = []
   } finally {
     loadingMembers.value = false
+  }
+}
+
+// Map user_id → profile for showing profile status in the members table
+const profileMap = ref<Record<string, { id: string; status: string }>>({});
+const togglingStatus = ref<Record<string, boolean>>({});
+const marriedDialog = ref(false)
+const deleteDialog = ref(false)
+const pendingActionUserId = ref('')
+
+async function loadProfileMap() {
+  try {
+    const res = await profilesApi.list({ size: 200 })
+    const map: Record<string, { id: string; status: string }> = {}
+    for (const p of res.items) {
+      map[p.user_id] = { id: p.id, status: p.status }
+    }
+    profileMap.value = map
+  } catch {
+    profileMap.value = {}
+  }
+}
+
+async function toggleProfileStatus(userId: string, activate: boolean) {
+  const entry = profileMap.value[userId]
+  if (!entry) return
+  togglingStatus.value[userId] = true
+  try {
+    const updated = await profilesApi.setStatus(entry.id, activate ? 'active' : 'suspended')
+    profileMap.value[userId] = { id: entry.id, status: updated.status }
+  } catch {
+    // revert silently on failure
+  } finally {
+    togglingStatus.value[userId] = false
+  }
+}
+
+async function markMarried(userId: string) {
+  const entry = profileMap.value[userId]
+  if (!entry) return
+  pendingActionUserId.value = userId
+  marriedDialog.value = true
+}
+
+async function executeMarkMarried() {
+  const userId = pendingActionUserId.value
+  const entry = profileMap.value[userId]
+  if (!entry) return
+  togglingStatus.value[userId] = true
+  try {
+    const updated = await profilesApi.setStatus(entry.id, 'matched')
+    profileMap.value[userId] = { id: entry.id, status: updated.status }
+  } catch {
+    // ignore
+  } finally {
+    togglingStatus.value[userId] = false
+    marriedDialog.value = false
+  }
+}
+
+async function confirmDeleteProfile(userId: string) {
+  const entry = profileMap.value[userId]
+  if (!entry) return
+  pendingActionUserId.value = userId
+  deleteDialog.value = true
+}
+
+async function executeDeleteProfile() {
+  const userId = pendingActionUserId.value
+  const entry = profileMap.value[userId]
+  if (!entry) return
+  togglingStatus.value[userId] = true
+  try {
+    await profilesApi.delete(entry.id)
+    delete profileMap.value[userId]
+    await loadAdminProfiles()
+  } catch {
+    // ignore
+  } finally {
+    togglingStatus.value[userId] = false
+    deleteDialog.value = false
   }
 }
 

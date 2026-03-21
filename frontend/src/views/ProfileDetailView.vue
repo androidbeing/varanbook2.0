@@ -48,9 +48,19 @@
               <h2 class="text-h5 font-weight-bold">
                 {{ profile.full_name || (profile.gender === 'male' ? 'Groom Profile' : 'Bride Profile') }}
               </h2>
-              <v-chip :color="profile.status === 'active' ? 'success' : 'warning'" size="small">
-                {{ profile.status }}
+              <v-chip :color="profile.status === 'active' ? 'success' : profile.status === 'suspended' ? 'error' : profile.status === 'matched' ? 'pink' : 'warning'" size="small">
+                {{ profile.status === 'matched' ? 'Married' : profile.status }}
               </v-chip>
+              <v-switch
+                v-if="(auth.isAdmin || auth.isSuperAdmin) && profile.status !== 'matched'"
+                :model-value="profile.status === 'active'"
+                color="success"
+                density="compact"
+                hide-details
+                :loading="togglingStatus"
+                class="ml-2 flex-grow-0"
+                @update:model-value="(val: boolean | null) => toggleStatus(val ?? false)"
+              />
             </div>
             <p class="text-body-1 text-medium-emphasis mb-4">
               {{ ageLabel }}
@@ -66,6 +76,54 @@
           </v-col>
         </v-row>
       </v-card>
+
+      <!-- ── Admin actions ───────────────────────────────────────────────── -->
+      <v-card v-if="(auth.isAdmin || auth.isSuperAdmin) && profile.status !== 'matched'" rounded="xl" class="mb-5 pa-4">
+        <div class="d-flex align-center ga-3 flex-wrap">
+          <v-icon color="medium-emphasis">mdi-shield-account</v-icon>
+          <span class="text-body-2 text-medium-emphasis">Admin Actions</span>
+          <v-spacer />
+          <v-btn
+            color="pink"
+            variant="tonal"
+            prepend-icon="mdi-heart-multiple"
+            size="small"
+            :loading="markingMarried"
+            @click="markAsMarried"
+          >
+            Mark as Married
+          </v-btn>
+          <v-btn
+            color="error"
+            variant="tonal"
+            prepend-icon="mdi-delete"
+            size="small"
+            :loading="deletingProfile"
+            @click="confirmDelete"
+          >
+            Delete Profile
+          </v-btn>
+        </div>
+      </v-card>
+      <v-alert v-else-if="(auth.isAdmin || auth.isSuperAdmin) && profile.status === 'matched'" type="success" variant="tonal" rounded="xl" class="mb-5">
+        <div class="d-flex align-center ga-3 flex-wrap">
+          <div>
+            <strong>This member has been marked as married.</strong>
+            Their profile is no longer visible to other members.
+          </div>
+          <v-spacer />
+          <v-btn
+            color="error"
+            variant="tonal"
+            prepend-icon="mdi-delete"
+            size="small"
+            :loading="deletingProfile"
+            @click="confirmDelete"
+          >
+            Delete Profile
+          </v-btn>
+        </div>
+      </v-alert>
 
       <!-- ── Sections ───────────────────────────────────────────────────── -->
       <v-expansion-panels multiple variant="accordion" rounded="xl">
@@ -306,13 +364,81 @@
 
       </v-expansion-panels>
     </template>
+
+    <!-- ── Mark Married Confirmation Dialog ────────────────────────────── -->
+    <v-dialog v-model="marriedDialogOpen" max-width="480" persistent>
+      <v-card rounded="xl">
+        <v-card-title class="d-flex align-center pa-4">
+          <v-icon color="pink" class="mr-2">mdi-heart-multiple</v-icon>
+          Mark as Married
+        </v-card-title>
+        <v-divider />
+        <v-card-text class="pa-4">
+          <p class="text-body-2 text-medium-emphasis mb-3">
+            Are you sure you want to mark <strong>{{ profile?.full_name || 'this member' }}</strong> as married?
+          </p>
+          <v-alert type="info" variant="tonal" density="compact" class="mb-0">
+            Their profile will be <strong>hidden</strong> from all other members immediately.
+            You can still delete it later if needed.
+          </v-alert>
+        </v-card-text>
+        <v-divider />
+        <v-card-actions class="pa-4">
+          <v-btn variant="text" @click="marriedDialogOpen = false">Cancel</v-btn>
+          <v-spacer />
+          <v-btn
+            color="pink"
+            variant="elevated"
+            prepend-icon="mdi-heart-multiple"
+            :loading="markingMarried"
+            @click="executeMarkMarried"
+          >
+            Confirm
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- ── Delete Profile Confirmation Dialog ─────────────────────────── -->
+    <v-dialog v-model="deleteDialogOpen" max-width="480" persistent>
+      <v-card rounded="xl">
+        <v-card-title class="d-flex align-center pa-4">
+          <v-icon color="error" class="mr-2">mdi-delete-alert</v-icon>
+          Delete Profile
+        </v-card-title>
+        <v-divider />
+        <v-card-text class="pa-4">
+          <p class="text-body-2 text-medium-emphasis mb-3">
+            Are you sure you want to permanently delete <strong>{{ profile?.full_name || 'this' }}</strong>'s profile?
+          </p>
+          <v-alert type="error" variant="tonal" density="compact" class="mb-0">
+            This action <strong>cannot be undone</strong>. All profile data, photos,
+            shortlists, and partner preferences will be permanently removed.
+          </v-alert>
+        </v-card-text>
+        <v-divider />
+        <v-card-actions class="pa-4">
+          <v-btn variant="text" @click="deleteDialogOpen = false">Cancel</v-btn>
+          <v-spacer />
+          <v-btn
+            color="error"
+            variant="elevated"
+            prepend-icon="mdi-delete"
+            :loading="deletingProfile"
+            @click="executeDeleteProfile"
+          >
+            Delete Permanently
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, defineComponent, h, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useQuery } from '@tanstack/vue-query'
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { profilesApi, preferencesApi, filesApi } from '@/api/profiles'
 import { useAuthStore } from '@/stores/auth'
 
@@ -334,6 +460,60 @@ const DetailCell = defineComponent({
 const props = defineProps<{ id: string }>()
 const router = useRouter()
 const auth = useAuthStore()
+const queryClient = useQueryClient()
+
+// ── Admin: toggle profile status ─────────────────────────────────────────
+const togglingStatus = ref(false)
+async function toggleStatus(activate: boolean) {
+  if (!profile.value) return
+  togglingStatus.value = true
+  try {
+    await profilesApi.setStatus(profile.value.id, activate ? 'active' : 'suspended')
+    queryClient.invalidateQueries({ queryKey: ['profile', props.id] })
+  } catch {
+    // ignore
+  } finally {
+    togglingStatus.value = false
+  }
+}
+
+const markingMarried = ref(false)
+const marriedDialogOpen = ref(false)
+function markAsMarried() {
+  marriedDialogOpen.value = true
+}
+async function executeMarkMarried() {
+  if (!profile.value) return
+  markingMarried.value = true
+  try {
+    await profilesApi.setStatus(profile.value.id, 'matched')
+    queryClient.invalidateQueries({ queryKey: ['profile', props.id] })
+  } catch {
+    // ignore
+  } finally {
+    markingMarried.value = false
+    marriedDialogOpen.value = false
+  }
+}
+
+const deletingProfile = ref(false)
+const deleteDialogOpen = ref(false)
+function confirmDelete() {
+  deleteDialogOpen.value = true
+}
+async function executeDeleteProfile() {
+  if (!profile.value) return
+  deletingProfile.value = true
+  try {
+    await profilesApi.delete(profile.value.id)
+    router.push('/dashboard')
+  } catch {
+    // ignore
+  } finally {
+    deletingProfile.value = false
+    deleteDialogOpen.value = false
+  }
+}
 
 // ── Queries ──────────────────────────────────────────────────────────────────
 const { data: profile, isPending, isError } = useQuery({

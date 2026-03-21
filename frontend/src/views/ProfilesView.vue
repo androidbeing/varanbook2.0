@@ -59,6 +59,19 @@
       Failed to load profiles. Please try again.
     </v-alert>
 
+    <!-- Caste-lock: member has no caste set -->
+    <v-alert v-else-if="casteMissing" type="warning" variant="tonal" class="mb-4" prominent>
+      <template #prepend>
+        <v-icon size="36">mdi-lock-alert</v-icon>
+      </template>
+      <div class="text-subtitle-1 font-weight-semibold mb-1">Caste not set</div>
+      <div class="text-body-2">
+        Your centre has enabled caste-based profile filtering. Please set your caste in
+        <router-link to="/my-profile" class="text-primary font-weight-semibold">My Profile</router-link>
+        to browse matching profiles.
+      </div>
+    </v-alert>
+
     <template v-else-if="profiles.length">
       <v-row>
         <v-col
@@ -157,6 +170,7 @@ const { data, isPending, isError } = useQuery({
 
 const profiles = computed<Profile[]>(() => data.value?.items ?? [])
 const totalPages = computed(() => data.value?.pages ?? 1)
+const casteMissing = computed(() => data.value?.caste_missing === true)
 
 // Whenever the profile list OR the current user changes, re-fetch all presigned
 // photo URLs. Watching auth.user ensures the block re-runs after fetchMe()

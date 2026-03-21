@@ -60,6 +60,14 @@ export const profilesApi = {
       })
       .then(() => undefined)
   },
+
+  setStatus(profileId: string, status: 'active' | 'suspended' | 'matched'): Promise<Profile> {
+    return client.patch(`/profiles/${profileId}/status`, { status }).then((r) => r.data)
+  },
+
+  delete(profileId: string): Promise<void> {
+    return client.delete(`/profiles/${profileId}`).then(() => undefined)
+  },
 }
 
 export const preferencesApi = {

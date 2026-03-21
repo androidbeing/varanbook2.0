@@ -33,6 +33,7 @@ from app.routers import files, notifications, profiles, tenant
 from app.routers.users import auth_router, users_router
 from app.routers.shortlist import router as shortlist_router
 from app.routers.partner_preference import router as partner_pref_router
+from app.routers.castes import router as castes_router
 from app.routers.membership_plans import admin_router as plan_admin_router
 from app.routers.membership_plans import router as membership_router
 
@@ -274,6 +275,7 @@ def create_app() -> FastAPI:
     app.include_router(partner_pref_router)
     app.include_router(plan_admin_router)
     app.include_router(membership_router)
+    app.include_router(castes_router)
     # ── Health check ──────────────────────────────────────────────────────────
     @app.get("/health", tags=["Health"], summary="Liveness probe")
     async def health() -> dict:
