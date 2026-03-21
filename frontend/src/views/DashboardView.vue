@@ -303,6 +303,8 @@
                       :loading="togglingStatus[item.id] ?? false"
                       @update:model-value="(val: boolean | null) => toggleProfileStatus(item.id, val ?? false)"
                     />
+                    <!-- Mark as Married and Delete Profile moved to individual profile view -->
+                    <!--
                     <v-tooltip text="Mark as Married" location="top">
                       <template #activator="{ props: tp }">
                         <v-btn
@@ -330,6 +332,7 @@
                         />
                       </template>
                     </v-tooltip>
+                    -->
                   </div>
                 </template>
                 <template #item.created_at="{ item }">
@@ -680,11 +683,18 @@ const pendingActionUserId = ref('')
 
 async function loadProfileMap() {
   try {
-    const res = await profilesApi.list({ size: 200 })
     const map: Record<string, { id: string; status: string }> = {}
-    for (const p of res.items) {
-      map[p.user_id] = { id: p.id, status: p.status }
-    }
+    let page = 1
+    const size = 100
+    let pages = 1
+    do {
+      const res = await profilesApi.list({ page, size })
+      for (const p of res.items) {
+        map[p.user_id] = { id: p.id, status: p.status }
+      }
+      pages = res.pages
+      page++
+    } while (page <= pages)
     profileMap.value = map
   } catch {
     profileMap.value = {}
