@@ -258,6 +258,89 @@ resource "aws_route53_record" "api" {
 }
 
 ################################################################################
+# AWS SES – Domain verification + DKIM + SPF + DMARC
+# Enables sending transactional email from any @varanbook.in address
+# (e.g. noreply@varanbook.in) without verifying individual inboxes.
+################################################################################
+
+# Register the domain identity with SES.
+resource "aws_ses_domain_identity" "main" {
+  count  = var.domain_name != "" ? 1 : 0
+  domain = var.domain_name
+}
+
+# Route 53 TXT record to prove domain ownership to SES.
+resource "aws_route53_record" "ses_verification" {
+  count   = var.domain_name != "" ? 1 : 0
+  zone_id = data.aws_route53_zone.main[0].zone_id
+  name    = "_amazonses.${var.domain_name}"
+  type    = "TXT"
+  ttl     = 600
+  records = [aws_ses_domain_identity.main[0].verification_token]
+}
+
+# Wait until SES confirms the domain is verified.
+resource "aws_ses_domain_identity_verification" "main" {
+  count  = var.domain_name != "" ? 1 : 0
+  domain = aws_ses_domain_identity.main[0].id
+
+  depends_on = [aws_route53_record.ses_verification]
+}
+
+# Generate DKIM tokens so SES can sign outbound emails.
+resource "aws_ses_domain_dkim" "main" {
+  count  = var.domain_name != "" ? 1 : 0
+  domain = aws_ses_domain_identity.main[0].domain
+}
+
+# Three CNAME records for DKIM verification.
+resource "aws_route53_record" "ses_dkim" {
+  count   = var.domain_name != "" ? 3 : 0
+  zone_id = data.aws_route53_zone.main[0].zone_id
+  name    = "${aws_ses_domain_dkim.main[0].dkim_tokens[count.index]}._domainkey.${var.domain_name}"
+  type    = "CNAME"
+  ttl     = 600
+  records = ["${aws_ses_domain_dkim.main[0].dkim_tokens[count.index]}.dkim.amazonses.com"]
+}
+
+# Custom MAIL FROM domain so bounce/complaint handling uses our subdomain.
+resource "aws_ses_domain_mail_from" "main" {
+  count            = var.domain_name != "" ? 1 : 0
+  domain           = aws_ses_domain_identity.main[0].domain
+  mail_from_domain = "mail.${var.domain_name}"
+}
+
+# MX record for the MAIL FROM subdomain (required by SES).
+resource "aws_route53_record" "ses_mail_from_mx" {
+  count   = var.domain_name != "" ? 1 : 0
+  zone_id = data.aws_route53_zone.main[0].zone_id
+  name    = "mail.${var.domain_name}"
+  type    = "MX"
+  ttl     = 600
+  records = ["10 feedback-smtp.${var.aws_region}.amazonses.com"]
+}
+
+# SPF record for the MAIL FROM subdomain.
+resource "aws_route53_record" "ses_mail_from_spf" {
+  count   = var.domain_name != "" ? 1 : 0
+  zone_id = data.aws_route53_zone.main[0].zone_id
+  name    = "mail.${var.domain_name}"
+  type    = "TXT"
+  ttl     = 600
+  records = ["v=spf1 include:amazonses.com ~all"]
+}
+
+# DMARC policy for the root domain.
+resource "aws_route53_record" "dmarc" {
+  count   = var.domain_name != "" ? 1 : 0
+  zone_id = data.aws_route53_zone.main[0].zone_id
+  name    = "_dmarc.${var.domain_name}"
+  type    = "TXT"
+  ttl     = 600
+  records = ["v=DMARC1; p=quarantine; rua=mailto:postmaster@${var.domain_name}"]
+}
+
+################################################################################
 # Push notification worker: SQS + Lambda (FCM delivery) – optional
 ################################################################################
 module "sqs_lambda_notifier" {

@@ -36,6 +36,7 @@ _TENANT_FREE_PREFIXES = (
     "/redoc",
     "/auth",           # login / token refresh – tenant resolved from JWT later
     "/admin/tenants",  # super-admin tenant CRUD
+    "/public",         # public tenant info + self-registration
 )
 
 

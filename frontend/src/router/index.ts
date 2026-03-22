@@ -35,6 +35,12 @@ const router = createRouter({
       meta: { public: true },
     },
     {
+      path: '/join/:slug',
+      name: 'join',
+      component: () => import('@/views/JoinView.vue'),
+      meta: { public: true },
+    },
+    {
       path: '/',
       component: () => import('@/layouts/AppLayout.vue'),
       meta: { requiresAuth: true },

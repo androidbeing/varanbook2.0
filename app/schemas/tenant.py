@@ -67,6 +67,7 @@ class TenantCreate(BaseModel):
     payment_whatsapp: str | None = Field(None, examples=["+919876543210"])
     castes: list[str] = Field(default_factory=list, examples=[["Brahmin", "Iyer"]])
     caste_locked: bool = Field(False, description="When True, members only see profiles of their own caste")
+    self_registration_enabled: bool = Field(False, description="When True, members can self-register via /join/<slug>")
 
     # Optional: bootstrap the first admin user for this tenant in one step
     admin_email: EmailStr | None = Field(
@@ -112,6 +113,7 @@ class TenantUpdate(BaseModel):
     payment_whatsapp: str | None = None
     castes: list[str] | None = None
     caste_locked: bool | None = None
+    self_registration_enabled: bool | None = None
 
     @field_validator("contact_number", "whatsapp_number", "payment_whatsapp")
     @classmethod
@@ -144,6 +146,7 @@ class TenantRead(BaseModel):
     caste_locked: bool = False
     logo_key: str | None = None
     can_override_plan_prices: bool = False
+    self_registration_enabled: bool = False
     active_members_count: int = 0
     created_at: datetime
     updated_at: datetime
@@ -172,3 +175,42 @@ class TenantPaymentInfoRead(BaseModel):
     tenant_name: str | None = None
 
     model_config = {"from_attributes": True}
+
+
+class TenantPublicInfo(BaseModel):
+    """Minimal tenant info returned on the public /join page (no sensitive data)."""
+
+    name: str
+    slug: str
+    logo_key: str | None = None
+    self_registration_enabled: bool = False
+
+    model_config = {"from_attributes": True}
+
+
+class SelfRegisterRequest(BaseModel):
+    """Payload for public member self-registration via /join/<slug>."""
+
+    full_name: str = Field(..., min_length=2, max_length=200)
+    email: EmailStr
+    phone: str | None = Field(None, examples=["+919876543210"])
+    gender: str = Field(..., description="male or female")
+    password: str = Field(..., min_length=8, max_length=128)
+
+    @field_validator("phone")
+    @classmethod
+    def phone_must_be_e164(cls, v: str | None) -> str | None:
+        return _validate_e164(v)
+
+    @field_validator("password")
+    @classmethod
+    def password_strength(cls, v: str) -> str:
+        if not any(c.isupper() for c in v):
+            raise ValueError("Password must contain at least one uppercase letter")
+        if not any(c.islower() for c in v):
+            raise ValueError("Password must contain at least one lowercase letter")
+        if not any(c.isdigit() for c in v):
+            raise ValueError("Password must contain at least one digit")
+        if not any(c in "!@#$%^&*()-_=+[]{}|;:,.<>?" for c in v):
+            raise ValueError("Password must contain at least one special character")
+        return v

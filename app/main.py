@@ -36,6 +36,7 @@ from app.routers.partner_preference import router as partner_pref_router
 from app.routers.castes import router as castes_router
 from app.routers.membership_plans import admin_router as plan_admin_router
 from app.routers.membership_plans import router as membership_router
+from app.routers.public import router as public_router, self_reg_router
 
 # ── Configure structured logging ───────────────────────────────────────────────
 structlog.configure(
@@ -276,6 +277,8 @@ def create_app() -> FastAPI:
     app.include_router(plan_admin_router)
     app.include_router(membership_router)
     app.include_router(castes_router)
+    app.include_router(public_router)
+    app.include_router(self_reg_router)
     # ── Health check ──────────────────────────────────────────────────────────
     @app.get("/health", tags=["Health"], summary="Liveness probe")
     async def health() -> dict:

@@ -217,6 +217,7 @@ export interface Tenant {
   upi_qr_key: string | null
   payment_whatsapp: string | null
   castes: string[] | null
+  self_registration_enabled: boolean
   active_members_count: number
   created_at: string
   updated_at: string
@@ -275,7 +276,28 @@ export interface TenantPaymentInfo {
 }
 
 // ── API Error ────────────────────────────────────────────────────────────────
-export interface ApiError {
+// ── Public / Self-Registration ──────────────────────────────────────────────────
+export interface TenantPublicInfo {
+  name: string
+  slug: string
+  logo_key: string | null
+  self_registration_enabled: boolean
+}
+
+export interface SelfRegisterPayload {
+  full_name: string
+  email: string
+  phone?: string
+  gender: 'male' | 'female'
+  password: string
+}
+
+export interface SelfRegistrationStatus {
+  enabled: boolean
+  join_url_slug: string | null
+}
+
+// ── API Error ──────────────────────────────────────────────────────────────────export interface ApiError {
   detail: string | { msg: string; type: string }[]
 }
 

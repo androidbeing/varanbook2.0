@@ -97,6 +97,12 @@ class Tenant(Base):
         comment="Grants tenant admin the ability to set custom membership plan prices",
     )
 
+    # ── Self-registration ─────────────────────────────────────────────────────
+    self_registration_enabled: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False,
+        comment="When True, members can self-register via /join/<slug>",
+    )
+
     # ── Logo / branding ─────────────────────────────────────────────────────
     # S3 object key for the tenant's logo
     logo_key: Mapped[str | None] = mapped_column(

@@ -34,3 +34,14 @@ output "media_bucket_name" {
   description = "S3 bucket for user media (photos, PDFs)"
   value       = module.s3_media.bucket_name
 }
+
+# SES
+output "ses_domain_verified" {
+  description = "Whether the SES domain identity has been verified"
+  value       = var.domain_name != "" ? "verified" : "not configured"
+}
+
+output "ses_sender_address" {
+  description = "The sender email address used for transactional emails"
+  value       = var.smtp_from
+}

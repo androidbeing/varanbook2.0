@@ -305,6 +305,88 @@
         </v-card>
       </v-col>
 
+      <!-- ── Registration Link ────────────────────────────────────────── -->
+      <v-col cols="12">
+        <v-card rounded="xl" class="mb-4">
+          <v-card-title class="pa-5 pb-2 text-subtitle-1 font-weight-semibold">
+            <v-icon class="mr-2" size="20">mdi-link-variant</v-icon>Registration Link
+          </v-card-title>
+          <v-card-text class="pa-5 pt-0">
+            <p class="text-body-2 text-medium-emphasis mb-4">
+              Enable self-registration so members can register themselves via a shareable link.
+              Share this link in WhatsApp groups or communities.
+            </p>
+
+            <v-switch
+              v-model="selfRegEnabled"
+              color="primary"
+              :loading="togglingSelfReg"
+              hide-details
+              @update:model-value="toggleSelfRegistration"
+            >
+              <template #label>
+                <div>
+                  <span class="font-weight-medium">Enable Self-Registration</span>
+                  <p class="text-caption text-medium-emphasis mb-0">
+                    When enabled, anyone with this link can create an account under your centre.
+                  </p>
+                </div>
+              </template>
+            </v-switch>
+
+            <v-expand-transition>
+              <div v-if="selfRegEnabled && selfRegSlug" class="mt-4">
+                <v-text-field
+                  :model-value="joinUrl"
+                  label="Shareable Registration Link"
+                  variant="outlined"
+                  density="compact"
+                  readonly
+                  prepend-inner-icon="mdi-link"
+                  class="mb-2"
+                >
+                  <template #append-inner>
+                    <v-tooltip text="Copy link" location="top">
+                      <template #activator="{ props: tp }">
+                        <v-btn
+                          v-bind="tp"
+                          icon="mdi-content-copy"
+                          variant="text"
+                          size="small"
+                          @click="copyJoinUrl"
+                        />
+                      </template>
+                    </v-tooltip>
+                  </template>
+                </v-text-field>
+
+                <div class="d-flex ga-2 flex-wrap">
+                  <v-btn
+                    color="green"
+                    variant="tonal"
+                    prepend-icon="mdi-whatsapp"
+                    size="small"
+                    :href="whatsappShareUrl"
+                    target="_blank"
+                  >
+                    Share on WhatsApp
+                  </v-btn>
+                  <v-btn
+                    color="primary"
+                    variant="tonal"
+                    prepend-icon="mdi-content-copy"
+                    size="small"
+                    @click="copyJoinUrl"
+                  >
+                    Copy Link
+                  </v-btn>
+                </div>
+              </div>
+            </v-expand-transition>
+          </v-card-text>
+        </v-card>
+      </v-col>
+
       <!-- ── Caste Master ─────────────────────────────────────────────── -->
       <v-col cols="12">
         <v-card rounded="xl" class="mb-4">
@@ -594,6 +676,56 @@ async function uploadUpiQr(e: Event) {
   }
 }
 
+// ── Self-Registration Link ────────────────────────────────────────────────────
+const selfRegEnabled = ref(false)
+const togglingSelfReg = ref(false)
+const selfRegSlug = ref<string | null>(null)
+
+const joinUrl = computed(() =>
+  selfRegSlug.value ? `${window.location.origin}/join/${selfRegSlug.value}` : '',
+)
+const whatsappShareUrl = computed(() => {
+  const text = `Register here: ${joinUrl.value}`
+  return `https://wa.me/?text=${encodeURIComponent(text)}`
+})
+
+async function loadSelfRegistrationStatus() {
+  try {
+    const { data } = await client.get('/self-registration/status')
+    selfRegEnabled.value = data.enabled
+    selfRegSlug.value = data.join_url_slug ?? null
+  } catch {
+    // Ignore – feature might not be available
+  }
+}
+
+async function toggleSelfRegistration(value: boolean | null) {
+  const enabled = value ?? false
+  togglingSelfReg.value = true
+  try {
+    const { data } = await client.put('/self-registration/status', { enabled })
+    selfRegEnabled.value = data.enabled
+    selfRegSlug.value = data.join_url_slug ?? null
+    showSnack(data.enabled ? 'Self-registration enabled' : 'Self-registration disabled')
+  } catch (e: any) {
+    // Revert on failure
+    selfRegEnabled.value = !enabled
+    const detail = e?.response?.data?.detail
+    showSnack(typeof detail === 'string' ? detail : 'Failed to toggle self-registration', 'error')
+  } finally {
+    togglingSelfReg.value = false
+  }
+}
+
+async function copyJoinUrl() {
+  try {
+    await navigator.clipboard.writeText(joinUrl.value)
+    showSnack('Link copied to clipboard!')
+  } catch {
+    showSnack('Failed to copy link', 'error')
+  }
+}
+
 // ── Caste Master ──────────────────────────────────────────────────────────────
 const tenantCastes = ref<string[]>([])
 const loadingCastes = ref(false)
@@ -664,6 +796,7 @@ onMounted(() => {
   profileFields.value.phone = (auth.user as any)?.phone ?? ''
   refreshAvatarUrl()
   loadPaymentInfo()
+  loadSelfRegistrationStatus()
   loadCastes()
 })
 
