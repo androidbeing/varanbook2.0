@@ -55,6 +55,13 @@ class Settings(BaseSettings):
     SMTP_FROM: str = "noreply@example.com"
     APP_FRONTEND_URL: str = "http://localhost:5173"
 
+    # ── Firebase Phone Auth (OTP verification) ────────────────────────────────
+    # Set FIREBASE_OTP_ENABLED=true in production to enforce phone OTP.
+    # FIREBASE_SERVICE_ACCOUNT_JSON: paste the full service account JSON as a
+    # single-line string, OR leave empty to use Application Default Credentials.
+    FIREBASE_OTP_ENABLED: bool = False
+    FIREBASE_SERVICE_ACCOUNT_JSON: str = ""
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

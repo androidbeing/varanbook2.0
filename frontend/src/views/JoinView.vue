@@ -90,17 +90,83 @@
                       autocomplete="email"
                     />
 
-                    <v-text-field
-                      v-model="form.phone"
-                      label="Phone (optional)"
-                      prepend-inner-icon="mdi-phone"
-                      variant="outlined"
-                      density="comfortable"
-                      :rules="[rules.optionalPhone]"
-                      class="mb-3"
-                      placeholder="+919876543210"
-                      autocomplete="tel"
-                    />
+                    <!-- Phone + OTP block -->
+                    <div class="mb-3">
+                      <v-text-field
+                        v-model="form.phone"
+                        label="Mobile Number"
+                        prepend-inner-icon="mdi-phone"
+                        variant="outlined"
+                        density="comfortable"
+                        :rules="[rules.required, rules.phone]"
+                        placeholder="+919876543210"
+                        autocomplete="tel"
+                        :disabled="requiresPhoneOtp && phoneVerified"
+                        :append-inner-icon="requiresPhoneOtp && phoneVerified ? 'mdi-check-circle' : undefined"
+                        :color="requiresPhoneOtp && phoneVerified ? 'success' : undefined"
+                        hint="Include country code, e.g. +91 for India"
+                        persistent-hint
+                      />
+
+                      <!-- OTP actions -->
+                      <div v-if="requiresPhoneOtp && !phoneVerified" class="mt-2">
+                        <div v-if="!otpSent">
+                          <!-- reCAPTCHA container (invisible) -->
+                          <div id="recaptcha-container" />
+                          <v-btn
+                            variant="tonal"
+                            color="primary"
+                            size="small"
+                            :loading="sendingOtp"
+                            :disabled="!isPhoneValid"
+                            @click="sendOtp"
+                          >
+                            Send OTP
+                          </v-btn>
+                        </div>
+
+                        <div v-else class="d-flex align-center gap-2 mt-1">
+                          <v-text-field
+                            v-model="otpCode"
+                            label="Enter OTP"
+                            prepend-inner-icon="mdi-numeric"
+                            variant="outlined"
+                            density="compact"
+                            maxlength="6"
+                            style="max-width: 180px"
+                            :rules="[rules.required]"
+                            hide-details
+                          />
+                          <v-btn
+                            color="primary"
+                            size="small"
+                            :loading="verifyingOtp"
+                            @click="verifyOtp"
+                          >
+                            Verify
+                          </v-btn>
+                          <v-btn
+                            variant="text"
+                            size="small"
+                            color="grey"
+                            @click="resetOtp"
+                          >
+                            Change
+                          </v-btn>
+                        </div>
+
+                        <p v-if="otpError" class="text-caption text-error mt-1">{{ otpError }}</p>
+                      </div>
+
+                      <p v-else-if="requiresPhoneOtp" class="text-caption text-success mt-1">
+                        <v-icon size="14" color="success">mdi-check</v-icon>
+                        Mobile number verified
+                      </p>
+
+                      <p v-else class="text-caption text-medium-emphasis mt-1">
+                        Phone OTP verification is disabled in this environment.
+                      </p>
+                    </div>
 
                     <v-select
                       v-model="form.gender"
@@ -147,10 +213,14 @@
                       size="large"
                       block
                       :loading="submitting"
-                      :disabled="!valid"
+                      :disabled="!valid || (requiresPhoneOtp && !phoneVerified)"
                     >
                       Create Account
                     </v-btn>
+
+                    <p v-if="requiresPhoneOtp && !phoneVerified" class="text-caption text-medium-emphasis text-center mt-2">
+                      Please verify your mobile number before submitting
+                    </p>
                   </v-form>
 
                   <div class="text-center mt-6">
@@ -170,15 +240,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import {
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  type ConfirmationResult,
+} from 'firebase/auth'
+import { getAuth } from 'firebase/auth'
+import { firebaseApp } from '@/plugins/firebase'
 import { publicApi } from '@/api/public'
 import type { TenantPublicInfo } from '@/types'
 
 const route = useRoute()
 const slug = route.params.slug as string
+const auth = getAuth(firebaseApp)
 
-// State
+// ── Page state ───────────────────────────────────────────────────────────────
 const loading = ref(true)
 const notFound = ref(false)
 const tenantInfo = ref<TenantPublicInfo | null>(null)
@@ -191,6 +269,18 @@ const valid = ref(false)
 const showPwd = ref(false)
 const confirmPassword = ref('')
 
+// ── OTP state ────────────────────────────────────────────────────────────────
+const otpSent = ref(false)
+const sendingOtp = ref(false)
+const verifyingOtp = ref(false)
+const otpCode = ref('')
+const otpError = ref('')
+const phoneVerified = ref(false)
+const firebaseIdToken = ref<string | null>(null)
+let confirmationResult: ConfirmationResult | null = null
+let recaptchaVerifier: RecaptchaVerifier | null = null
+
+// ── Form data ────────────────────────────────────────────────────────────────
 const form = ref({
   full_name: '',
   email: '',
@@ -199,13 +289,17 @@ const form = ref({
   password: '',
 })
 
-// Validation rules
+// ── Computed ─────────────────────────────────────────────────────────────────
+const isPhoneValid = computed(() => /^\+[1-9]\d{6,14}$/.test(form.value.phone))
+const requiresPhoneOtp = computed(() => tenantInfo.value?.phone_otp_enabled ?? false)
+
+// ── Validation rules ─────────────────────────────────────────────────────────
 const rules = {
   required: (v: string) => !!v || 'Required',
   minLen: (n: number) => (v: string) => v.length >= n || `Min ${n} characters`,
   email: (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Invalid email',
-  optionalPhone: (v: string) =>
-    !v || /^\+[1-9]\d{6,14}$/.test(v) || 'E.164 format required, e.g. +919876543210',
+  phone: (v: string) =>
+    /^\+[1-9]\d{6,14}$/.test(v) || 'E.164 format required, e.g. +919876543210',
   password: (v: string) => {
     if (!v || v.length < 8) return 'Min 8 characters'
     if (!/[A-Z]/.test(v)) return 'Need at least one uppercase letter'
@@ -217,20 +311,31 @@ const rules = {
   match: (v: string) => v === form.value.password || 'Passwords do not match',
 }
 
-// Load tenant info
+function getOtpErrorMessage(err: any): string {
+  const code = err?.code as string | undefined
+  if (code === 'auth/billing-not-enabled') {
+    return 'Phone OTP is not available for the current Firebase project. Enable billing for Firebase phone authentication or turn off FIREBASE_OTP_ENABLED on the backend for this environment.'
+  }
+  if (code === 'auth/invalid-phone-number') {
+    return 'Invalid phone number. Use E.164 format, for example +919876543210.'
+  }
+  if (code === 'auth/too-many-requests') {
+    return 'Too many OTP attempts. Wait a moment and try again.'
+  }
+  return err?.message ?? 'Failed to send OTP. Check the phone number and try again.'
+}
+
+// ── Load tenant info ─────────────────────────────────────────────────────────
 onMounted(async () => {
   try {
     tenantInfo.value = await publicApi.getTenant(slug)
-    // Resolve logo URL if present
     if (tenantInfo.value.logo_key) {
       try {
-        // Use the public-friendly presign endpoint or build S3 URL
-        // For now, we'll try to get a presigned URL via the API
         const { filesApi } = await import('@/api/profiles')
         const { url } = await filesApi.presignGet(tenantInfo.value.logo_key)
         logoUrl.value = url
       } catch {
-        // Logo not accessible without auth — that's fine, skip it
+        // Logo not accessible without auth — skip
       }
     }
   } catch {
@@ -240,10 +345,68 @@ onMounted(async () => {
   }
 })
 
-// Submit registration
+// ── OTP: send ────────────────────────────────────────────────────────────────
+async function sendOtp() {
+  if (!isPhoneValid.value) return
+  otpError.value = ''
+  sendingOtp.value = true
+  try {
+    // Always clear any existing instance before creating a fresh one.
+    // Reusing a verifier after signInWithPhoneNumber causes
+    // "reCAPTCHA has already been rendered in this element".
+    recaptchaVerifier?.clear()
+    recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      size: 'invisible',
+    })
+    confirmationResult = await signInWithPhoneNumber(
+      auth,
+      form.value.phone,
+      recaptchaVerifier,
+    )
+    otpSent.value = true
+  } catch (err: any) {
+    otpError.value = getOtpErrorMessage(err)
+    // Reset reCAPTCHA so it can be tried again
+    recaptchaVerifier?.clear()
+    recaptchaVerifier = null
+  } finally {
+    sendingOtp.value = false
+  }
+}
+
+// ── OTP: verify ──────────────────────────────────────────────────────────────
+async function verifyOtp() {
+  if (!confirmationResult || !otpCode.value) return
+  otpError.value = ''
+  verifyingOtp.value = true
+  try {
+    const credential = await confirmationResult.confirm(otpCode.value)
+    firebaseIdToken.value = await credential.user.getIdToken()
+    phoneVerified.value = true
+    otpSent.value = false
+  } catch (err: any) {
+    otpError.value = err?.message ?? 'Invalid OTP. Please try again.'
+  } finally {
+    verifyingOtp.value = false
+  }
+}
+
+// ── OTP: reset (change number) ───────────────────────────────────────────────
+function resetOtp() {
+  otpSent.value = false
+  otpCode.value = ''
+  otpError.value = ''
+  phoneVerified.value = false
+  firebaseIdToken.value = null
+  confirmationResult = null
+  recaptchaVerifier?.clear()
+  recaptchaVerifier = null
+}
+
+// ── Submit registration ───────────────────────────────────────────────────────
 async function handleRegister() {
   const { valid: isValid } = await formRef.value.validate()
-  if (!isValid) return
+  if (!isValid || !phoneVerified.value) return
 
   submitting.value = true
   errorMsg.value = ''
@@ -251,9 +414,10 @@ async function handleRegister() {
     await publicApi.register(slug, {
       full_name: form.value.full_name,
       email: form.value.email,
-      phone: form.value.phone || undefined,
+      phone: form.value.phone,
       gender: form.value.gender as 'male' | 'female',
       password: form.value.password,
+      phone_firebase_token: firebaseIdToken.value ?? undefined,
     })
     registered.value = true
   } catch (err: any) {

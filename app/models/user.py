@@ -59,8 +59,8 @@ class User(Base):
     )
 
     # ── Credentials ──────────────────────────────────────────────────────────
-    email: Mapped[str] = mapped_column(
-        String(320), unique=True, nullable=False, index=True
+    email: Mapped[str | None] = mapped_column(
+        String(320), unique=True, nullable=True, index=True
     )
     hashed_password: Mapped[str] = mapped_column(String(1024), nullable=False)
 
@@ -77,6 +77,9 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     email_verified_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    phone_verified_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
 
@@ -109,4 +112,5 @@ class User(Base):
     )
 
     def __repr__(self) -> str:
-        return f"<User email={self.email} role={self.role}>"
+        identifier = self.email or self.phone or str(self.id)
+        return f"<User identifier={identifier!r} role={self.role}>"

@@ -13,7 +13,7 @@ import uuid
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
 
 from app.models.profile import Gender
 from app.models.user import UserRole
@@ -95,6 +95,26 @@ class PasswordResetRequest(BaseModel):
     email: EmailStr
 
 
+class ForgotPasswordPhoneRequest(BaseModel):
+    """POST /auth/forgot-password-phone – verify phone via OTP then return a reset token."""
+
+    phone: str = Field(..., examples=["+919876543210"])
+    phone_firebase_token: str = Field(
+        ...,
+        description="Firebase ID token from phone OTP verification",
+    )
+
+
+class ForgotPasswordPhoneResponse(BaseModel):
+    """Reset token returned after successful phone OTP verification.
+
+    The frontend should immediately navigate to /reset-password?token=<reset_token>.
+    The token expires in 1 hour.
+    """
+
+    reset_token: str
+
+
 class PasswordResetConfirm(BaseModel):
     """POST /auth/reset-password – set new password with token."""
 
@@ -105,6 +125,30 @@ class PasswordResetConfirm(BaseModel):
     @classmethod
     def strong_new_password(cls, v: str) -> str:
         return _check_password(v)
+
+
+class OTPLoginRequest(BaseModel):
+    """POST /auth/login-otp – sign in using Firebase phone OTP (no password needed).
+
+    The frontend uses the Firebase JS SDK to send an SMS OTP and, on correct
+    entry, receives a Firebase ID token.  That token is posted here along with
+    the phone number.  The backend verifies the token and issues a JWT pair.
+    When FIREBASE_OTP_ENABLED=False (dev mode) token verification is skipped.
+    """
+
+    phone: str = Field(..., examples=["+919876543210"])
+    phone_firebase_token: str = Field(
+        ...,
+        description="Firebase ID token from phone OTP verification",
+    )
+
+    @field_validator("phone")
+    @classmethod
+    def phone_must_be_e164(cls, v: str) -> str:
+        import re
+        if not re.match(r"^\+[1-9]\d{6,14}$", v):
+            raise ValueError("Phone number must be in E.164 format, e.g. +919876543210")
+        return v
 
 
 class RefreshRequest(BaseModel):
@@ -120,20 +164,33 @@ class LogoutRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    email: str  # plain str — no RFC validation on login; looked up as-is after lowercasing
+    """POST /auth/login – supports both email+password and phone+password."""
+
+    email: str | None = None  # lowercased after validation
+    phone: str | None = Field(
+        None,
+        pattern=r"^\+?[1-9]\d{6,14}$",
+        examples=["+919876543210"],
+    )
     password: str
+
+    @model_validator(mode="after")
+    def requires_email_or_phone(self) -> "LoginRequest":
+        if not self.email and not self.phone:
+            raise ValueError("Provide either email or phone to log in.")
+        return self
 
     @field_validator("email")
     @classmethod
-    def normalise_email(cls, v: str) -> str:
-        return v.strip().lower()
+    def normalise_email(cls, v: str | None) -> str | None:
+        return v.strip().lower() if v else None
 
 
 # ── Response schemas ───────────────────────────────────────────────────────────
 class UserRead(BaseModel):
     id: uuid.UUID
     tenant_id: uuid.UUID | None
-    email: str
+    email: str | None
     full_name: str
     phone: str | None
     role: UserRole
@@ -165,17 +222,28 @@ class UserList(BaseModel):
 # ── Member onboarding schemas ──────────────────────────────────────────────────
 
 class MemberOnboardRequest(BaseModel):
-    """Minimal info required for admin-initiated member onboarding."""
+    """Minimal info required for admin-initiated member onboarding.
+
+    Either email or phone (or both) must be provided.
+    When only phone is given no invite email is sent; the temp_password is
+    returned in the response body and the admin should share it directly.
+    """
 
     full_name: str = Field(..., min_length=2, max_length=200)
-    email: EmailStr
+    email: EmailStr | None = None
     phone: str | None = Field(None, pattern=r"^\+?[1-9]\d{6,14}$")
     gender: Gender  # required — set by admin at onboarding and locked for member editing
 
+    @model_validator(mode="after")
+    def at_least_one_contact(self) -> "MemberOnboardRequest":
+        if not self.email and not self.phone:
+            raise ValueError("Provide at least one of email or phone.")
+        return self
+
     @field_validator("email")
     @classmethod
-    def normalise_email(cls, v: str) -> str:
-        return v.strip().lower()
+    def normalise_email(cls, v: EmailStr | None) -> str | None:
+        return v.strip().lower() if v else None
 
 
 class MemberOnboardResponse(BaseModel):

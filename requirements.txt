@@ -46,5 +46,8 @@ limits==3.10.1                  # dependency of slowapi
 # ── Email (SMTP async) ────────────────────────────────────────────────────────
 aiosmtplib==3.0.1               # async SMTP client (SES SMTP endpoint)
 
+# ── Firebase Admin (phone OTP verification) ───────────────────────────────────
+firebase-admin==6.5.0           # verify Firebase ID tokens (phone auth)
+
 # ── Lambda ASGI adapter ───────────────────────────────────────────────────────
 mangum==0.17.0                  # AWS Lambda + API Gateway → ASGI bridge

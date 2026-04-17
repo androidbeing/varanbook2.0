@@ -49,10 +49,13 @@ from app.schemas.user import (
     AdminOnboardResponse,
     BulkOnboardResponse,
     BulkOnboardRow,
+    ForgotPasswordPhoneRequest,
+    ForgotPasswordPhoneResponse,
     LoginRequest,
     LogoutRequest,
     MemberOnboardRequest,
     MemberOnboardResponse,
+    OTPLoginRequest,
     PasswordChange,
     PasswordResetConfirm,
     PasswordResetRequest,
@@ -96,13 +99,19 @@ async def login(
     request: Request,
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> TokenResponse:
-    result = await db.execute(
-        select(User).where(User.email == payload.email.lower())
-    )
+    # Resolve the user by whichever credential was supplied.
+    if payload.email:
+        result = await db.execute(
+            select(User).where(User.email == payload.email)
+        )
+    else:
+        result = await db.execute(
+            select(User).where(User.phone == payload.phone)
+        )
     user = result.scalar_one_or_none()
 
     if not user or not verify_password(payload.password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="Incorrect email or password.")
+        raise HTTPException(status_code=401, detail="Incorrect credentials.")
     if not user.is_active:
         raise HTTPException(status_code=403, detail="Account is deactivated.")
 
@@ -112,6 +121,71 @@ async def login(
     raw_refresh = create_refresh_token(user.id, user.tenant_id, user.role.value)
 
     # Persist hashed refresh token for later verification / rotation
+    expires_at = datetime.now(tz=timezone.utc) + timedelta(
+        minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES
+        if hasattr(settings, "REFRESH_TOKEN_EXPIRE_MINUTES")
+        else 60 * 24 * 7
+    )
+    db.add(
+        RefreshToken(
+            user_id=user.id,
+            token_hash=_sha256(raw_refresh),
+            device_info=request.headers.get("user-agent", "")[:512],
+            expires_at=expires_at,
+        )
+    )
+    await db.flush()
+
+    return TokenResponse(
+        access_token=access,
+        refresh_token=raw_refresh,
+        expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+    )
+
+
+@auth_router.post(
+    "/login-otp",
+    response_model=TokenResponse,
+    summary="Sign in via Firebase phone OTP (no password required)",
+)
+async def login_otp(
+    payload: OTPLoginRequest,
+    request: Request,
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> TokenResponse:
+    """
+    Phone OTP login – two steps in one:
+
+    1. Verify the Firebase phone OTP token (proves the caller owns the phone).
+    2. Look up the active user account by verified phone number.
+    3. Issue access + refresh token pair (same as password login).
+
+    When FIREBASE_OTP_ENABLED=False (dev mode) token verification is skipped
+    and the claimed phone is trusted directly – never use in production.
+    """
+    try:
+        from app.services.firebase import verify_phone_token
+        verified_phone = verify_phone_token(payload.phone_firebase_token, payload.phone)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+
+    result = await db.execute(
+        select(User).where(User.phone == verified_phone, User.is_active.is_(True))
+    )
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="No active account found for this phone number.",
+        )
+
+    user.last_login_at = datetime.now(tz=timezone.utc)
+    user.phone_verified_at = datetime.now(tz=timezone.utc)
+
+    access = create_access_token(user.id, user.tenant_id, user.role.value)
+    raw_refresh = create_refresh_token(user.id, user.tenant_id, user.role.value)
+
     expires_at = datetime.now(tz=timezone.utc) + timedelta(
         minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES
         if hasattr(settings, "REFRESH_TOKEN_EXPIRE_MINUTES")
@@ -241,6 +315,63 @@ async def forgot_password(
             pass  # never surface email errors to caller
 
     # Deliberate: always 204 (no content)
+
+
+@auth_router.post(
+    "/forgot-password-phone",
+    response_model=ForgotPasswordPhoneResponse,
+    summary="Request password reset via phone OTP",
+)
+async def forgot_password_phone(
+    body: ForgotPasswordPhoneRequest,
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> ForgotPasswordPhoneResponse:
+    """
+    Phone-based password reset — two steps in one:
+
+    1. Verify the Firebase phone OTP token (proves the caller owns the phone).
+    2. Look up the user by phone number.
+    3. Generate a one-time reset token and return it directly (no email needed).
+
+    The frontend should navigate to /reset-password?token=<reset_token>.
+    When FIREBASE_OTP_ENABLED=False (dev mode) token verification is skipped.
+    """
+    # Step 1 — verify Firebase OTP token
+    try:
+        from app.services.firebase import verify_phone_token
+        verified_phone = verify_phone_token(body.phone_firebase_token, body.phone)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+
+    # Step 2 — look up user by verified phone
+    result = await db.execute(
+        select(User).where(User.phone == verified_phone, User.is_active.is_(True))
+    )
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="No active account found for this phone number.",
+        )
+
+    # Step 3 — generate reset token (same flow as email-based reset)
+    raw_token = secrets.token_urlsafe(32)
+    expires_at = datetime.now(tz=timezone.utc) + timedelta(hours=1)
+    db.add(
+        PasswordResetToken(
+            user_id=user.id,
+            token_hash=_sha256(raw_token),
+            expires_at=expires_at,
+        )
+    )
+
+    # Also mark phone as verified since they just proved ownership
+    user.phone_verified_at = datetime.now(tz=timezone.utc)
+
+    await db.flush()
+
+    return ForgotPasswordPhoneResponse(reset_token=raw_token)
 
 
 @auth_router.post("/reset-password", status_code=204, summary="Confirm password reset")
@@ -434,7 +565,7 @@ async def onboard_member(
         await db.flush()
     except IntegrityError:
         await db.rollback()
-        raise HTTPException(status_code=409, detail="Email already registered.")
+        raise HTTPException(status_code=409, detail="Email or phone already registered.")
 
     await db.refresh(user)
 
@@ -453,15 +584,16 @@ async def onboard_member(
     except Exception:
         pass  # profile creation should not block the user record
 
-    # Send invite email — never fail the request if email delivery fails
-    try:
-        from app.services.email import EmailService
-        await EmailService.send_member_invite(user.email, temp_password, user.full_name)
-    except Exception as exc:
-        import logging
-        logging.getLogger(__name__).error(
-            "onboard_member_email_failed", extra={"email": user.email, "error": str(exc)}
-        )
+    # Send invite email only when an email address is available.
+    if user.email:
+        try:
+            from app.services.email import EmailService
+            await EmailService.send_member_invite(user.email, temp_password, user.full_name)
+        except Exception as exc:
+            import logging
+            logging.getLogger(__name__).error(
+                "onboard_member_email_failed", extra={"email": user.email, "error": str(exc)}
+            )
     return MemberOnboardResponse(
         user=UserRead.model_validate(user),
         temp_password=temp_password,

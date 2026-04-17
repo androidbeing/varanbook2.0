@@ -137,3 +137,72 @@ async def test_change_password_wrong_current(client: AsyncClient, make_auth_user
         headers=headers,
     )
     assert resp.status_code == 400
+
+
+# ── Phone-based login ──────────────────────────────────────────────────────────
+@pytest.mark.asyncio
+async def test_login_by_phone_success(client: AsyncClient, db, make_auth_user):
+    """A user with a phone number can log in using phone + password."""
+    user = await make_auth_user(email="phonepwd@test.com", password="Test@1234")
+    # Attach a phone number directly on the user record.
+    user.phone = "+919000000001"
+    await db.flush()
+
+    resp = await client.post(
+        "/auth/login",
+        json={"phone": "+919000000001", "password": "Test@1234"},
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "access_token" in data
+
+
+@pytest.mark.asyncio
+async def test_login_by_phone_wrong_password(client: AsyncClient, db, make_auth_user):
+    user = await make_auth_user(email="phonepwd2@test.com", password="Test@1234")
+    user.phone = "+919000000002"
+    await db.flush()
+
+    resp = await client.post(
+        "/auth/login",
+        json={"phone": "+919000000002", "password": "WrongPass!"},
+    )
+    assert resp.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_login_missing_email_and_phone(client: AsyncClient):
+    """LoginRequest with neither email nor phone must be rejected at schema level."""
+    resp = await client.post(
+        "/auth/login",
+        json={"password": "Test@1234"},
+    )
+    assert resp.status_code == 422
+
+
+# ── OTP login ──────────────────────────────────────────────────────────────────
+@pytest.mark.asyncio
+async def test_login_otp_success(client: AsyncClient, db, make_auth_user):
+    """With OTP disabled (dev mode), login-otp trusts the claimed phone directly."""
+    user = await make_auth_user(email="otplogin@test.com", password="Test@1234")
+    user.phone = "+919000000003"
+    await db.flush()
+
+    resp = await client.post(
+        "/auth/login-otp",
+        json={"phone": "+919000000003", "phone_firebase_token": "dummy-dev-token"},
+    )
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "access_token" in data
+    assert data["token_type"] == "bearer"
+
+
+@pytest.mark.asyncio
+async def test_login_otp_phone_not_found(client: AsyncClient):
+    """OTP login with an unknown phone returns 404."""
+    resp = await client.post(
+        "/auth/login-otp",
+        json={"phone": "+919999999999", "phone_firebase_token": "dummy-dev-token"},
+    )
+    assert resp.status_code == 404

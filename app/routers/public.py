@@ -10,6 +10,7 @@ Endpoints:
 """
 
 import logging
+from datetime import datetime, timezone
 from typing import Annotated
 
 import bcrypt as _bcrypt
@@ -20,6 +21,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.dependencies import require_admin
+from app.config import get_settings
 from app.database import get_db
 from app.models.profile import Profile, ProfileStatus
 from app.models.tenant import Tenant
@@ -60,7 +62,13 @@ async def get_public_tenant(
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> TenantPublicInfo:
     tenant = await _get_tenant_by_slug(slug, db)
-    return TenantPublicInfo.model_validate(tenant)
+    return TenantPublicInfo(
+        name=tenant.name,
+        slug=tenant.slug,
+        logo_key=tenant.logo_key,
+        self_registration_enabled=tenant.self_registration_enabled,
+        phone_otp_enabled=get_settings().FIREBASE_OTP_ENABLED,
+    )
 
 
 @router.post(
@@ -82,22 +90,43 @@ async def self_register(
             detail="Self-registration is currently disabled for this centre.",
         )
 
+    # ── Phone OTP verification (only when phone is provided) ───────────────────────
+    settings = get_settings()
+    phone_verified_at = None
+    if payload.phone:
+        if settings.FIREBASE_OTP_ENABLED:
+            if not payload.phone_firebase_token:
+                raise HTTPException(
+                    status_code=422,
+                    detail="phone_firebase_token is required when a phone number is provided.",
+                )
+            try:
+                from app.services.firebase import verify_phone_token
+                verify_phone_token(payload.phone_firebase_token, payload.phone)
+                phone_verified_at = datetime.now(tz=timezone.utc)
+            except ValueError as exc:
+                raise HTTPException(status_code=422, detail=str(exc))
+        else:
+            # Dev/staging: mark phone verified when OTP is disabled
+            phone_verified_at = datetime.now(tz=timezone.utc)
+
     # Create the member user
     user = User(
         tenant_id=tenant.id,
-        email=payload.email.lower(),
+        email=payload.email.lower() if payload.email else None,
         hashed_password=_hash_password(payload.password),
         full_name=payload.full_name,
         phone=payload.phone,
         role=UserRole.MEMBER,
         is_active=True,
+        phone_verified_at=phone_verified_at,
     )
     db.add(user)
     try:
         await db.flush()
     except IntegrityError:
         await db.rollback()
-        raise HTTPException(status_code=409, detail="Email already registered.")
+        raise HTTPException(status_code=409, detail="Email or phone already registered.")
 
     await db.refresh(user)
 

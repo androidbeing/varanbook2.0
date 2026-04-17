@@ -13,7 +13,7 @@ import uuid
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
 
 # ── Reusable validators ────────────────────────────────────────────────────────
 _E164_RE = re.compile(r"^\+[1-9]\d{6,14}$")
@@ -184,23 +184,47 @@ class TenantPublicInfo(BaseModel):
     slug: str
     logo_key: str | None = None
     self_registration_enabled: bool = False
+    phone_otp_enabled: bool = False
 
     model_config = {"from_attributes": True}
 
 
 class SelfRegisterRequest(BaseModel):
-    """Payload for public member self-registration via /join/<slug>."""
+    """Payload for public member self-registration via /join/<slug>.
+
+    Either email or phone (or both) must be supplied.
+    When FIREBASE_OTP_ENABLED=True, phone must be accompanied by
+    phone_firebase_token so the backend can verify OTP ownership.
+    When FIREBASE_OTP_ENABLED=False (dev mode) the token field is ignored.
+    """
 
     full_name: str = Field(..., min_length=2, max_length=200)
-    email: EmailStr
-    phone: str | None = Field(None, examples=["+919876543210"])
+    email: EmailStr | None = None
+    phone: str | None = Field(
+        None,
+        examples=["+919876543210"],
+        description="E.164 phone number. Required when authenticating via OTP.",
+    )
     gender: str = Field(..., description="male or female")
     password: str = Field(..., min_length=8, max_length=128)
+    phone_firebase_token: str | None = Field(
+        None,
+        description="Firebase ID token obtained after phone OTP verification. "
+                    "Required when phone is provided and FIREBASE_OTP_ENABLED=true.",
+    )
+
+    @model_validator(mode="after")
+    def at_least_one_contact(self) -> "SelfRegisterRequest":
+        if not self.email and not self.phone:
+            raise ValueError("At least one of email or phone must be provided.")
+        return self
 
     @field_validator("phone")
     @classmethod
     def phone_must_be_e164(cls, v: str | None) -> str | None:
-        return _validate_e164(v)
+        if v is not None and not _E164_RE.match(v):
+            raise ValueError("Phone number must be in E.164 format, e.g. +919876543210")
+        return v
 
     @field_validator("password")
     @classmethod

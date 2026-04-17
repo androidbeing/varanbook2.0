@@ -282,14 +282,18 @@ export interface TenantPublicInfo {
   slug: string
   logo_key: string | null
   self_registration_enabled: boolean
+  phone_otp_enabled: boolean
 }
 
 export interface SelfRegisterPayload {
   full_name: string
   email: string
-  phone?: string
+  /** E.164 phone number — required for OTP verification */
+  phone: string
   gender: 'male' | 'female'
   password: string
+  /** Firebase ID token from phone OTP confirmation — sent to backend for verification */
+  phone_firebase_token?: string
 }
 
 export interface SelfRegistrationStatus {

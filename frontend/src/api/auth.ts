@@ -29,4 +29,21 @@ export const authApi = {
       .post('/auth/reset-password', { token, new_password: newPassword })
       .then(() => undefined)
   },
+
+  /**
+   * Phone OTP-based password reset.
+   * Sends the verified Firebase ID token to the backend, which confirms the
+   * phone ownership and returns a one-time password reset token.
+   */
+  forgotPasswordByPhone(
+    phone: string,
+    phoneFirebaseToken: string,
+  ): Promise<{ reset_token: string }> {
+    return client
+      .post('/auth/forgot-password-phone', {
+        phone,
+        phone_firebase_token: phoneFirebaseToken,
+      })
+      .then((r) => r.data)
+  },
 }
