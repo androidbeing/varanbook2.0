@@ -348,11 +348,11 @@ const features = [
     desc: 'Define flexible membership tiers with validity tracking. Manage renewals and payments with ease.',
   },
   {
-    icon: 'mdi-account-group',
+    icon: 'mdi-star-crescent',
     color: 'teal',
     colorKey: 'teal',
-    title: 'Multi-tenant Ready',
-    desc: 'Run multiple centres or branches under one roof. Each tenant gets its own isolated data space.',
+    title: 'Built-In Horoscope',
+    desc: 'Powered by Astrosidda.in — generate and match horoscopes directly within the platform, so families get accurate Jathagam support in one place.',
   },
   {
     icon: 'mdi-shield-lock',
