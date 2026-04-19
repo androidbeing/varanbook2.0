@@ -5,16 +5,28 @@
       <v-app-bar-title>
         <div class="d-flex align-center ga-2">
           <v-icon color="primary" size="28">mdi-heart-circle</v-icon>
-          <span class="text-h5 font-weight-bold landing-brand">Varanbook</span>
+          <span class="text-body-1 text-sm-h5 font-weight-bold landing-brand">Varanbook</span>
         </div>
       </v-app-bar-title>
       <v-spacer />
+      <!-- icon-only on xs, full label on sm+ -->
       <v-btn
         color="primary"
         variant="flat"
         rounded="pill"
         size="default"
-        class="text-none font-weight-semibold px-5"
+        class="text-none font-weight-semibold d-sm-none px-3"
+        :to="{ name: 'login' }"
+        icon
+      >
+        <v-icon size="20">mdi-login</v-icon>
+      </v-btn>
+      <v-btn
+        color="primary"
+        variant="flat"
+        rounded="pill"
+        size="default"
+        class="text-none font-weight-semibold px-5 d-none d-sm-flex"
         :to="{ name: 'login' }"
       >
         <v-icon start size="18">mdi-login</v-icon>

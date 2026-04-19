@@ -51,6 +51,22 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function loginOtp(phone: string, phoneFirebaseToken: string) {
+    loading.value = true
+    error.value = null
+    try {
+      const tokens = await authApi.loginOtp(phone, phoneFirebaseToken)
+      _persist(tokens.access_token, tokens.refresh_token)
+      await fetchMe()
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'OTP login failed.'
+      error.value = msg
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+
   async function fetchMe() {
     if (!accessToken.value) return
     try {
@@ -85,6 +101,7 @@ export const useAuthStore = defineStore('auth', () => {
     isSuperAdmin,
     isAdmin,
     login,
+    loginOtp,
     logout,
     fetchMe,
   }

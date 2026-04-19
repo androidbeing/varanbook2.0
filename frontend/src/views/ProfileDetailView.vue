@@ -14,65 +14,88 @@
       </v-btn>
 
       <!-- ── Hero card ──────────────────────────────────────────────────── -->
-      <v-card rounded="xl" class="mb-5">
+      <v-card rounded="xl" class="mb-5 hero-card" elevation="2">
+        <!-- Gender accent bar -->
+        <div class="hero-accent" :class="profile.gender === 'female' ? 'hero-accent-female' : 'hero-accent-male'" />
+
         <v-row no-gutters>
+          <!-- Photo column -->
           <v-col cols="12" sm="4" md="3">
-            <div style="height:280px;overflow:hidden;position:relative;" class="rounded-ts-xl rounded-bs-xl">
-              <!-- Real photo when visible and fetched -->
+            <div class="hero-photo-wrap">
               <v-img
                 v-if="heroPhotoUrl"
                 :src="heroPhotoUrl"
-                height="280"
                 cover
                 position="top center"
-                class="rounded-ts-xl rounded-bs-xl"
+                class="hero-photo"
               />
-              <!-- Placeholder when photo is hidden by privacy or not uploaded -->
-              <div
-                v-else
-                class="d-flex flex-column align-center justify-center bg-grey-lighten-3 rounded-ts-xl rounded-bs-xl"
-                style="height:280px"
-              >
-                <v-icon size="96" color="grey-lighten-1">mdi-account-circle</v-icon>
-                <span
-                  v-if="!canViewPhotos"
-                  class="text-caption text-medium-emphasis mt-2"
-                >
-                  Photo is private
-                </span>
+              <div v-else class="hero-photo-placeholder d-flex flex-column align-center justify-center">
+                <v-icon size="88" :color="profile.gender === 'female' ? 'pink-lighten-3' : 'blue-lighten-3'">
+                  mdi-account-circle
+                </v-icon>
+                <span v-if="!canViewPhotos" class="text-caption text-medium-emphasis mt-2">Photo is private</span>
               </div>
             </div>
           </v-col>
-          <v-col cols="12" sm="8" md="9" class="d-flex flex-column justify-center pa-6">
+
+          <!-- Info column -->
+          <v-col cols="12" sm="8" md="9" class="pa-5 pa-md-7 d-flex flex-column justify-center">
+            <!-- Name + status + admin toggle -->
             <div class="d-flex align-center ga-2 flex-wrap mb-1">
               <h2 class="text-h5 font-weight-bold">
                 {{ profile.full_name || (profile.gender === 'male' ? 'Groom Profile' : 'Bride Profile') }}
               </h2>
-              <v-chip :color="profile.status === 'active' ? 'success' : profile.status === 'suspended' ? 'error' : profile.status === 'matched' ? 'pink' : 'warning'" size="small">
+              <v-chip
+                :color="profile.status === 'active' ? 'success' : profile.status === 'suspended' ? 'error' : profile.status === 'matched' ? 'pink' : 'warning'"
+                size="small" variant="flat"
+              >
                 {{ profile.status === 'matched' ? 'Married' : profile.status }}
               </v-chip>
               <v-switch
                 v-if="(auth.isAdmin || auth.isSuperAdmin) && profile.status !== 'matched'"
                 :model-value="profile.status === 'active'"
-                color="success"
-                density="compact"
-                hide-details
-                :loading="togglingStatus"
-                class="ml-2 flex-grow-0"
+                color="success" density="compact" hide-details
+                :loading="togglingStatus" class="ml-1 flex-grow-0"
                 @update:model-value="(val: boolean | null) => toggleStatus(val ?? false)"
               />
             </div>
+
+            <!-- Sub-headline -->
             <p class="text-body-1 text-medium-emphasis mb-4">
               {{ ageLabel }}
-              <span v-if="profile.profession"> &bull; {{ profile.profession }}</span>
-              <span v-if="profile.city"> &bull; {{ profile.city }}<span v-if="profile.state">, {{ profile.state }}</span></span>
+              <span v-if="profile.profession"> · {{ profile.profession }}</span>
+              <span v-if="profile.city"> · {{ profile.city }}<span v-if="profile.state">, {{ profile.state }}</span></span>
             </p>
-            <v-row dense>
-              <v-col v-for="s in heroStats" :key="s.label" cols="6" sm="3">
-                <p class="text-caption text-medium-emphasis mb-0">{{ s.label }}</p>
-                <p class="text-body-2 font-weight-medium mb-0">{{ s.value || '—' }}</p>
-              </v-col>
-            </v-row>
+
+            <!-- Stats chips grid -->
+            <div class="hero-stats-grid mb-4">
+              <div v-for="s in heroStats" :key="s.label" class="hero-stat-pill">
+                <span class="hero-stat-label">{{ s.label }}</span>
+                <span class="hero-stat-value">{{ s.value || '—' }}</span>
+              </div>
+            </div>
+
+            <!-- Horoscope quick badges (if visible) -->
+            <div
+              v-if="(canBypassPrivacy || profile.birth_visible) && (profile.rashi || profile.star || profile.dhosam)"
+              class="d-flex flex-wrap ga-2"
+            >
+              <v-chip v-if="profile.rashi" size="small" color="deep-purple" variant="tonal" prepend-icon="mdi-zodiac-aries">
+                {{ fmtLabel(profile.rashi) }}
+              </v-chip>
+              <v-chip v-if="profile.star" size="small" color="indigo" variant="tonal" prepend-icon="mdi-star-four-points">
+                {{ fmtLabel(profile.star) }}
+              </v-chip>
+              <v-chip
+                v-if="profile.dhosam"
+                size="small"
+                :color="profile.dhosam === 'none' ? 'success' : 'orange-darken-1'"
+                variant="tonal"
+                prepend-icon="mdi-alert-circle-outline"
+              >
+                {{ fmtLabel(profile.dhosam) }}
+              </v-chip>
+            </div>
           </v-col>
         </v-row>
       </v-card>
@@ -126,12 +149,13 @@
       </v-alert>
 
       <!-- ── Sections ───────────────────────────────────────────────────── -->
-      <v-expansion-panels multiple variant="accordion" rounded="xl">
+      <v-expansion-panels v-model="openPanels" multiple variant="accordion" rounded="xl">
 
         <!-- 1. Personal -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon start>mdi-account</v-icon>Personal Details
+            <v-icon start color="primary">mdi-account</v-icon>
+            <span class="font-weight-semibold">Personal Details</span>
             <v-chip v-if="!canBypassPrivacy && !profile.personal_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -144,7 +168,8 @@
         <!-- 2. Religious & Cultural -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon start>mdi-om</v-icon>Religious &amp; Cultural
+            <v-icon start color="orange-darken-2">mdi-om</v-icon>
+            <span class="font-weight-semibold">Religious &amp; Cultural</span>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
             <div class="detail-grid">
@@ -156,7 +181,8 @@
         <!-- 3. Birth & Horoscope -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon start>mdi-star-crescent</v-icon>Birth &amp; Horoscope
+            <v-icon start color="deep-purple">mdi-star-crescent</v-icon>
+            <span class="font-weight-semibold">Birth &amp; Horoscope</span>
             <v-chip v-if="!canBypassPrivacy && !profile.birth_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -206,7 +232,8 @@
         <!-- 4. Professional -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon start>mdi-briefcase</v-icon>Professional Details
+            <v-icon start color="teal">mdi-briefcase</v-icon>
+            <span class="font-weight-semibold">Professional Details</span>
             <v-chip v-if="!canBypassPrivacy && !profile.professional_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -222,7 +249,8 @@
         <!-- 5. Location -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon start>mdi-map-marker</v-icon>Location
+            <v-icon start color="blue-darken-2">mdi-map-marker</v-icon>
+            <span class="font-weight-semibold">Location</span>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
             <div class="detail-grid">
@@ -234,7 +262,8 @@
         <!-- 6. Family -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon start>mdi-account-group</v-icon>Family Details
+            <v-icon start color="orange-darken-2">mdi-home-heart</v-icon>
+            <span class="font-weight-semibold">Family Details</span>
             <v-chip v-if="!canBypassPrivacy && !profile.family_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -250,23 +279,44 @@
         <!-- 7. Contact -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon start>mdi-phone</v-icon>Contact Details
+            <v-icon start color="green-darken-1">mdi-phone</v-icon>
+            <span class="font-weight-semibold">Contact Details</span>
             <v-chip v-if="!canBypassPrivacy && !profile.contact_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
             <v-alert v-if="!canBypassPrivacy && !profile.contact_visible" type="warning" variant="tonal" density="compact" class="mb-4">
               Contact details are kept private by this member.
             </v-alert>
-            <div v-else class="detail-grid">
-              <detail-cell v-for="r in contactRows" :key="r.label" :row="r" />
-            </div>
+            <template v-else>
+              <div class="d-flex flex-wrap ga-3">
+                <v-btn
+                  v-if="profile.mobile"
+                  :href="`tel:${profile.mobile}`"
+                  color="primary" variant="tonal" rounded="pill" size="small"
+                  prepend-icon="mdi-phone"
+                >
+                  {{ profile.mobile }}
+                </v-btn>
+                <v-btn
+                  v-if="profile.whatsapp"
+                  :href="`https://wa.me/${profile.whatsapp?.replace(/[^0-9]/g,'')}`"
+                  target="_blank" rel="noopener"
+                  color="success" variant="tonal" rounded="pill" size="small"
+                  prepend-icon="mdi-whatsapp"
+                >
+                  {{ profile.whatsapp }}
+                </v-btn>
+                <p v-if="!profile.mobile && !profile.whatsapp" class="text-body-2 text-medium-emphasis font-italic mb-0">No contact details added.</p>
+              </div>
+            </template>
           </v-expansion-panel-text>
         </v-expansion-panel>
 
         <!-- 8. Partner Preferences -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon start>mdi-heart-search</v-icon>Partner Preferences
+            <v-icon start color="pink-darken-1">mdi-heart-search</v-icon>
+            <span class="font-weight-semibold">Partner Preferences</span>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
             <div v-if="prefPending" class="py-4 text-center">
@@ -318,7 +368,8 @@
         <!-- 9. Photos -->
         <v-expansion-panel>
           <v-expansion-panel-title>
-            <v-icon start>mdi-image-multiple</v-icon>Photos
+            <v-icon start color="pink-darken-2">mdi-image-multiple</v-icon>
+            <span class="font-weight-semibold">Photos</span>
             <v-chip v-if="!canBypassPrivacy && !profile.photo_visible" size="x-small" color="warning" class="ml-2">Private</v-chip>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -461,6 +512,9 @@ const props = defineProps<{ id: string }>()
 const router = useRouter()
 const auth = useAuthStore()
 const queryClient = useQueryClient()
+
+// Open Personal Details panel by default
+const openPanels = ref<number[]>([0])
 
 // ── Admin: toggle profile status ─────────────────────────────────────────
 const togglingStatus = ref(false)
@@ -727,14 +781,6 @@ const familyRows = computed((): DetailRow[] => {
   ]
 })
 
-const contactRows = computed((): DetailRow[] => {
-  const p = profile.value!
-  return [
-    { label: 'Mobile',   value: p.mobile },
-    { label: 'WhatsApp', value: p.whatsapp },
-  ]
-})
-
 // ── Partner preference chip rows ──────────────────────────────────────────────
 const prefChipRows = computed(() => {
   const pr = pref.value
@@ -755,12 +801,64 @@ const prefChipRows = computed(() => {
 </script>
 
 <style scoped>
+/* ── Detail grid ──────────────────────────────────────────────────── */
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 16px 24px;
 }
-.detail-cell {
-  min-width: 0;
+.detail-cell { min-width: 0; }
+
+/* ── Hero card ────────────────────────────────────────────────────── */
+.hero-accent {
+  height: 5px;
+  border-radius: 12px 12px 0 0;
+}
+.hero-accent-female {
+  background: linear-gradient(90deg, #E91E63, #F06292, #CE93D8);
+}
+.hero-accent-male {
+  background: linear-gradient(90deg, #1E88E5, #42A5F5, #7B1FA2);
+}
+
+.hero-photo-wrap {
+  height: 280px;
+  overflow: hidden;
+  position: relative;
+  background: #f3f4f6;
+}
+.hero-photo {
+  width: 100%;
+  height: 280px;
+}
+.hero-photo-placeholder {
+  height: 280px;
+  background: linear-gradient(160deg, #f8f7ff 0%, #f0eeff 100%);
+}
+
+/* ── Stats chips ──────────────────────────────────────────────────── */
+.hero-stats-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.hero-stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(30, 136, 229, 0.07);
+  border: 1px solid rgba(30, 136, 229, 0.15);
+  font-size: 0.78rem;
+}
+.hero-stat-label {
+  color: #888;
+  font-weight: 500;
+}
+.hero-stat-label::after { content: ':'; }
+.hero-stat-value {
+  font-weight: 600;
+  color: #333;
 }
 </style>

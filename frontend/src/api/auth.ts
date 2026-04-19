@@ -30,6 +30,12 @@ export const authApi = {
       .then(() => undefined)
   },
 
+  loginOtp(phone: string, phoneFirebaseToken: string): Promise<AuthTokens> {
+    return client
+      .post('/auth/login-otp', { phone, phone_firebase_token: phoneFirebaseToken })
+      .then((r) => r.data)
+  },
+
   /**
    * Phone OTP-based password reset.
    * Sends the verified Firebase ID token to the backend, which confirms the

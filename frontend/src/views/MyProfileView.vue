@@ -1,6 +1,20 @@
 ﻿<template>
   <div>
-    <h1 class="text-h5 font-weight-bold mb-6">My Profile</h1>
+    <div class="d-flex align-center ga-3 mb-6">
+      <div>
+        <h1 class="text-h5 font-weight-bold mb-0">My Profile</h1>
+        <p class="text-body-2 text-medium-emphasis mb-0">Keep your profile complete to get better matches</p>
+      </div>
+      <v-spacer />
+      <v-chip
+        v-if="profileData"
+        :color="profileData.status === 'active' ? 'success' : 'warning'"
+        size="small" variant="tonal"
+      >
+        <v-icon start size="14">mdi-circle-small</v-icon>
+        {{ profileData.status ?? 'draft' }}
+      </v-chip>
+    </div>
 
     <!-- Caste-lock warning banner -->
     <v-alert
@@ -24,23 +38,31 @@
     <v-row v-else>
       <!-- -- Sidebar ------------------------------------------------------ -->
       <v-col cols="12" md="3">
-        <v-card rounded="xl" class="text-center pa-4 mb-4" elevation="2">
-          <!-- Clickable avatar � uploads profile picture -->
-          <v-tooltip text="Change profile picture" location="bottom">
-            <template #activator="{ props: tp }">
-              <v-avatar
-                v-bind="tp"
-                size="96"
-                class="mb-3 cursor-pointer"
-                color="primary"
-                style="overflow:hidden"
-                @click="avatarInput?.click()"
-              >
-                <v-img v-if="memberAvatarUrl" :src="memberAvatarUrl" cover />
-                <v-icon v-else size="56" color="white">mdi-account</v-icon>
-              </v-avatar>
-            </template>
-          </v-tooltip>
+        <v-card rounded="xl" class="text-center pa-5 mb-4" elevation="2">
+          <!-- Completion ring wraps the avatar -->
+          <div class="sidebar-avatar-wrap mx-auto mb-3">
+            <v-progress-circular
+              :model-value="profileCompletion"
+              :size="116" :width="5"
+              :color="profileCompletion === 100 ? 'success' : 'primary'"
+              class="sidebar-progress"
+            />
+            <v-tooltip text="Change profile picture" location="bottom">
+              <template #activator="{ props: tp }">
+                <v-avatar
+                  v-bind="tp"
+                  size="96"
+                  class="cursor-pointer sidebar-avatar"
+                  color="primary"
+                  style="overflow:hidden"
+                  @click="avatarInput?.click()"
+                >
+                  <v-img v-if="memberAvatarUrl" :src="memberAvatarUrl" cover />
+                  <v-icon v-else size="52" color="white">mdi-account</v-icon>
+                </v-avatar>
+              </template>
+            </v-tooltip>
+          </div>
           <input
             ref="avatarInput"
             type="file"
@@ -50,13 +72,16 @@
           />
           <div v-if="uploadingMemberAvatar" class="text-caption text-medium-emphasis mb-2">
             <v-progress-circular indeterminate size="12" width="2" color="primary" class="mr-1" />
-            Uploading�
+            Uploading...
           </div>
-          <p class="text-subtitle-1 font-weight-bold mb-1">{{ fullName || '�' }}</p>
+          <p class="text-subtitle-1 font-weight-bold mb-1">{{ fullName || 'Your Name' }}</p>
+          <div class="text-caption mb-1" :class="profileCompletion === 100 ? 'text-success' : 'text-primary'">
+            <v-icon size="13">{{ profileCompletion === 100 ? 'mdi-check-circle' : 'mdi-progress-check' }}</v-icon>
+            {{ profileCompletion }}% profile complete
+          </div>
           <v-chip
             :color="profileData?.status === 'active' ? 'success' : 'warning'"
-            size="small"
-            class="mb-3"
+            size="small" class="mb-3"
           >
             {{ profileData?.status ?? 'draft' }}
           </v-chip>
@@ -1059,6 +1084,22 @@ const { data: profileData, isPending } = useQuery({
 // -- State --------------------------------------------------------------------
 const fullName = ref('')
 const openPanels = ref([0])
+
+const profileCompletion = computed(() => {
+  const checks = [
+    !!fullName.value,
+    !!form.value.gender,
+    !!form.value.date_of_birth,
+    !!form.value.religion,
+    !!form.value.caste,
+    !!form.value.qualification,
+    !!form.value.profession,
+    !!form.value.mobile,
+    !!form.value.city,
+    !!memberAvatarUrl.value,
+  ]
+  return Math.round((checks.filter(Boolean).length / checks.length) * 100)
+})
 const avatarInput = ref<HTMLInputElement | null>(null)
 const photoInput = ref<HTMLInputElement | null>(null)
 const horoscopeFile = ref<File | null>(null)
@@ -1826,3 +1867,21 @@ const bloodGroupOptions = [
   { title: 'O-', value: 'O-' },
 ]
 </script>
+
+<style scoped>
+.sidebar-avatar-wrap {
+  position: relative;
+  width: 116px;
+  height: 116px;
+}
+.sidebar-progress {
+  position: absolute;
+  inset: 0;
+}
+.sidebar-avatar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+</style>
