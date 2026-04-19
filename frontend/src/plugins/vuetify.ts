@@ -16,8 +16,8 @@ const varanTheme = {
     warning: '#F57C00',
     info: '#0D47A1',
     success: '#2E7D32',         // Green 800 — richer success
-    surface: '#F7F9FF',         // cooler, cleaner surface
-    background: '#EDF3FF',      // soft blue background
+    surface: '#F8F7FF',         // near-white with a soft purple warmth
+    background: '#F0EEFF',      // light lavender — bridges brand blue→purple
   },
 }
 
