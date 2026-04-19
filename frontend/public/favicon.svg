@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#1E88E5"/>
+      <stop offset="100%" stop-color="#7B1FA2"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="112" ry="112" fill="url(#bg)"/>
+
+  <!-- Subtle top shine -->
+  <rect width="512" height="256" rx="112" ry="112" fill="url(#shine)"/>
+
+  <!-- Heart shape (centred, white) -->
+  <!-- Heart drawn as a path, centred at 256,272, sized ~290px wide -->
+  <path
+    d="M256 390
+       C256 390 108 295 108 192
+       C108 148 140 116 182 116
+       C210 116 234 131 256 158
+       C278 131 302 116 330 116
+       C372 116 404 148 404 192
+       C404 295 256 390 256 390 Z"
+    fill="#ffffff"
+    opacity="0.97"
+  />
+
+  <!-- Small decorative circle ring around heart (subtle) -->
+  <circle cx="256" cy="256" r="210" fill="none" stroke="#ffffff" stroke-width="8" opacity="0.12"/>
+</svg>
