@@ -256,7 +256,7 @@ class Profile(Base):
     )
     shortlists_received: Mapped[list["Shortlist"]] = relationship(  # noqa: F821
         "Shortlist", foreign_keys="Shortlist.to_profile_id",
-        back_populates="to_profile",
+        back_populates="to_profile", passive_deletes=True,
     )
 
     def __repr__(self) -> str:
