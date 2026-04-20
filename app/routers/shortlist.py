@@ -131,6 +131,17 @@ async def create_shortlist(
     db.add(entry)
     await db.flush()
     await db.refresh(entry)
+
+    # Notify the recipient — fire-and-forget
+    try:
+        from app.services.email import EmailService
+        target_user = await db.get(User, target.user_id)
+        if target_user and target_user.email:
+            sender_name = current_user.full_name or "Someone"
+            await EmailService.send_shortlist_notification(target_user.email, sender_name)
+    except Exception:
+        pass
+
     return ShortlistRead.model_validate(entry)
 
 
@@ -384,6 +395,20 @@ async def update_shortlist_status(
     entry.status = body.status
     await db.flush()
     await db.refresh(entry)
+
+    # Notify the original sender when their interest is accepted — fire-and-forget
+    if body.status == ShortlistStatus.ACCEPTED:
+        try:
+            from app.services.email import EmailService
+            from_profile = await db.get(Profile, entry.from_profile_id)
+            if from_profile:
+                sender_user = await db.get(User, from_profile.user_id)
+                if sender_user and sender_user.email:
+                    acceptor_name = current_user.full_name or "Someone"
+                    await EmailService.send_accept_notification(sender_user.email, acceptor_name)
+        except Exception:
+            pass
+
     return ShortlistRead.model_validate(entry)
 
 
