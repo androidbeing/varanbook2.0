@@ -569,6 +569,29 @@ async def onboard_member(
     if current_user.tenant_id is None:
         raise HTTPException(status_code=400, detail="Super admins must specify a tenant.")
 
+    # Pre-check for duplicate email
+    if payload.email:
+        existing = await db.scalar(select(User.id).where(User.email == payload.email.lower()))
+        if existing:
+            raise HTTPException(
+                status_code=409,
+                detail="A member with this email address is already registered.",
+            )
+
+    # Pre-check for duplicate phone (User.phone and Profile.mobile, both format variants)
+    if payload.phone:
+        phone_vars = _phone_variants(payload.phone)
+        existing = await db.scalar(select(User.id).where(User.phone.in_(phone_vars)))
+        if not existing:
+            existing = await db.scalar(
+                select(Profile.user_id).where(Profile.mobile.in_(phone_vars))
+            )
+        if existing:
+            raise HTTPException(
+                status_code=409,
+                detail="A member with this mobile number is already registered.",
+            )
+
     temp_password = secrets.token_urlsafe(12)  # 16-char URL-safe string
     user = User(
         tenant_id=current_user.tenant_id,
@@ -677,6 +700,27 @@ async def onboard_members_bulk(
                 )
             )
             continue
+
+        # Pre-check email duplicate (explicit — faster than relying on IntegrityError)
+        if await db.scalar(select(User.id).where(User.email == email)):
+            skipped += 1
+            rows.append(BulkOnboardRow(row=row_num, email=email, status="skipped",
+                                       detail="Email already registered"))
+            continue
+
+        # Pre-check phone duplicate (no DB unique constraint on phone)
+        if phone:
+            phone_vars = _phone_variants(phone)
+            phone_exists = await db.scalar(select(User.id).where(User.phone.in_(phone_vars)))
+            if not phone_exists:
+                phone_exists = await db.scalar(
+                    select(Profile.user_id).where(Profile.mobile.in_(phone_vars))
+                )
+            if phone_exists:
+                skipped += 1
+                rows.append(BulkOnboardRow(row=row_num, email=email, status="skipped",
+                                           detail="Mobile number already registered"))
+                continue
 
         temp_password = secrets.token_urlsafe(12)
         user = User(
