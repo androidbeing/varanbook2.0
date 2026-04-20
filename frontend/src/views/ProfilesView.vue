@@ -131,8 +131,8 @@ const auth = useAuthStore()
 const shortlistStore = useShortlistStore()
 const qc = useQueryClient()
 
-// Seed the shortlist store so heart icons reflect correct state
-shortlistStore.init()
+// Seed the shortlist store so heart icons reflect correct state (members only)
+if (auth.user?.role === 'member') shortlistStore.init()
 
 const snackbar = ref(false)
 const snackText = ref('')

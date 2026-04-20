@@ -468,6 +468,6 @@ watch(tab, () => {
   recvPage.value = 1
 })
 
-// Initialise shortlist store for the heart button state in Browse Profiles
-shortlistStore.init()
+// Initialise shortlist store for the heart button state in Browse Profiles (members only)
+if (auth.user?.role === 'member') shortlistStore.init()
 </script>

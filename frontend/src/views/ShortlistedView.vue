@@ -88,8 +88,8 @@ const snackbar = ref(false)
 const snackText = ref('')
 const snackColor = ref<'error' | 'success'>('success')
 
-// Ensure the shortlist store is seeded
-shortlistStore.init()
+// Ensure the shortlist store is seeded (members only)
+if (auth.user?.role === 'member') shortlistStore.init()
 
 const { data, isPending, isError } = useQuery({
   queryKey: computed(() => ['shortlisted-profiles', page.value]),
