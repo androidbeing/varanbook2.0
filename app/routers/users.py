@@ -26,7 +26,7 @@ from typing import Annotated
 import bcrypt as _bcrypt
 from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile, status
 from jose import JWTError
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -83,6 +83,15 @@ def verify_password(plain: str, hashed: str) -> bool:
 def _sha256(value: str) -> str:
     """SHA-256 hex digest – used for refresh / reset tokens (not passwords)."""
     return hashlib.sha256(value.encode()).hexdigest()
+
+
+def _phone_variants(phone: str) -> list[str]:
+    """Return both +E.164 and bare-digit forms so the DB lookup is format-agnostic.
+
+    Firebase always returns +E.164; admins may have stored numbers without the +.
+    """
+    stripped = phone.lstrip('+')
+    return [phone, stripped] if phone.startswith('+') else [phone, f"+{phone}"]
 
 
 # ── Routers ────────────────────────────────────────────────────────────────────
@@ -169,8 +178,15 @@ async def login_otp(
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc))
 
+    variants = _phone_variants(verified_phone)
     result = await db.execute(
-        select(User).where(User.phone == verified_phone, User.is_active.is_(True))
+        select(User)
+        .outerjoin(Profile, Profile.user_id == User.id)
+        .where(
+            or_(User.phone.in_(variants), Profile.mobile.in_(variants)),
+            User.is_active.is_(True),
+        )
+        .distinct()
     )
     user = result.scalar_one_or_none()
 
@@ -343,9 +359,16 @@ async def forgot_password_phone(
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc))
 
-    # Step 2 — look up user by verified phone
+    # Step 2 — look up user by verified phone (format-agnostic: +E.164 or bare digits)
+    variants = _phone_variants(verified_phone)
     result = await db.execute(
-        select(User).where(User.phone == verified_phone, User.is_active.is_(True))
+        select(User)
+        .outerjoin(Profile, Profile.user_id == User.id)
+        .where(
+            or_(User.phone.in_(variants), Profile.mobile.in_(variants)),
+            User.is_active.is_(True),
+        )
+        .distinct()
     )
     user = result.scalar_one_or_none()
 
