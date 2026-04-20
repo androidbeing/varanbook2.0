@@ -184,9 +184,9 @@ async def login_otp(
         select(User).where(
             or_(User.phone.in_(variants), User.id.in_(profile_user_ids)),
             User.is_active.is_(True),
-        )
+        ).limit(1)
     )
-    user = result.scalar_one_or_none()
+    user = result.scalars().first()
 
     if not user:
         raise HTTPException(
@@ -364,9 +364,9 @@ async def forgot_password_phone(
         select(User).where(
             or_(User.phone.in_(variants), User.id.in_(profile_user_ids)),
             User.is_active.is_(True),
-        )
+        ).limit(1)
     )
-    user = result.scalar_one_or_none()
+    user = result.scalars().first()
 
     if not user:
         raise HTTPException(
