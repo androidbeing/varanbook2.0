@@ -179,14 +179,12 @@ async def login_otp(
         raise HTTPException(status_code=422, detail=str(exc))
 
     variants = _phone_variants(verified_phone)
+    profile_user_ids = select(Profile.user_id).where(Profile.mobile.in_(variants))
     result = await db.execute(
-        select(User)
-        .outerjoin(Profile, Profile.user_id == User.id)
-        .where(
-            or_(User.phone.in_(variants), Profile.mobile.in_(variants)),
+        select(User).where(
+            or_(User.phone.in_(variants), User.id.in_(profile_user_ids)),
             User.is_active.is_(True),
         )
-        .distinct()
     )
     user = result.scalar_one_or_none()
 
@@ -361,14 +359,12 @@ async def forgot_password_phone(
 
     # Step 2 — look up user by verified phone (format-agnostic: +E.164 or bare digits)
     variants = _phone_variants(verified_phone)
+    profile_user_ids = select(Profile.user_id).where(Profile.mobile.in_(variants))
     result = await db.execute(
-        select(User)
-        .outerjoin(Profile, Profile.user_id == User.id)
-        .where(
-            or_(User.phone.in_(variants), Profile.mobile.in_(variants)),
+        select(User).where(
+            or_(User.phone.in_(variants), User.id.in_(profile_user_ids)),
             User.is_active.is_(True),
         )
-        .distinct()
     )
     user = result.scalar_one_or_none()
 
