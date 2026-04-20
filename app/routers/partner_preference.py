@@ -75,20 +75,22 @@ async def upsert_preferences(
 
 @router.get(
     "/profiles/{profile_id}/preferences",
-    response_model=PartnerPreferenceRead,
+    response_model=PartnerPreferenceRead | None,
     summary="Get partner preferences",
 )
 async def get_preferences(
     profile_id: uuid.UUID,
     db: Annotated[AsyncSession, Depends(get_db)],
-    current_user: Annotated[User, Depends(require_member)],
-) -> PartnerPreferenceRead:
-    await _get_profile_authorised(profile_id, current_user, db)
+    current_user: Annotated[User, Depends(get_current_user)],
+) -> PartnerPreferenceRead | None:
+    profile = await db.get(Profile, profile_id)
+    if not profile or profile.tenant_id != current_user.tenant_id:
+        raise HTTPException(status_code=404, detail="Profile not found.")
 
     result = await db.execute(
         select(PartnerPreference).where(PartnerPreference.profile_id == profile_id)
     )
     pref = result.scalar_one_or_none()
     if not pref:
-        raise HTTPException(status_code=404, detail="No preferences set yet.")
+        return None
     return PartnerPreferenceRead.model_validate(pref)
