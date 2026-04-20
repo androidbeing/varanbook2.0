@@ -396,10 +396,17 @@ async def delete_profile(
     db: Annotated[AsyncSession, Depends(get_db)],
     current_user: Annotated[User, Depends(require_admin)],
 ) -> None:
-    """Only admins or super-admins can permanently delete a profile."""
+    """Only admins or super-admins can permanently delete a profile and its user account."""
     profile = await db.get(Profile, profile_id)
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found.")
     _assert_profile_access(profile, current_user)
-    await db.delete(profile)
+
+    # Delete the User — Profile cascades via User.profile(cascade="all, delete-orphan")
+    # and all child records (shortlists, file_records, etc.) cascade at DB level.
+    user = await db.get(User, profile.user_id)
+    if user:
+        await db.delete(user)
+    else:
+        await db.delete(profile)
     await db.flush()
