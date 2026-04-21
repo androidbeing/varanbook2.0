@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { VueQueryPlugin } from '@tanstack/vue-query'
+import { createHead } from '@unhead/vue/client'
 import router from './router'
 import vuetify from './plugins/vuetify'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
@@ -9,10 +10,12 @@ import App from './App.vue'
 import './plugins/firebase'
 
 const app = createApp(App)
+const head = createHead()
 
 app.use(createPinia())
 app.use(router)
 app.use(vuetify)
+app.use(head)
 app.use(VueQueryPlugin, {
   queryClientConfig: {
     defaultOptions: {

@@ -312,6 +312,45 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from '@unhead/vue'
+
+useHead({
+  title: 'Varanbook — Matrimonial Centre Management Platform',
+  meta: [
+    { name: 'description', content: 'Varanbook helps matrimonial centres manage profiles, match members, and send interest requests — all in one digital platform. Set up your centre in 24 hours.' },
+    { name: 'keywords', content: 'matrimonial centre management, biodata management, marriage bureau software, matrimonial platform India' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://varanbook.in' },
+    { property: 'og:title', content: 'Varanbook — Matrimonial Centre Management Platform' },
+    { property: 'og:description', content: 'Manage profiles, match members, and grow your matrimonial centre — digitally. Trusted by 50+ centres across India.' },
+    { property: 'og:image', content: 'https://varanbook.in/bridal.png' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: 'Varanbook — Matrimonial Centre Management' },
+    { name: 'twitter:description', content: 'Digital platform for matrimonial centres. Manage profiles, interests, and matches effortlessly.' },
+    { name: 'twitter:image', content: 'https://varanbook.in/bridal.png' },
+    { name: 'robots', content: 'index, follow' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://varanbook.in/' },
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        name: 'Varanbook',
+        url: 'https://varanbook.in',
+        description: 'Matrimonial Centre Management Platform — manage profiles, match members, and send interest requests digitally.',
+        applicationCategory: 'BusinessApplication',
+        operatingSystem: 'Web',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
+        provider: { '@type': 'Organization', name: 'Varanbook', url: 'https://varanbook.in' },
+      }),
+    },
+  ],
+})
+
 const trustBadges = [
   { icon: 'mdi-shield-check', color: 'success', label: 'Secure & Private' },
   { icon: 'mdi-cellphone-check', color: 'primary', label: 'Mobile Friendly' },

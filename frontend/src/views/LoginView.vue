@@ -189,6 +189,15 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useHead } from '@unhead/vue'
+
+useHead({
+  title: 'Sign In — Varanbook',
+  meta: [
+    { name: 'description', content: 'Sign in to your Varanbook matrimonial centre account.' },
+    { name: 'robots', content: 'noindex, nofollow' },
+  ],
+})
 import { useAuthStore } from '@/stores/auth'
 import {
   RecaptchaVerifier,

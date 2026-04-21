@@ -197,6 +197,21 @@
 </template>
 
 <script lang="ts" setup>
+import { useHead } from '@unhead/vue'
+
+useHead({
+  title: 'Privacy Policy — Varanbook',
+  meta: [
+    { name: 'description', content: 'Read the Varanbook Privacy Policy to understand how we collect, use, and protect your personal information.' },
+    { property: 'og:title', content: 'Privacy Policy — Varanbook' },
+    { property: 'og:url', content: 'https://varanbook.in/privacy-policy' },
+    { name: 'robots', content: 'index, follow' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://varanbook.in/privacy-policy' },
+  ],
+})
+
 const dataCollected = [
   {
     icon: 'mdi-account-outline',

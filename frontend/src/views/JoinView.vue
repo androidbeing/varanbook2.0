@@ -240,8 +240,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useHead } from '@unhead/vue'
 import {
   RecaptchaVerifier,
   signInWithPhoneNumber,
@@ -261,6 +262,14 @@ const loading = ref(true)
 const notFound = ref(false)
 const tenantInfo = ref<TenantPublicInfo | null>(null)
 const logoUrl = ref<string | null>(null)
+
+useHead(computed(() => ({
+  title: tenantInfo.value ? `Join ${tenantInfo.value.name} — Varanbook` : 'Join — Varanbook',
+  meta: [
+    { name: 'description', content: tenantInfo.value ? `Register your matrimonial profile at ${tenantInfo.value.name}. Powered by Varanbook.` : 'Register your matrimonial profile. Powered by Varanbook.' },
+    { name: 'robots', content: 'noindex, nofollow' },
+  ],
+})))
 const registered = ref(false)
 const submitting = ref(false)
 const errorMsg = ref('')

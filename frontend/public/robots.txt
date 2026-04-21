@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /privacy-policy
+Allow: /join/
+
+Disallow: /dashboard
+Disallow: /profiles
+Disallow: /my-profile
+Disallow: /my-interests
+Disallow: /shortlisted
+Disallow: /admin/
+
+Sitemap: https://varanbook.in/sitemap.xml
