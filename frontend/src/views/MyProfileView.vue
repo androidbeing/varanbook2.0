@@ -35,16 +35,16 @@
       <v-progress-circular indeterminate color="primary" size="48" />
     </div>
 
-    <v-row v-else>
-      <!-- -- Sidebar ------------------------------------------------------ -->
-      <v-col cols="12" md="3">
-        <v-card rounded="xl" class="text-center pa-5 mb-4" elevation="2">
+    <div v-else>
+      <!-- -- Profile header (full width) --------------------------------- -->
+      <v-card rounded="xl" class="pa-5 mb-4" elevation="2">
+        <div class="d-flex flex-column flex-sm-row align-center ga-5">
           <!-- Completion ring wraps the avatar -->
-          <div class="sidebar-avatar-wrap mx-auto mb-3">
+          <div class="sidebar-avatar-wrap flex-shrink-0">
             <v-progress-circular
               :model-value="profileCompletion"
-              :size="116" :width="5"
-              :color="profileCompletion === 100 ? 'success' : 'primary'"
+              :size="102" :width="3"
+              color="primary"
               class="sidebar-progress"
             />
             <v-tooltip text="Change profile picture" location="bottom">
@@ -70,31 +70,43 @@
             style="display:none"
             @change="uploadMemberAvatar"
           />
-          <div v-if="uploadingMemberAvatar" class="text-caption text-medium-emphasis mb-2">
-            <v-progress-circular indeterminate size="12" width="2" color="primary" class="mr-1" />
-            Uploading...
-          </div>
-          <p class="text-subtitle-1 font-weight-bold mb-1">{{ fullName || 'Your Name' }}</p>
-          <div class="text-caption mb-1" :class="profileCompletion === 100 ? 'text-success' : 'text-primary'">
-            <v-icon size="13">{{ profileCompletion === 100 ? 'mdi-check-circle' : 'mdi-progress-check' }}</v-icon>
-            {{ profileCompletion }}% profile complete
-          </div>
-          <v-chip
-            :color="profileData?.status === 'active' ? 'success' : 'warning'"
-            size="small" class="mb-3"
-          >
-            {{ profileData?.status ?? 'draft' }}
-          </v-chip>
-          <v-divider class="mb-3" />
-          <div class="text-caption text-medium-emphasis text-left">
-            <v-icon size="12" color="warning">mdi-lock</v-icon> = visible only to you by default
-          </div>
-        </v-card>
-      </v-col>
 
-      <!-- -- Expansion Panels -------------------------------------------- -->
-      <v-col cols="12" md="9">
-        <v-expansion-panels v-model="openPanels" multiple variant="accordion">
+          <!-- Identity + completion -->
+          <div class="flex-grow-1 text-center text-sm-left">
+            <div class="d-flex flex-column flex-sm-row align-center ga-2 mb-1">
+              <span class="text-h6 font-weight-bold">{{ fullName || 'Your Name' }}</span>
+              <v-chip
+                :color="profileData?.status === 'active' ? 'success' : 'warning'"
+                size="small"
+              >
+                {{ profileData?.status ?? 'draft' }}
+              </v-chip>
+            </div>
+            <div v-if="uploadingMemberAvatar" class="text-caption text-medium-emphasis mb-1">
+              <v-progress-circular indeterminate size="12" width="2" color="primary" class="mr-1" />
+              Uploading...
+            </div>
+            <div class="text-caption mb-2" :class="profileCompletion === 100 ? 'text-success' : 'text-primary'">
+              <v-icon size="13">{{ profileCompletion === 100 ? 'mdi-check-circle' : 'mdi-progress-check' }}</v-icon>
+              {{ profileCompletion }}% profile complete
+            </div>
+            <v-progress-linear
+              :model-value="profileCompletion"
+              :color="profileCompletion === 100 ? 'success' : 'primary'"
+              height="6"
+              rounded
+              class="mb-2 mx-auto mx-sm-0"
+              style="max-width:420px"
+            />
+            <div class="text-caption text-medium-emphasis">
+              <v-icon size="12" color="warning">mdi-lock</v-icon> = visible only to you by default
+            </div>
+          </div>
+        </div>
+      </v-card>
+
+      <!-- -- Sections (full width) --------------------------------------- -->
+      <v-expansion-panels v-model="openPanels" multiple variant="accordion">
 
           <!-- 1. Personal Details -->
           <v-expansion-panel rounded="xl" class="mb-2">
@@ -966,9 +978,8 @@
             </v-expansion-panel-text>
           </v-expansion-panel>
 
-        </v-expansion-panels>
-      </v-col>
-    </v-row>
+      </v-expansion-panels>
+    </div>
 
     <!-- Success / Error Snackbar -->
     <v-snackbar v-model="snack.show" :color="snack.color" timeout="3000" location="bottom right">
@@ -1871,8 +1882,8 @@ const bloodGroupOptions = [
 <style scoped>
 .sidebar-avatar-wrap {
   position: relative;
-  width: 116px;
-  height: 116px;
+  width: 102px;
+  height: 102px;
 }
 .sidebar-progress {
   position: absolute;

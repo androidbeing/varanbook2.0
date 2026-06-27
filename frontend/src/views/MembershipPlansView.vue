@@ -220,20 +220,20 @@
             <p v-if="plan.description" class="text-body-2 mb-4 opacity-80">{{ plan.description }}</p>
 
             <!-- Features -->
-            <v-list v-if="plan.features?.length" density="compact" class="pa-0">
-              <v-list-item
+            <div v-if="plan.features?.length" class="d-flex flex-column ga-2">
+              <div
                 v-for="(feature, i) in plan.features"
                 :key="i"
-                density="compact"
-                class="px-0"
-                min-height="28"
+                class="d-flex align-start"
               >
-                <template #prepend>
-                  <v-icon size="16" color="success" class="mr-2">mdi-check-circle</v-icon>
-                </template>
-                <v-list-item-title class="text-body-2">{{ feature }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
+                <v-icon
+                  size="16"
+                  :color="isCurrentPlan(plan) ? 'white' : 'success'"
+                  class="mr-2 mt-1 flex-shrink-0"
+                >mdi-check-circle</v-icon>
+                <span class="text-body-2">{{ feature }}</span>
+              </div>
+            </div>
 
             <v-divider class="my-4" />
 
