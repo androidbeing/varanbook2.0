@@ -30,7 +30,7 @@
 
                 <!-- ── Email / Password tab ─────────────────────────── -->
                 <v-tabs-window v-model="tab">
-                  <v-tabs-window-item value="email">
+                  <v-tabs-window-item value="email" class="pt-2">
                     <v-form ref="emailFormRef" v-model="emailValid" @submit.prevent="handleEmailLogin">
                       <v-text-field
                         v-model="email"
@@ -79,7 +79,7 @@
                   </v-tabs-window-item>
 
                   <!-- ── Phone OTP tab ──────────────────────────────── -->
-                  <v-tabs-window-item value="otp">
+                  <v-tabs-window-item value="otp" class="pt-2">
                     <!-- Step 1: enter phone -->
                     <div v-if="!otpSent">
                       <v-text-field
